@@ -22,4 +22,4 @@ npm run lint
 
 
 ## ToDo
-- font awesome (node?)
+[x] font awesome
