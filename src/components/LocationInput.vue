@@ -113,7 +113,7 @@ export default {
       this.nearbyStations = [];
       this.fetchingNearbyStops = true;
       getPositionPromise()
-        .then(window[this.locationApi].getClosestStops)
+        .then(apis[this.locationApi].getClosestStops)
         .then(stations => {
           // only update nearbyStations promise resolves with correct data
           if (
@@ -139,7 +139,7 @@ export default {
       }
     },
     getSuggestions(value) {
-      return window[this.locationApi].findStops(value).then(stops => {
+      return apis[this.locationApi].findStops(value).then(stops => {
         this.isFetching = false;
         this.suggestions = [].concat(stops);
         this.showDropDown();
@@ -148,7 +148,7 @@ export default {
     findNearestStop() {
       this.isFetching = true;
       getPositionPromise()
-        .then(window[this.locationApi].getClosestStop)
+        .then(apis[this.locationApi].getClosestStop)
         .then(location => {
           if (location) this.onSelect(location);
           this.show = false;
@@ -209,6 +209,7 @@ export default {
     }
   }
 };
+
 </script>
 <style>
 .location-input {

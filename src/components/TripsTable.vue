@@ -1,5 +1,5 @@
 <template>
-  <div class="trips-table">
+  <div :class="['trips-table', `trips-table--${locationApi}`]">
     <table>
       <thead>
         <tr>
@@ -31,7 +31,7 @@
           </td>
           <td class="trip-time is-late"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
           <td class="trip-track">{{ trip.track }}</td>
-          <td class="trip-line" :style="{ backgroundColor: trip.fgColor, color: trip.bgColor || 'white' }">
+          <td class="trip-line" :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }">
             {{ trip.sname }}
           </td>
         </tr>
