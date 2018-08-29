@@ -18,7 +18,6 @@ import Tabs from "./components/Tabs.vue";
 const locationAPIs = ["VT", "TV"];
 const baseTab = {
   icon: "",
-  className: "",
   props: {},
   onClick() {}
 };
@@ -63,7 +62,7 @@ export default {
         {
           ...baseTab,
           name: this.locationApi,
-          className: "tab-api",
+          small: true,
           onClick: this.toggleApi
         },
         ...components.map(comp => ({

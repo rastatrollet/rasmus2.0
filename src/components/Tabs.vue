@@ -1,9 +1,9 @@
 <template>
-  <ul class="tabs">
-    <li v-for="tab in tabs" :key="tab.name" :class="['tab', tab.className, { active: currentTab === tab.name }]">
-      <a href="#" @click.prevent="tab.onClick(tab.name)" :title="tab.name">
-        <i v-if="tab.icon" :class="['only-mobile', 'fa', tab.icon]"></i>
-        <span :class="{ 'only-desktop': tab.icon }">{{ tab.name }}</span>
+  <ul :class="$style.tabs">
+    <li v-for="tab in tabs" :key="tab.name" :class="[$style.tab, { [$style.tabSmall]: tab.small, [$style.tabActive]: currentTab === tab.name }]">
+      <a href="#" :class="$style.link" @click.prevent="tab.onClick(tab.name)" :title="tab.name">
+        <i v-if="tab.icon" :class="[$style.onlyMobile, 'fa', tab.icon]"></i>
+        <span :class="{ [$style.onlyDesktop]: tab.icon }">{{ tab.name }}</span>
       </a>
     </li>
   </ul>
@@ -18,7 +18,7 @@ export default {
   }
 };
 </script>
-<style>
+<style module>
 .tabs {
   flex-grow: 1;
   display: flex;
@@ -27,6 +27,7 @@ export default {
   margin: 0;
   padding: 0;
 }
+
 .tab {
   background-color: var(--brand-color);
   border-right: 1px solid var(--brand-text-color-dim);
@@ -35,46 +36,51 @@ export default {
   flex-grow: 1;
   text-align: center;
 }
+
 .tab:last-child {
   border-right-width: 0;
 }
-.tab.active {
+
+.tabSmall {
+  flex-grow: 0;
+}
+.tabActive {
   background-color: white;
   color: var(--brand-color);
 }
-.tab a {
+.tabApi {
+  flex-grow: 0;
+}
+
+.tab:not(.tabActive):hover,
+.tab:not(.tabActive):focus {
+  color: var(--brand-text-color);
+}
+
+.link {
   color: inherit;
   display: block;
   padding: 0.5em 1em;
   text-decoration: none;
 }
-.tab a:focus {
+
+.link:focus {
   outline: none;
 }
-.tab:not(.active) a:hover,
-.tab:not(.active) a:focus {
-  color: var(--brand-text-color);
-}
-.tab-api {
-  flex-grow: 0;
-}
 
-.only-desktop {
+.onlyDesktop {
   display: none;
 }
 
 @media screen and (min-width: 650px) {
-  .only-mobile {
+  .onlyMobile {
     display: none;
   }
-  .tab--desktop {
+  .onlyDesktop {
     display: unset;
   }
   .tab:last-child {
     border-right-width: 1px;
-  }
-  .only-desktop {
-    display: unset;
   }
 }
 </style>
