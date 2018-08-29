@@ -34,12 +34,12 @@ const components = [
   {
     name: "Karta",
     componentName: "map-component",
-    icon: "fa-map"
+    icon: "map"
   },
   {
     name: "Info",
     componentName: "information-page",
-    icon: "fa-info-circle"
+    icon: "info-circle"
   }
 ];
 

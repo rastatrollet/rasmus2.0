@@ -2,7 +2,7 @@
   <ul :class="$style.tabs">
     <li v-for="tab in tabs" :key="tab.name" :class="[$style.tab, { [$style.tabSmall]: tab.small, [$style.tabActive]: currentTab === tab.name }]">
       <a href="#" :class="$style.link" @click.prevent="tab.onClick(tab.name)" :title="tab.name">
-        <i v-if="tab.icon" :class="[$style.onlyMobile, 'fa', tab.icon]"></i>
+        <font-awesome v-if="tab.icon" :icon="tab.icon" :class="$style.onlyMobile" />
         <span :class="{ [$style.onlyDesktop]: tab.icon }">{{ tab.name }}</span>
       </a>
     </li>
