@@ -91,7 +91,7 @@ export default {
 :root {
   --brand-color: rgb(0, 157, 219);
   --brand-text-color: white;
-  --brand-text-color-dim: rgba(255, 255, 255, 0.9);
+  --brand-text-color-dim: rgba(255, 255, 255, 0.75);
   --dark-text-color: dimgray;
 }
 
