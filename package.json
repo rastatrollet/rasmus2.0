@@ -1,5 +1,6 @@
 {
-  "name": "rasmus-vue",
+  "name": "Resmus",
+  "description": "Avgångar, ankomster och karta byggt mha öppna APIer",
   "version": "0.1.0",
   "private": true,
   "scripts": {

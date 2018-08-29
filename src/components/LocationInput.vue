@@ -209,7 +209,6 @@ export default {
     }
   }
 };
-
 </script>
 <style>
 .location-input {

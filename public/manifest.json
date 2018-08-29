@@ -1,6 +1,7 @@
 {
-  "name": "rasmus-vue",
-  "short_name": "rasmus-vue",
+  "short_name": "Resmus",
+  "name": "Rasmus rese-app",
+  "description": "Avgångar, ankomster och karta byggt mha öppna APIer",
   "icons": [
     {
       "src": "/img/icons/android-chrome-192x192.png",
@@ -15,6 +16,6 @@
   ],
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#4DBA87"
+  "background_color": "#eeeeee",
+  "theme_color": "#009ddb",
 }

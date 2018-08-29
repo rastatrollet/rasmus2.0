@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th>Tid</th>
-          <th>{{ this.fromToLabel }}</th>
+          <th>{{ this.fromToLabel}}</th>
           <th>Ny tid</th>
           <th>{{ this.trackLabel }} {{ filter.track }}</th>
           <th>{{ this.metaLabel }}</th>
