@@ -1,7 +1,7 @@
 <template>
   <ul class="tabs">
     <li v-for="tab in tabs" :key="tab.name" :class="['tab', tab.className, { active: currentTab === tab.name }]">
-      <a href="#" @click.prevent="tab.onClick(tab.name)">
+      <a href="#" @click.prevent="tab.onClick(tab.name)" :title="tab.name">
         <i v-if="tab.icon" :class="['only-mobile', 'fa', tab.icon]"></i>
         <span :class="{ 'only-desktop': tab.icon }">{{ tab.name }}</span>
       </a>

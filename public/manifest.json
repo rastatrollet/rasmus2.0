@@ -14,8 +14,8 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/rasmus2.0/index.html",
   "display": "standalone",
   "background_color": "#eeeeee",
-  "theme_color": "#009ddb",
+  "theme_color": "#009ddb"
 }
