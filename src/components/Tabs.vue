@@ -1,8 +1,18 @@
 <template>
   <ul :class="$style.tabs">
-    <li v-for="tab in tabs" :key="tab.name" :class="[$style.tab, { [$style.tabSmall]: tab.small, [$style.tabActive]: currentTab === tab.name }]">
-      <a href="#" :class="$style.link" @click.prevent="tab.onClick(tab.name)" :title="tab.name">
-        <font-awesome v-if="tab.icon" :icon="tab.icon" :class="$style.onlyMobile" />
+    <li
+      v-for="tab in tabs"
+      :key="tab.name"
+      :class="[$style.tab, { [$style.tabSmall]: tab.small, [$style.tabActive]: currentTab === tab.name }]">
+      <a
+        :class="$style.link"
+        :title="tab.name"
+        href="#"
+        @click.prevent="tab.onClick(tab.name)">
+        <font-awesome
+          v-if="tab.icon"
+          :icon="tab.icon"
+          :class="$style.onlyMobile" />
         <span :class="{ [$style.onlyDesktop]: tab.icon }">{{ tab.name }}</span>
       </a>
     </li>
@@ -10,11 +20,20 @@
 </template>
 <script>
 export default {
-  name: 'tabs-comp',
+  name: 'TabsComp',
   props: {
-    tabs: Array,
-    onClick: Function,
-    currentTab: String
+    tabs: {
+      type: Array,
+      default: () => []
+    },
+    onClick: {
+      type: Function,
+      default: () => {}
+    },
+    currentTab: {
+      type: String,
+      default: ''
+    }
   }
 };
 </script>

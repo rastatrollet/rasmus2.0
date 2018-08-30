@@ -4,20 +4,26 @@
       <thead>
         <tr>
           <th>Tid</th>
-          <th>{{ this.fromToLabel}}</th>
+          <th>{{ fromToLabel }}</th>
           <th>Ny tid</th>
-          <th>{{ this.trackLabel }} {{ filter.track }}</th>
-          <th>{{ this.metaLabel }}</th>
+          <th>{{ trackLabel }} {{ filter.track }}</th>
+          <th>{{ metaLabel }}</th>
         </tr>
       </thead>
       <tbody>
         <tr v-show="isLoading">
           <td colspan="5">
             Hämtar trafikdata...
-            <i class="fa fa-spin fa-spinner" aria-hidden="true"></i>
+            <i
+              class="fa fa-spin fa-spinner"
+              aria-hidden="true"/>
           </td>
         </tr>
-        <tr v-for="trip in trips" :key="trip.id" :class="{ 'trip--cancelled': trip.cancelled }" @click="getJourneyDetails(trip)">
+        <tr
+          v-for="trip in trips"
+          :key="trip.id"
+          :class="{ 'trip--cancelled': trip.cancelled }"
+          @click="getJourneyDetails(trip)">
           <td class="trip-time">{{ trip.time }}</td>
           <td class="trip-dest">
             <div>
@@ -31,7 +37,9 @@
           </td>
           <td class="trip-time is-late"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
           <td class="trip-track">{{ trip.track }}</td>
-          <td class="trip-line" :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }">
+          <td
+            :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
+            class="trip-line">
             {{ trip.sname }}
           </td>
         </tr>
@@ -43,17 +51,42 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
+
 import { apiDict } from '../api';
 
 export default {
-  name: 'trips-table',
+  name: 'TripsTable',
   props: {
-    trips: Array,
-    isLoading: Boolean,
-    filter: Object,
-    from: String,
-    locationApi: String,
-    fromToLabel: String
+    trips: {
+      type: Array,
+      default: () => []
+    },
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
+    filter: {
+      type: Object,
+      default: null
+    },
+    from: {
+      type: String,
+      default: ''
+    },
+    fromToLabel: {
+      type: String,
+      default: ''
+    }
+  },
+  computed: {
+    ...mapState(['locationApi']),
+    metaLabel() {
+      return apiDict[this.locationApi].sname;
+    },
+    trackLabel() {
+      return apiDict[this.locationApi].track;
+    }
   },
   methods: {
     getJourneyDetails(trip) {
@@ -61,14 +94,6 @@ export default {
       window.VT.getJourneyDetail(trip.JourneyDetailRef.ref).then(resp => {
         window.tripDetails = resp.Stop;
       });
-    }
-  },
-  computed: {
-    metaLabel() {
-      return apiDict[this.locationApi].sname;
-    },
-    trackLabel() {
-      return apiDict[this.locationApi].track;
     }
   }
 };

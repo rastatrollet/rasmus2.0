@@ -1,21 +1,27 @@
 <template>
   <div id="app">
     <div class="top-nav">
-      <Tabs :tabs="tabs" :onClick="changeTab" :currentTab="currentTab" />
+      <Tabs 
+        :tabs="tabs" 
+        :on-click="changeTab" 
+        :current-tab="currentTab" />
       <DigitalClock />
     </div>
     <div class="container">
-      <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" :location-api="locationApi"></component>
+      <component 
+        :is="currentTabComponent.componentName" 
+        v-bind="currentTabComponent.props"/>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 import DigitalClock from './components/DigitalClock.vue';
 import StationInfo from './components/StationInfo.vue';
 import Tabs from './components/Tabs.vue';
 
-const locationAPIs = ['VT', 'TV'];
 const baseTab = {
   icon: '',
   props: {},
@@ -44,7 +50,7 @@ const components = [
 ];
 
 export default {
-  name: 'app',
+  name: 'App',
   components: {
     Tabs,
     DigitalClock,
@@ -52,11 +58,11 @@ export default {
   },
   data() {
     return {
-      currentTab: 'Avgångar',
-      locationApi: locationAPIs[0]
+      currentTab: 'Avgångar'
     };
   },
   computed: {
+    ...mapState(['locationApi']),
     tabs() {
       return [
         {
@@ -80,9 +86,7 @@ export default {
     changeTab(tab) {
       this.currentTab = tab;
     },
-    toggleApi() {
-      this.locationApi = locationAPIs.find(api => api !== this.locationApi);
-    }
+    ...mapMutations(['toggleApi'])
   }
 };
 </script>

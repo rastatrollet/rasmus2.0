@@ -8,7 +8,7 @@ import debounce from '../util/debounce';
 import isVisibleInDOM from '../util/isVisibleInDOM';
 
 export default {
-  name: 'digital-clock',
+  name: 'DigitalClock',
   data() {
     return {
       intervalId: null,

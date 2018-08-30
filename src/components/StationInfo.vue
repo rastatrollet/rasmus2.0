@@ -2,25 +2,39 @@
   <div class="station-info">
     <div class="station-info__form">
       <p v-if="!initialized">
-        Initierar... <i class="fa fa-spin fa-spinner"></i>
+        Initierar... <i class="fa fa-spin fa-spinner"/>
       </p>
-      <LocationInput :location="location" :location-api="locationApi" displayNearbyStops label="Hållplats" :parentLoading="isLoading" :disabled="!initialized" @set-location="setFrom" />
+      <LocationInput
+        :location="location"
+        :parent-loading="isLoading"
+        :disabled="!initialized"
+        display-nearby-stops
+        label="Hållplats"
+        @set-location="setFrom" />
     </div>
-    <ul class="station-info__trips-filter" v-if="location.id">
+    <ul
+      v-if="location.id"
+      class="station-info__trips-filter">
       <li>
-        <i class="only-mobile fa fa-filter"></i>
+        <i class="only-mobile fa fa-filter"/>
         <span class="only-desktop">Filter:</span>
       </li>
       <li>
         <select v-model="filter.dest">
           <option value="">{{ fromToLabel }}</option>
-          <option v-for="dest in destinations" :key="dest" :value="dest">{{ dest }}</option>
+          <option
+            v-for="dest in destinations"
+            :key="dest"
+            :value="dest">{{ dest }}</option>
         </select>
       </li>
       <li>
         <select v-model="filter.track">
           <option value="">Läge</option>
-          <option v-for="track in tracks" :key="track" :value="track">{{ track }}</option>
+          <option
+            v-for="track in tracks"
+            :key="track"
+            :value="track">{{ track }}</option>
         </select>
       </li>
       <li>
@@ -38,18 +52,32 @@
       <li class="only-desktop">
         <label>
           Live update
-          <input type="checkbox" name="live" v-model="isLive">
+          <input
+            v-model="isLive"
+            type="checkbox"
+            name="live">
         </label>
       </li>
     </ul>
-    <TripsTable :isLoading="isLoading" :trips="filteredTrips" :filter="filter" :from="location.name" :location-api="locationApi" :from-to-label="fromToLabel" />
-    <div class="station-info__situations" v-if="location.name">
-      <p v-for="(msg, index) in info.messages" :key="index">{{ msg }}</p>
+    <TripsTable
+      :is-loading="isLoading"
+      :trips="filteredTrips"
+      :filter="filter"
+      :from="location.name"
+      :from-to-label="fromToLabel" />
+    <div
+      v-if="location.name"
+      class="station-info__situations">
+      <p
+        v-for="(msg, index) in info.messages"
+        :key="index">{{ msg }}</p>
       <p v-if="info.messages.length === 0">Inga trafikstörningar.</p>
     </div>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
+
 import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
 import getDestinationVia from '../util/getDestinationVia';
 import LocationInput from './LocationInput.vue';
@@ -58,14 +86,16 @@ import apis from '../api';
 import googleDrive from '../api/googleDrive';
 
 export default {
-  name: 'station-info',
+  name: 'StationInfo',
   components: {
     LocationInput,
     TripsTable
   },
   props: {
-    arrivals: Boolean,
-    locationApi: String
+    arrivals: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     // eslint-disable-next-line
@@ -89,6 +119,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['locationApi']),
     show() {
       return !!this.trips.length;
     },
@@ -137,14 +168,6 @@ export default {
       return this.arrivals ? 'Ankommer' : 'Avgår';
     }
   },
-  mounted() {
-    this.init().then(() => this.loadManualDepartures());
-  },
-  beforeDestroy() {
-    // eslint-disable-next-line
-    window[this.$options._componentTag] = JSON.stringify(this._data);
-    clearTimeout(this.lastTimeoutId);
-  },
   watch: {
     arrivals(newVal, oldVal) {
       if (newVal !== oldVal) {
@@ -177,6 +200,14 @@ export default {
         this.init().then(() => this.loadManualDepartures());
       }
     }
+  },
+  mounted() {
+    this.init().then(() => this.loadManualDepartures());
+  },
+  beforeDestroy() {
+    // eslint-disable-next-line
+    window[this.$options._componentTag] = JSON.stringify(this._data);
+    clearTimeout(this.lastTimeoutId);
   },
   methods: {
     init() {

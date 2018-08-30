@@ -1,87 +1,100 @@
 <template>
-  <div class="location-input"
+  <div
     :class="{ 'with-label': label }"
+    class="location-input"
     @focus="showDropDown"
     @keyup.esc="hideDropDown">
 
     <label>
-      {{label}}:
-      <input v-model="searchText"
+      {{ label }}:
+      <input
+        v-model="searchText"
+        :disabled="disabled"
+        type="search"
+        placeholder=""
         @input="onInput"
         @focus="showDropDown"
         @blur="possiblyHideDropDown"
         @keyup.enter="selectFirstSuggestion"
-        @keydown="handleKeyInput"
-        type="search"
-        placeholder=""
-        :disabled="disabled">
-      <i class="fa fa-spin" :class="{ 'fa-spinner': isLoading }" aria-hidden="true"></i>
+        @keydown="handleKeyInput">
+      <i
+        :class="{ 'fa-spinner': isLoading }"
+        class="fa fa-spin"
+        aria-hidden="true"/>
     </label>
 
-    <ul v-show="show" class="location-input__suggestions">
-      <li class="location-input__suggestion" v-if="nearbyStations.length === 0" @keyup="handleKeyInput">
+    <ul
+      v-show="show"
+      class="location-input__suggestions">
+      <li
+        v-if="nearbyStations.length === 0"
+        class="location-input__suggestion"
+        @keyup="handleKeyInput">
         <button @click.prevent="getNearbyStops">
-          <i class="fa fa-crosshairs"></i>
+          <i class="fa fa-crosshairs"/>
           <span v-if="!fetchingNearbyStops">Använd min plats</span>
           <span v-if="fetchingNearbyStops">
             Hämtar närliggande hållplatser
-            <i class="fa fa-spinner fa-spin"></i>
+            <i class="fa fa-spinner fa-spin"/>
           </span>
         </button>
       </li>
-      <li class="location-input__suggestion" v-if="suggestions.length === 0 && !searchText" v-for="station in nearbyStations" @keyup="handleKeyInput" :key="station.name">
-        <button @click.prevent="onSelect(station)" @keyup.space="onSelect(station)">{{ station.name }}</button>
+      <li
+        v-for="station in nearbyStations"
+        v-if="suggestions.length === 0 && !searchText"
+        :key="station.name"
+        class="location-input__suggestion"
+        @keyup="handleKeyInput">
+        <button
+          @click.prevent="onSelect(station)"
+          @keyup.space="onSelect(station)">{{ station.name }}</button>
       </li>
-      <li class="location-input__suggestion" v-if="suggestions.length === 0 && searchText && !isFetching">
+      <li
+        v-if="suggestions.length === 0 && searchText && !isFetching"
+        class="location-input__suggestion">
         <button @click.prevent>Inga resultat för söktermen</button>
       </li>
-      <li class="location-input__suggestion" v-for="suggestion in suggestions" :key="suggestion.id" @keyup="handleKeyInput">
-        <button @click.prevent="onSelect(suggestion)" @keyup.space="onSelect(suggestion)">{{ suggestion.name }}</button>
+      <li
+        v-for="suggestion in suggestions"
+        :key="suggestion.id"
+        class="location-input__suggestion"
+        @keyup="handleKeyInput">
+        <button
+          @click.prevent="onSelect(suggestion)"
+          @keyup.space="onSelect(suggestion)">{{ suggestion.name }}</button>
       </li>
     </ul>
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
+
 import { getPositionPromise } from '../util/geoLocation';
 import debounce from '../util/debounce';
 import apis from '../api';
 
 export default {
-  name: 'location-input',
+  name: 'LocationInput',
   props: {
-    label: String,
-    location: Object,
-    disabled: Boolean,
-    parentLoading: Boolean,
-    displayNearbyStops: {
+    label: {
+      type: String,
+      default: ''
+    },
+    location: {
+      type: Object,
+      default: null
+    },
+    disabled: {
       type: Boolean,
       default: false
     },
-    locationApi: {
-      type: String,
-      validator(value) {
-        return (
-          Object.prototype.hasOwnProperty.call(apis[value], 'findStops') &&
-          Object.prototype.hasOwnProperty.call(apis[value], 'getClosestStop') &&
-          Object.prototype.hasOwnProperty.call(
-            apis[value],
-            'getClosestStops'
-          ) &&
-          typeof apis[value].findStops === 'function' &&
-          typeof apis[value].getClosestStop === 'function' &&
-          typeof apis[value].getClosestStops === 'function'
-        );
-      }
-    }
-  },
-  watch: {
-    locationApi(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.suggestions = [];
-        if (this.location && this.location.name) {
-          this.debouncedGetSuggestions(this.location.name);
-        }
-      }
+    parentLoading: {
+      type: Boolean,
+      default: false
+    },
+    displayNearbyStops: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -95,11 +108,22 @@ export default {
     };
   },
   computed: {
+    ...mapState(['locationApi']),
     isLoading() {
       return this.isFetching || this.parentLoading;
     },
     hasSuggestions() {
       return this.suggestions.length || this.nearbyStations.length;
+    }
+  },
+  watch: {
+    locationApi(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.suggestions = [];
+        if (this.location && this.location.name) {
+          this.debouncedGetSuggestions(this.location.name);
+        }
+      }
     }
   },
   mounted() {
