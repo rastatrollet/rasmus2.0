@@ -36,8 +36,8 @@
           <span v-if="!fetchingNearbyStops">Använd min plats</span>
           <span v-if="fetchingNearbyStops">
             Hämtar närliggande hållplatser
-            <font-awesome 
-              icon="spinner" 
+            <font-awesome
+              icon="spinner"
               spin/>
           </span>
         </button>
