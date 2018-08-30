@@ -149,11 +149,11 @@ export default {
         .filter(({ timestamp }) => timestamp > now);
 
       const filteredTrips = this.trips
-        .map(trip => ({
+        .map((trip) => ({
           ...trip,
           isAffected: affectedLines.includes(trip.sname)
         }))
-        .filter(t => (track ? t.track === track : true))
+        .filter((t) => (track ? t.track === track : true))
         .filter(
           ({ direction, origin }) =>
             dest ? direction === dest || origin === dest : true
@@ -222,7 +222,7 @@ export default {
     },
     loadManualDepartures() {
       if (this.locationApi === 'VT') {
-        googleDrive.getManualDepartures().then(res => {
+        googleDrive.getManualDepartures().then((res) => {
           this.manualTrips = apis.VT.transformTrips(res);
           console.log('this.manualTrips', this.manualTrips);
         });
@@ -246,18 +246,18 @@ export default {
     getDepartures() {
       this.isLoading = true;
       this.method(this.location.id, this.timeSpan)
-        .then(resp => {
+        .then((resp) => {
           this.trips = resp.map(getDestinationVia);
           console.log('this.trips', this.trips);
           this.isLoading = false;
         })
-        .catch(reason => {
+        .catch((reason) => {
           console.warn('reason', reason);
           this.isLoading = false;
         });
       apis[this.location.region]
         .getTrafficSituations(this.location.id, 'stoparea')
-        .then(situations => {
+        .then((situations) => {
           this.info = situations;
         });
     }

@@ -8,8 +8,8 @@ function getTrafficSituations(gid, method) {
     ? `${trafficSituations}/${method}/${gid}`
     : trafficSituations;
   return anropaVasttrafik(url, { Accept: 'application/json' })
-    .then(sit => (console.log('sit', sit), sit))
-    .then(situations =>
+    .then((sit) => (console.log('sit', sit), sit))
+    .then((situations) =>
       situations.reduce(
         (res, { title, description, affectedLines }) => ({
           messages: res.messages.concat(`${title} ${description}`),
@@ -28,8 +28,8 @@ function getTripSuggestion(from, dest) {
   const date = now.toISOString().substr(0, 10);
   const time = now.toLocaleTimeString().substr(0, 5);
   const tripUrl = `${travelPlanner}/trip?originId=${from}&destId=${dest}&date=${date}&time=${time}&format=json`;
-  return anropaVasttrafik(tripUrl).then(json =>
-    asArray(json.TripList.Trip).map(trip => asArray(trip.Leg))
+  return anropaVasttrafik(tripUrl).then((json) =>
+    asArray(json.TripList.Trip).map((trip) => asArray(trip.Leg))
   );
 }
 
@@ -38,9 +38,9 @@ function findStops(text) {
     text
   )}&format=json`;
   return anropaVasttrafik(requestUrl)
-    .then(json => asArray(json.LocationList.StopLocation).slice(0, 5))
-    .then(stops =>
-      stops.map(stop =>
+    .then((json) => asArray(json.LocationList.StopLocation).slice(0, 5))
+    .then((stops) =>
+      stops.map((stop) =>
         Object.assign({}, stop, {
           region: 'VT'
         })
@@ -49,7 +49,7 @@ function findStops(text) {
 }
 
 function transformTrips(trips) {
-  return trips.map(trip => {
+  return trips.map((trip) => {
     const isLate = trip.rtTime && trip.rtTime !== trip.time;
     const time = trip.rtTime || trip.time;
     const date = trip.rtDate || trip.date;
@@ -77,7 +77,7 @@ function getArrivalsTo(id, timeSpan) {
     requestUrl = `${requestUrl}&timeSpan=${timeSpan}`;
   }
   return getTimeTable(id, requestUrl)
-    .then(json => json.ArrivalBoard.Arrival)
+    .then((json) => json.ArrivalBoard.Arrival)
     .then(transformTrips);
 }
 
@@ -90,14 +90,14 @@ function getDeparturesFrom(id, timeSpan) {
   }
   return (
     getTimeTable(id, requestUrl)
-      .then(json => json.DepartureBoard.Departure || [])
+      .then((json) => json.DepartureBoard.Departure || [])
       // .then(filterSimilar)
       .then(transformTrips)
   );
 }
 
 function getTimeTable(id, requestUrl) {
-  return anropaVasttrafik(requestUrl).then(res => {
+  return anropaVasttrafik(requestUrl).then((res) => {
     const { error, errorText } = res;
     if (error || errorText) {
       console.log('Error:', error || errorText);
@@ -107,7 +107,7 @@ function getTimeTable(id, requestUrl) {
 }
 
 function getLiveMap({ south, west, north, east }) {
-  const getWGS84 = coord => Math.round(coord * 1000000);
+  const getWGS84 = (coord) => Math.round(coord * 1000000);
   const url = `${travelPlanner}/livemap?minx=${getWGS84(west)}&miny=${getWGS84(
     south
   )}&maxx=${getWGS84(east)}&maxy=${getWGS84(north)}&onlyRealtime=yes`;
@@ -143,7 +143,7 @@ function getClosestStops({ lat, lng }, limit = 5, retry = true) {
   const url = `${travelPlanner}/location.nearbystops?originCoordLat=${lat}&originCoordLong=${lng}&maxNo=${limit *
     2}&format=json`;
   return anropaVasttrafik(url)
-    .then(json => {
+    .then((json) => {
       if (json.LocationList.errorText) {
         throw new Error(json.LocationList.errorText);
       }
@@ -153,16 +153,16 @@ function getClosestStops({ lat, lng }, limit = 5, retry = true) {
       }
 
       return json.LocationList.StopLocation.filter(({ name }, index, self) => {
-        const firstMatch = self.findIndex(stop => stop.name === name);
+        const firstMatch = self.findIndex((stop) => stop.name === name);
         return firstMatch === index;
       })
-        .map(stop => ({
+        .map((stop) => ({
           ...stop,
           region: 'VT'
         }))
         .slice(0, limit);
     })
-    .catch(reason => {
+    .catch((reason) => {
       if (retry) {
         console.log('[getClosestStops] error:', reason, 'retrying');
         getClosestStops({ lat, lng }, limit, false);
@@ -184,7 +184,7 @@ function getAccessToken() {
     body: 'grant_type=client_credentials'
   })
     .then(fetchMiddleware)
-    .then(resp => {
+    .then((resp) => {
       authToken = resp.access_token;
       expDate = new Date(Date.now() + resp.expires_in * 1000);
       console.log(`AuthToken expires ${expDate.toLocaleString()}`);
@@ -194,7 +194,7 @@ function getAccessToken() {
 
 function fetchMiddleware(response) {
   if (response.ok) return response.json();
-  return response.json().then(err => Promise.reject(err));
+  return response.json().then((err) => Promise.reject(err));
 }
 
 function asArray(arg) {
@@ -209,7 +209,7 @@ function init() {
 
 export default {
   init,
-  getClosestStop: pos => getClosestStops(pos, 1),
+  getClosestStop: (pos) => getClosestStops(pos, 1),
   getClosestStops,
   findStops,
   getGeometry,

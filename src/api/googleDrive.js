@@ -75,7 +75,7 @@ function printInfoDoc() {
   return googleInitPromise.then(() =>
     getFile(files.infoDoc)
       .then(printFile)
-      .catch(e => console.error(e))
+      .catch((e) => console.error(e))
   );
 }
 
@@ -83,10 +83,10 @@ function getManualDepartures() {
   return googleInitPromise.then(() =>
     getFile(files.manualDepartures)
       .then(({ body }) => body)
-      .then(csv => {
+      .then((csv) => {
         const rows = csv.split(/\n/);
         const keys = rows[0].replace(/\n|\r/g, '').split(/\t/);
-        return rows.slice(1).map(row => {
+        return rows.slice(1).map((row) => {
           const values = row.split(/\t/);
           return keys.reduce((res, curr, idx) => {
             const key = sweToVTLingo[curr] || curr;

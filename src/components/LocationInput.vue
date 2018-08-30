@@ -141,7 +141,7 @@ export default {
       this.fetchingNearbyStops = true;
       getPositionPromise()
         .then(apis[this.locationApi].getClosestStops)
-        .then(stations => {
+        .then((stations) => {
           // only update nearbyStations promise resolves with correct data
           if (
             stations &&
@@ -152,7 +152,7 @@ export default {
           }
           this.fetchingNearbyStops = false;
         })
-        .catch(reason => {
+        .catch((reason) => {
           console.error(reason);
           this.fetchingNearbyStops = false;
         });
@@ -166,7 +166,7 @@ export default {
       }
     },
     getSuggestions(value) {
-      return apis[this.locationApi].findStops(value).then(stops => {
+      return apis[this.locationApi].findStops(value).then((stops) => {
         this.isFetching = false;
         this.suggestions = [].concat(stops);
         this.showDropDown();
@@ -176,7 +176,7 @@ export default {
       this.isFetching = true;
       getPositionPromise()
         .then(apis[this.locationApi].getClosestStop)
-        .then(location => {
+        .then((location) => {
           if (location) this.onSelect(location);
           this.show = false;
           this.isFetching = false;
@@ -201,7 +201,7 @@ export default {
       };
       const btnElement = 'button';
 
-      const getSibling = el => el.parentElement[dict[e.key]];
+      const getSibling = (el) => el.parentElement[dict[e.key]];
 
       if (
         ['ArrowDown', 'ArrowUp'].includes(e.key) &&

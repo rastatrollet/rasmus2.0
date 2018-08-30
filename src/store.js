@@ -11,7 +11,7 @@ export default new Vuex.Store({
   },
   mutations: {
     toggleApi(state) {
-      state.locationApi = locationAPIs.find(api => api !== state.locationApi);
+      state.locationApi = locationAPIs.find((api) => api !== state.locationApi);
     }
   },
   actions: {}

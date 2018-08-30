@@ -71,7 +71,7 @@ export default {
           small: true,
           onClick: this.toggleApi
         },
-        ...components.map(comp => ({
+        ...components.map((comp) => ({
           ...baseTab,
           ...comp,
           onClick: this.changeTab

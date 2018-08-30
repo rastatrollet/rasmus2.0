@@ -91,7 +91,7 @@ export default {
   methods: {
     getJourneyDetails(trip) {
       if (!trip.JourneyDetailRef) return;
-      window.VT.getJourneyDetail(trip.JourneyDetailRef.ref).then(resp => {
+      window.VT.getJourneyDetail(trip.JourneyDetailRef.ref).then((resp) => {
         window.tripDetails = resp.Stop;
       });
     }

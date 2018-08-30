@@ -21,7 +21,7 @@ function getPosition() {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     }
   })
-    .then(pos => {
+    .then((pos) => {
       console.log('got position', pos);
       return pos;
     })

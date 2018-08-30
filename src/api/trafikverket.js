@@ -72,13 +72,13 @@ function tvApiRequest(objectType, ...args) {
       'Content-Type': 'text/xml'
     }
   })
-    .then(resp => {
-      const jsonPromise = resp.json().then(json => json.RESPONSE.RESULT);
+    .then((resp) => {
+      const jsonPromise = resp.json().then((json) => json.RESPONSE.RESULT);
       if (resp.ok) return jsonPromise;
-      return jsonPromise.then(err => Promise.reject(err));
+      return jsonPromise.then((err) => Promise.reject(err));
     })
-    .then(json => json[0][objectType] || [])
-    .catch(err => console.error(err));
+    .then((json) => json[0][objectType] || [])
+    .catch((err) => console.error(err));
 }
 
 function logMiddleware(resp) {
@@ -95,27 +95,27 @@ function transformStation(station) {
 }
 
 function getClosestStops({ lat, lng }) {
-  return tvApiRequest('TrainStation', { lat, long: lng }, 5000).then(response =>
-    response.slice(0, 5).map(transformStation)
+  return tvApiRequest('TrainStation', { lat, long: lng }, 5000).then(
+    (response) => response.slice(0, 5).map(transformStation)
   );
 }
 
 export default {
   init() {
-    return tvApiRequest('TrainStation').then(stations =>
-      stations.forEach(station => {
+    return tvApiRequest('TrainStation').then((stations) =>
+      stations.forEach((station) => {
         stationMap[station.LocationSignature] = station.AdvertisedLocationName;
       })
     );
   },
   getClosestStops,
   getClosestStop(pos) {
-    return getClosestStops(pos).then(stops => stops[0]);
+    return getClosestStops(pos).then((stops) => stops[0]);
   },
   getTrafficSituations(location) {
     return tvApiRequest('TrainMessage', location)
       .then(logMiddleware)
-      .then(situations => ({
+      .then((situations) => ({
         messages: situations.map(
           ({ ExternalDescription }) => ExternalDescription
         )
@@ -123,10 +123,10 @@ export default {
   },
   getDeparturesFrom(station) {
     return tvApiRequest('TrainAnnouncement', station)
-      .then(resp => (resp || []).slice(0, 30))
+      .then((resp) => (resp || []).slice(0, 30))
       .then(logMiddleware)
-      .then(deps =>
-        deps.map(dep => ({
+      .then((deps) =>
+        deps.map((dep) => ({
           id: dep.ActivityId,
           direction:
             dep.ToLocation &&
@@ -143,7 +143,7 @@ export default {
       );
   },
   findStops(name) {
-    return tvApiRequest('TrainStation', { name }).then(stations =>
+    return tvApiRequest('TrainStation', { name }).then((stations) =>
       stations.slice(0, 15).map(transformStation)
     );
   },
