@@ -1,3 +1,3 @@
 export default function isVisibleInDOM(el) {
-  return window.getComputedStyle(el).display !== "none";
+  return window.getComputedStyle(el).display !== 'none';
 }

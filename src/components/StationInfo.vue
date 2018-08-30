@@ -50,15 +50,15 @@
   </div>
 </template>
 <script>
-import sortNumbersAndLetters from "../util/sortNumbersAndLetters";
-import getDestinationVia from "../util/getDestinationVia";
-import LocationInput from "./LocationInput.vue";
-import TripsTable from "./TripsTable.vue";
-import apis from "../api";
-import googleDrive from "../api/googleDrive";
+import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
+import getDestinationVia from '../util/getDestinationVia';
+import LocationInput from './LocationInput.vue';
+import TripsTable from './TripsTable.vue';
+import apis from '../api';
+import googleDrive from '../api/googleDrive';
 
 export default {
-  name: "station-info",
+  name: 'station-info',
   components: {
     LocationInput,
     TripsTable
@@ -80,11 +80,11 @@ export default {
         messages: []
       },
       filter: {
-        track: "",
-        dest: ""
+        track: '',
+        dest: ''
       },
       isLive: true,
-      timeSpan: "",
+      timeSpan: '',
       ...savedData
     };
   },
@@ -131,10 +131,10 @@ export default {
       );
     },
     fromToLabel() {
-      return this.arrivals ? "Från" : "Till";
+      return this.arrivals ? 'Från' : 'Till';
     },
     arriveDepartLabel() {
-      return this.arrivals ? "Ankommer" : "Avgår";
+      return this.arrivals ? 'Ankommer' : 'Avgår';
     }
   },
   mounted() {
@@ -156,7 +156,7 @@ export default {
       }
     },
     isLive(value) {
-      console.log("isLive", value);
+      console.log('isLive', value);
       if (value) {
         this.refreshDepartures();
       } else {
@@ -171,8 +171,8 @@ export default {
         clearTimeout(this.lastTimeoutId);
         this.trips = [];
         this.filter = {
-          track: "",
-          dest: ""
+          track: '',
+          dest: ''
         };
         this.init().then(() => this.loadManualDepartures());
       }
@@ -188,15 +188,15 @@ export default {
       });
     },
     loadManualDepartures() {
-      if (this.locationApi === "VT") {
+      if (this.locationApi === 'VT') {
         googleDrive.getManualDepartures().then(res => {
           this.manualTrips = apis.VT.transformTrips(res);
-          console.log("this.manualTrips", this.manualTrips);
+          console.log('this.manualTrips', this.manualTrips);
         });
       }
     },
     setFrom(location) {
-      console.log("set location", location);
+      console.log('set location', location);
       this.location = location || {};
       this.getDepartures();
       this.refreshDepartures();
@@ -215,15 +215,15 @@ export default {
       this.method(this.location.id, this.timeSpan)
         .then(resp => {
           this.trips = resp.map(getDestinationVia);
-          console.log("this.trips", this.trips);
+          console.log('this.trips', this.trips);
           this.isLoading = false;
         })
         .catch(reason => {
-          console.warn("reason", reason);
+          console.warn('reason', reason);
           this.isLoading = false;
         });
       apis[this.location.region]
-        .getTrafficSituations(this.location.id, "stoparea")
+        .getTrafficSituations(this.location.id, 'stoparea')
         .then(situations => {
           this.info = situations;
         });

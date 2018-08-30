@@ -42,12 +42,12 @@
   </div>
 </template>
 <script>
-import { getPositionPromise } from "../util/geoLocation";
-import debounce from "../util/debounce";
-import apis from "../api";
+import { getPositionPromise } from '../util/geoLocation';
+import debounce from '../util/debounce';
+import apis from '../api';
 
 export default {
-  name: "location-input",
+  name: 'location-input',
   props: {
     label: String,
     location: Object,
@@ -61,15 +61,15 @@ export default {
       type: String,
       validator(value) {
         return (
-          Object.prototype.hasOwnProperty.call(apis[value], "findStops") &&
-          Object.prototype.hasOwnProperty.call(apis[value], "getClosestStop") &&
+          Object.prototype.hasOwnProperty.call(apis[value], 'findStops') &&
+          Object.prototype.hasOwnProperty.call(apis[value], 'getClosestStop') &&
           Object.prototype.hasOwnProperty.call(
             apis[value],
-            "getClosestStops"
+            'getClosestStops'
           ) &&
-          typeof apis[value].findStops === "function" &&
-          typeof apis[value].getClosestStop === "function" &&
-          typeof apis[value].getClosestStops === "function"
+          typeof apis[value].findStops === 'function' &&
+          typeof apis[value].getClosestStop === 'function' &&
+          typeof apis[value].getClosestStops === 'function'
         );
       }
     }
@@ -89,7 +89,7 @@ export default {
       show: false,
       isFetching: false,
       fetchingNearbyStops: false,
-      searchText: "",
+      searchText: '',
       suggestions: [],
       nearbyStations: []
     };
@@ -157,9 +157,9 @@ export default {
         });
     },
     onSelect(suggestion) {
-      console.log("onSelect", suggestion);
+      console.log('onSelect', suggestion);
       this.searchText = suggestion.name;
-      this.$emit("set-location", suggestion);
+      this.$emit('set-location', suggestion);
       this.hideDropDown();
       this.getSuggestions(suggestion.name).then(this.hideDropDown);
     },
@@ -169,15 +169,15 @@ export default {
     },
     handleKeyInput(e) {
       const dict = {
-        ArrowUp: "previousElementSibling",
-        ArrowDown: "nextElementSibling"
+        ArrowUp: 'previousElementSibling',
+        ArrowDown: 'nextElementSibling'
       };
-      const btnElement = "button";
+      const btnElement = 'button';
 
       const getSibling = el => el.parentElement[dict[e.key]];
 
       if (
-        ["ArrowDown", "ArrowUp"].includes(e.key) &&
+        ['ArrowDown', 'ArrowUp'].includes(e.key) &&
         this.show &&
         this.hasSuggestions
       ) {
@@ -297,7 +297,7 @@ export default {
   border-left: var(--arrow-size) solid transparent;
   border-right: var(--arrow-size) solid transparent;
   border-bottom: var(--arrow-size) solid var(--brand-color);
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   top: -5px;

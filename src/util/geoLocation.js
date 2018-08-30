@@ -15,14 +15,14 @@ export function getPositionPromise() {
 
 function getPosition() {
   return new Promise((resolve, reject) => {
-    if (!("geolocation" in navigator)) {
+    if (!('geolocation' in navigator)) {
       reject();
     } else {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     }
   })
     .then(pos => {
-      console.log("got position", pos);
+      console.log('got position', pos);
       return pos;
     })
     .then(transformPosition);

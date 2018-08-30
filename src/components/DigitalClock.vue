@@ -4,17 +4,17 @@
   </div>
 </template>
 <script>
-import debounce from "../util/debounce";
-import isVisibleInDOM from "../util/isVisibleInDOM";
+import debounce from '../util/debounce';
+import isVisibleInDOM from '../util/isVisibleInDOM';
 
 export default {
-  name: "digital-clock",
+  name: 'digital-clock',
   data() {
     return {
       intervalId: null,
-      hours: "",
-      minutes: "",
-      seconds: ""
+      hours: '',
+      minutes: '',
+      seconds: ''
     };
   },
   created() {
@@ -24,11 +24,11 @@ export default {
     this.updateDateTime();
     this.startInterval();
     this.handleResize();
-    window.addEventListener("resize", this.handleResize, false);
+    window.addEventListener('resize', this.handleResize, false);
   },
   beforeDestroy() {
     this.stopInterval();
-    window.removeEventListener("resize", this.handleResize, false);
+    window.removeEventListener('resize', this.handleResize, false);
   },
   methods: {
     handleResize() {
@@ -47,9 +47,9 @@ export default {
     },
     updateDateTime() {
       const now = new Date();
-      this.hours = String(now.getHours()).padStart(2, "0");
-      this.minutes = String(now.getMinutes()).padStart(2, "0");
-      this.seconds = String(now.getSeconds()).padStart(2, "0");
+      this.hours = String(now.getHours()).padStart(2, '0');
+      this.minutes = String(now.getMinutes()).padStart(2, '0');
+      this.seconds = String(now.getSeconds()).padStart(2, '0');
     }
   }
 };

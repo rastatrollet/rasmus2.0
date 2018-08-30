@@ -11,40 +11,40 @@
 </template>
 
 <script>
-import DigitalClock from "./components/DigitalClock.vue";
-import StationInfo from "./components/StationInfo.vue";
-import Tabs from "./components/Tabs.vue";
+import DigitalClock from './components/DigitalClock.vue';
+import StationInfo from './components/StationInfo.vue';
+import Tabs from './components/Tabs.vue';
 
-const locationAPIs = ["VT", "TV"];
+const locationAPIs = ['VT', 'TV'];
 const baseTab = {
-  icon: "",
+  icon: '',
   props: {},
   onClick() {}
 };
 const components = [
   {
-    name: "Avgångar",
-    componentName: "station-info"
+    name: 'Avgångar',
+    componentName: 'station-info'
   },
   {
-    name: "Ankomster",
-    componentName: "station-info",
+    name: 'Ankomster',
+    componentName: 'station-info',
     props: { arrivals: true }
   },
   {
-    name: "Karta",
-    componentName: "map-component",
-    icon: "map"
+    name: 'Karta',
+    componentName: 'map-component',
+    icon: 'map'
   },
   {
-    name: "Info",
-    componentName: "information-page",
-    icon: "info-circle"
+    name: 'Info',
+    componentName: 'information-page',
+    icon: 'info-circle'
   }
 ];
 
 export default {
-  name: "app",
+  name: 'app',
   components: {
     Tabs,
     DigitalClock,
@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      currentTab: "Avgångar",
+      currentTab: 'Avgångar',
       locationApi: locationAPIs[0]
     };
   },

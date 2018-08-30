@@ -1,5 +1,5 @@
-const travelPlanner = "https://api.vasttrafik.se/bin/rest.exe/v2";
-const trafficSituations = "https://api.vasttrafik.se/ts/v1/traffic-situations";
+const travelPlanner = 'https://api.vasttrafik.se/bin/rest.exe/v2';
+const trafficSituations = 'https://api.vasttrafik.se/ts/v1/traffic-situations';
 let authToken;
 let expDate;
 
@@ -7,8 +7,8 @@ function getTrafficSituations(gid, method) {
   const url = method
     ? `${trafficSituations}/${method}/${gid}`
     : trafficSituations;
-  return anropaVasttrafik(url, { Accept: "application/json" })
-    .then(sit => (console.log("sit", sit), sit))
+  return anropaVasttrafik(url, { Accept: 'application/json' })
+    .then(sit => (console.log('sit', sit), sit))
     .then(situations =>
       situations.reduce(
         (res, { title, description, affectedLines }) => ({
@@ -42,7 +42,7 @@ function findStops(text) {
     .then(stops =>
       stops.map(stop =>
         Object.assign({}, stop, {
-          region: "VT"
+          region: 'VT'
         })
       )
     );
@@ -56,7 +56,7 @@ function transformTrips(trips) {
     const timestamp = new Date(`${date}T${time}`).getTime();
     // const journeyDetail = await anropaVasttrafik(trip.JourneyDetailRef.ref);
     return Object.assign({}, trip, {
-      region: "VT",
+      region: 'VT',
       cancelled: Boolean(trip.cancelled),
       isLate,
       timestamp
@@ -100,7 +100,7 @@ function getTimeTable(id, requestUrl) {
   return anropaVasttrafik(requestUrl).then(res => {
     const { error, errorText } = res;
     if (error || errorText) {
-      console.log("Error:", error || errorText);
+      console.log('Error:', error || errorText);
     }
     return res;
   });
@@ -130,7 +130,7 @@ function anropaVasttrafik(url, userHeaders) {
   };
 
   if (!expDate || expDate.getTime() < Date.now()) {
-    console.log("Need to update authtoken");
+    console.log('Need to update authtoken');
     accessTokenPromise.then(getAccessToken);
   }
 
@@ -158,30 +158,30 @@ function getClosestStops({ lat, lng }, limit = 5, retry = true) {
       })
         .map(stop => ({
           ...stop,
-          region: "VT"
+          region: 'VT'
         }))
         .slice(0, limit);
     })
     .catch(reason => {
       if (retry) {
-        console.log("[getClosestStops] error:", reason, "retrying");
+        console.log('[getClosestStops] error:', reason, 'retrying');
         getClosestStops({ lat, lng }, limit, false);
       } else {
-        console.log("[getClosestStops] error", reason);
+        console.log('[getClosestStops] error', reason);
         throw reason;
       }
     });
 }
 
 function getAccessToken() {
-  return fetch("https://api.vasttrafik.se:443/token", {
+  return fetch('https://api.vasttrafik.se:443/token', {
     headers: {
       Authorization:
-        "Basic b1pZclV2c1ZGTG8zZ2FSemNaS0NUbEdJX21ZYTo4bTlLNnFsaDVNQXBWRFdRYlVWSUhneWZja3dh",
-      "Content-Type": "application/x-www-form-urlencoded"
+        'Basic b1pZclV2c1ZGTG8zZ2FSemNaS0NUbEdJX21ZYTo4bTlLNnFsaDVNQXBWRFdRYlVWSUhneWZja3dh',
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
-    method: "POST",
-    body: "grant_type=client_credentials"
+    method: 'POST',
+    body: 'grant_type=client_credentials'
   })
     .then(fetchMiddleware)
     .then(resp => {

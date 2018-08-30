@@ -1,14 +1,14 @@
-import TV from "./trafikverket";
-import VT from "./vasttrafik";
+import TV from './trafikverket';
+import VT from './vasttrafik';
 
 export const apiDict = {
   TV: {
-    track: "Spår",
-    sname: "Anmärkn."
+    track: 'Spår',
+    sname: 'Anmärkn.'
   },
   VT: {
-    track: "Läge",
-    sname: "Linje"
+    track: 'Läge',
+    sname: 'Linje'
   }
 };
 

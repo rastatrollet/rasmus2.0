@@ -10,7 +10,7 @@
 </template>
 <script>
 export default {
-  name: "tabs-comp",
+  name: 'tabs-comp',
   props: {
     tabs: Array,
     onClick: Function,

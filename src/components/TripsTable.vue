@@ -43,10 +43,10 @@
   </div>
 </template>
 <script>
-import { apiDict } from "../api";
+import { apiDict } from '../api';
 
 export default {
-  name: "trips-table",
+  name: 'trips-table',
   props: {
     trips: Array,
     isLoading: Boolean,
