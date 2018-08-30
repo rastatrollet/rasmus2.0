@@ -2,7 +2,9 @@
   <div class="station-info">
     <div class="station-info__form">
       <p v-if="!initialized">
-        Initierar... <i class="fa fa-spin fa-spinner"/>
+        Initierar... <font-awesome 
+          icon="spinner" 
+          spin/>
       </p>
       <LocationInput
         :location="location"

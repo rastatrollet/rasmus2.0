@@ -17,9 +17,10 @@
         @blur="possiblyHideDropDown"
         @keyup.enter="selectFirstSuggestion"
         @keydown="handleKeyInput">
-      <i
-        :class="{ 'fa-spinner': isLoading }"
-        class="fa fa-spin"
+      <font-awesome
+        icon="spinner"
+        :spin="isLoading"
+        v-if="isLoading"
         aria-hidden="true"/>
     </label>
 
@@ -31,11 +32,13 @@
         class="location-input__suggestion"
         @keyup="handleKeyInput">
         <button @click.prevent="getNearbyStops">
-          <i class="fa fa-crosshairs"/>
+          <font-awesome icon="crosshairs"/>
           <span v-if="!fetchingNearbyStops">Använd min plats</span>
           <span v-if="fetchingNearbyStops">
             Hämtar närliggande hållplatser
-            <i class="fa fa-spinner fa-spin"/>
+            <font-awesome 
+              icon="spinner" 
+              spin/>
           </span>
         </button>
       </li>

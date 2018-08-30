@@ -14,9 +14,9 @@
         <tr v-show="isLoading">
           <td colspan="5">
             Hämtar trafikdata...
-            <i
-              class="fa fa-spin fa-spinner"
-              aria-hidden="true"/>
+            <font-awesome 
+              icon="spinner" 
+              spin />
           </td>
         </tr>
         <tr
