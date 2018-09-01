@@ -76,7 +76,7 @@ function getDeparturesFrom(siteId) {
       ...trip,
       fgColor: getColorFromLineNo(trip.LineNumber),
       bgColor: 'white',
-      direction: `${trip.Destination} - ${trip.DisplayTime}`,
+      direction: `${trip.Destination} ${trip.DisplayTime.includes('min') ? '- ' + trip.DisplayTime : ''}`,
       time: trip.TimeTabledDateTime.substr(11, 5),
       rtTime: trip.ExpectedDateTime.substr(11, 5),
       name: `${vehicule(trip.TransportMode)} ${trip.LineNumber}`,

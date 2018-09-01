@@ -21,7 +21,6 @@ import { mapState, mapMutations } from 'vuex';
 import DigitalClock from './components/DigitalClock.vue';
 import StationInfo from './components/StationInfo.vue';
 import Tabs from './components/Tabs.vue';
-import MapComponent from './components/Map.vue';
 
 const baseTab = {
   icon: '',
@@ -53,7 +52,7 @@ const components = [
 export default {
   name: 'App',
   components: {
-    MapComponent,
+    MapComponent: () => import('./components/Map.vue'),
     Tabs,
     DigitalClock,
     StationInfo
