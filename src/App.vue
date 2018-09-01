@@ -133,4 +133,17 @@ body {
 .container {
   height: calc(100% - 36px);
 }
+
+.only-desktop {
+  display: none;
+}
+
+@media screen and (min-width: 650px) {
+  .only-desktop {
+    display: initial;
+  }
+  .only-mobile {
+    display: none;
+  }
+}
 </style>

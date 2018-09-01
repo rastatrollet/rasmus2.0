@@ -3,6 +3,35 @@ const fetchOptions = {
   method: 'GET'
 };
 
+const lineNumberColors = {
+  '7': 'gray',
+  '10': '#1C7F2A', // blue
+  '11': '#1C7F2A',
+  '12': 'gray',
+  '13': '#D51427', // red
+  '14': '#D51427',
+  '17': '#60A42B', // green
+  '18': '#60A42B',
+  '19': '#60A42B',
+  '21': 'brown',
+  '22': 'orange',
+  '25': 'turquoise',
+  '26': 'turquoise',
+  '27': 'purple',
+  '28': 'purple',
+  '29': 'purple',
+  '40': 'pink',
+  '41': 'pink',
+  '42': 'pink',
+  '43': 'pink',
+  '44': 'pink',
+  '45': 'pink',
+  '48': 'pink'
+};
+function getColorFromLineNo(lineNo) {
+  return lineNumberColors[lineNo] || '#A4A5A7'; // gray
+}
+
 function transformStop(stop) {
   return {
     ...stop,
@@ -76,14 +105,15 @@ function getDeparturesFrom(siteId) {
       ...trip,
       fgColor: getColorFromLineNo(trip.LineNumber),
       bgColor: 'white',
-      direction: `${trip.Destination} ${
-        trip.DisplayTime.includes('min') ? '- ' + trip.DisplayTime : ''
-      }`,
+      direction: trip.Destination,
+      timestamp: new Date(
+        trip.ExpectedDateTime || trip.TimeTabledDateTime
+      ).getTime(),
       time: trip.TimeTabledDateTime.substr(11, 5),
       rtTime: trip.ExpectedDateTime.substr(11, 5),
       name: `${vehicule(trip.TransportMode)} ${trip.LineNumber}`,
       sname: trip.LineNumber,
-      track: trip.StopPointDesignation,
+      track: trip.StopPointDesignation || trip.JourneyDirection,
       region: 'SL',
       href: '#',
       isLate: trip.TimeTabledDateTime !== trip.ExpectedDateTime
@@ -102,35 +132,6 @@ function getTrafficSituations(siteId) {
         messages: json.map(({ Details }) => Details)
       };
     });
-}
-
-const lineNumberColors = {
-  '7': 'gray',
-  '10': 'blue',
-  '11': 'blue',
-  '12': 'gray',
-  '13': 'red',
-  '14': 'red',
-  '17': 'green',
-  '18': 'green',
-  '19': 'green',
-  '21': 'brown',
-  '22': 'orange',
-  '25': 'green',
-  '26': 'green',
-  '27': 'purple',
-  '28': 'purple',
-  '29': 'purple',
-  '40': 'pink',
-  '41': 'pink',
-  '42': 'pink',
-  '43': 'pink',
-  '44': 'pink',
-  '45': 'pink',
-  '48': 'pink'
-};
-function getColorFromLineNo(lineNo) {
-  return lineNumberColors[lineNo] || 'darkgray';
 }
 
 function fetchMiddleware(response) {

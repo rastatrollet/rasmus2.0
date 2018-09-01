@@ -127,6 +127,7 @@ export default {
       .then(logMiddleware)
       .then((deps) =>
         deps.map((dep) => ({
+          ...dep,
           id: dep.ActivityId,
           direction:
             dep.ToLocation &&
@@ -136,6 +137,7 @@ export default {
             (stationMap[dep.ViaToLocation[0].LocationName] || ''),
           name: `${dep.ProductInformation.join(' ')}`,
           time: dep.AdvertisedTimeAtLocation.substr(-8, 5),
+          timestamp: new Date(dep.AdvertisedTimeAtLocation).getTime(),
           isLate: false,
           track: dep.TrackAtLocation,
           sname: dep.ProductInformation[0]

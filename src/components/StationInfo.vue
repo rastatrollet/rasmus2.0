@@ -1,9 +1,9 @@
 <template>
-  <div class="station-info">
-    <div class="station-info__form">
+  <div :class="$style.stationInfo">
+    <div :class="$style.form">
       <p v-if="!initialized">
-        Initierar... <font-awesome 
-          icon="spinner" 
+        Initierar... <font-awesome
+          icon="spinner"
           spin/>
       </p>
       <LocationInput
@@ -16,9 +16,11 @@
     </div>
     <ul
       v-if="location.id"
-      class="station-info__trips-filter">
+      :class="$style.tripsFilter">
       <li>
-        <i class="only-mobile fa fa-filter"/>
+        <font-awesome 
+          class="only-mobile" 
+          icon="filter"/>
         <span class="only-desktop">Filter:</span>
       </li>
       <li>
@@ -53,11 +55,21 @@
       </li>
       <li class="only-desktop">
         <label>
-          Live update
+          Live
           <input
             v-model="isLive"
             type="checkbox"
             name="live">
+        </label>
+      </li>
+      <li>
+        <label :class="$style.voice">
+          <font-awesome :icon="['fas', voice ? 'volume-up' : 'volume-off']"/>
+          <input
+            :class="$style.voiceCheckbox"
+            v-model="voice"
+            type="checkbox"
+            name="voice">
         </label>
       </li>
     </ul>
@@ -69,7 +81,7 @@
       :from-to-label="fromToLabel" />
     <div
       v-if="location.name"
-      class="station-info__situations">
+      :class="$style.situations">
       <p
         v-for="(msg, index) in info.messages"
         :key="index">{{ msg }}</p>
@@ -84,6 +96,7 @@ import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
 import getDestinationVia from '../util/getDestinationVia';
 import LocationInput from './LocationInput.vue';
 import TripsTable from './TripsTable.vue';
+import { speak } from '../util/speechSynthesis';
 import apis from '../api';
 import googleDrive from '../api/googleDrive';
 
@@ -116,6 +129,7 @@ export default {
         dest: ''
       },
       isLive: true,
+      voice: false,
       timeSpan: '',
       ...savedData
     };
@@ -131,7 +145,12 @@ export default {
         : apis[this.location.region].getDeparturesFrom;
     },
     tracks() {
-      const tracks = [].concat(this.trips).map(({ track }) => track);
+      const tracks = []
+        .concat(this.trips)
+        .map(({ track }) => track)
+        .map(String)
+        .filter((x) => x);
+
       return Array.from(new Set(tracks)).sort(sortNumbersAndLetters);
     },
     destinations() {
@@ -240,7 +259,7 @@ export default {
         this.lastTimeoutId = setTimeout(() => {
           this.getDepartures();
           this.refreshDepartures();
-        }, 20000);
+        }, 30000);
       });
     },
     getDepartures() {
@@ -249,12 +268,26 @@ export default {
         .then((resp) => {
           this.trips = resp.map(getDestinationVia);
           console.log('this.trips', this.trips);
+          if (this.filteredTrips.length) {
+            const { name, direction, timestamp } = this.filteredTrips[0];
+            const inMinutes = Math.round(
+              (timestamp - Date.now()) / (1000 * 60)
+            );
+            if (this.voice) {
+              speak(
+                `${name} mot ${direction}, avgår ${
+                  inMinutes ? 'om ' + inMinutes + ' minuter' : 'nu'
+                }`
+              );
+            }
+          }
           this.isLoading = false;
         })
         .catch((reason) => {
           console.warn('reason', reason);
           this.isLoading = false;
         });
+
       apis[this.location.region]
         .getTrafficSituations(this.location.id, 'stoparea')
         .then((situations) => {
@@ -264,22 +297,28 @@ export default {
   }
 };
 </script>
-<style>
-.station-info {
+<style module>
+.stationInfo {
 }
-.station-info__form {
+.form {
   padding: 0.5em;
 }
-.station-info__trips-filter {
+.tripsFilter {
   display: flex;
   margin: 0 0 0.5em;
   list-style-type: none;
   padding-left: 0;
 }
-.station-info__trips-filter li {
+.tripsFilter li {
   margin-left: 0.5em;
 }
-.station-info__situations {
+.voice {
+  cursor: pointer;
+}
+.voiceCheckbox {
+  display: none;
+}
+.situations {
   background-color: var(--brand-color);
   color: var(--brand-text-color);
   line-height: 1.4em;
