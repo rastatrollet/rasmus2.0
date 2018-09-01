@@ -166,5 +166,5 @@ export default {
   findStops,
   init() {
     return Promise.resolve();
-  },
+  }
 };
