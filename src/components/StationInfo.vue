@@ -18,9 +18,7 @@
       v-if="location.id"
       :class="$style.tripsFilter">
       <li>
-        <font-awesome 
-          class="only-mobile" 
-          icon="filter"/>
+        <font-awesome class="only-mobile" icon="filter"/>
         <span class="only-desktop">Filter:</span>
       </li>
       <li>
@@ -145,13 +143,13 @@ export default {
         : apis[this.location.region].getDeparturesFrom;
     },
     tracks() {
-      const tracks = []
-        .concat(this.trips)
+      const tracks = [].concat(this.trips)
         .map(({ track }) => track)
         .map(String)
         .filter((x) => x);
 
-      return Array.from(new Set(tracks)).sort(sortNumbersAndLetters);
+      return Array.from(new Set(tracks))
+        .sort(sortNumbersAndLetters);
     },
     destinations() {
       const destinations = []
@@ -270,15 +268,16 @@ export default {
           console.log('this.trips', this.trips);
           if (this.filteredTrips.length) {
             const { name, direction, timestamp } = this.filteredTrips[0];
-            const inMinutes = Math.round(
-              (timestamp - Date.now()) / (1000 * 60)
-            );
+            const inMinutes = Math.ceil((timestamp - Date.now()) / (1000 * 60));
             if (this.voice) {
-              speak(
-                `${name} mot ${direction}, avgår ${
-                  inMinutes > 0 ? 'om ' + inMinutes + ' minuter' : 'nu'
-                }`
-              );
+              if (inMinutes <= 0) {
+                speak(`${name} mot ${direction}, avgår nu`);
+              } else if (inMinutes === 1) {
+                speak(`${name} mot ${direction}, avgår om en minut`);
+              } else if (inMinutes > 1 && inMinutes <= 60) {
+                speak(`${name} mot ${direction}, avgår om ${inMinutes} minuter`);
+              }
+              speak(`${name} mot ${direction}, avgår om mer än en timma`);
             }
           }
           this.isLoading = false;
@@ -298,8 +297,7 @@ export default {
 };
 </script>
 <style module>
-.stationInfo {
-}
+.stationInfo {}
 .form {
   padding: 0.5em;
 }
