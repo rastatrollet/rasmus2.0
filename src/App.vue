@@ -1,15 +1,15 @@
 <template>
   <div id="app">
     <div class="top-nav">
-      <Tabs 
-        :tabs="tabs" 
-        :on-click="changeTab" 
+      <Tabs
+        :tabs="tabs"
+        :on-click="changeTab"
         :current-tab="currentTab" />
       <DigitalClock />
     </div>
     <div class="container">
-      <component 
-        :is="currentTabComponent.componentName" 
+      <component
+        :is="currentTabComponent.componentName"
         v-bind="currentTabComponent.props"/>
     </div>
   </div>
@@ -21,6 +21,7 @@ import { mapState, mapMutations } from 'vuex';
 import DigitalClock from './components/DigitalClock.vue';
 import StationInfo from './components/StationInfo.vue';
 import Tabs from './components/Tabs.vue';
+import MapComponent from './components/Map.vue';
 
 const baseTab = {
   icon: '',
@@ -52,6 +53,7 @@ const components = [
 export default {
   name: 'App',
   components: {
+    MapComponent,
     Tabs,
     DigitalClock,
     StationInfo
@@ -121,5 +123,15 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.container {
+  height: calc(100% - 36px);
 }
 </style>

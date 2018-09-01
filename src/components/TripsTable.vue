@@ -3,19 +3,19 @@
     <table>
       <thead>
         <tr>
+          <th>{{ metaLabel }}</th>
           <th>Tid</th>
           <th>{{ fromToLabel }}</th>
           <th>Ny tid</th>
           <th>{{ trackLabel }} {{ filter.track }}</th>
-          <th>{{ metaLabel }}</th>
         </tr>
       </thead>
       <tbody>
         <tr v-show="isLoading">
           <td colspan="5">
             Hämtar trafikdata...
-            <font-awesome 
-              icon="spinner" 
+            <font-awesome
+              icon="spinner"
               spin />
           </td>
         </tr>
@@ -24,6 +24,11 @@
           :key="trip.id"
           :class="{ 'trip--cancelled': trip.cancelled }"
           @click="getJourneyDetails(trip)">
+          <td
+            :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
+            class="trip-line">
+            {{ trip.sname }}
+          </td>
           <td class="trip-time">{{ trip.time }}</td>
           <td class="trip-dest">
             <div>
@@ -37,11 +42,6 @@
           </td>
           <td class="trip-time is-late"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
           <td class="trip-track">{{ trip.track }}</td>
-          <td
-            :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
-            class="trip-line">
-            {{ trip.sname }}
-          </td>
         </tr>
         <tr v-show="!isLoading && from && trips.length === 0">
           <td colspan="5">Inga resor att visa</td>

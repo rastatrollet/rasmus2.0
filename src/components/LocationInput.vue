@@ -33,7 +33,7 @@
         @keyup="handleKeyInput">
         <button @click.prevent="getNearbyStops">
           <font-awesome icon="crosshairs"/>
-          <span v-if="!fetchingNearbyStops">Använd min plats</span>
+          <span v-if="!fetchingNearbyStops"> Använd min plats</span>
           <span v-if="fetchingNearbyStops">
             Hämtar närliggande hållplatser
             <font-awesome

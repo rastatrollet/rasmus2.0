@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-const locationAPIs = ['VT', 'TV'];
+const locationAPIs = ['SL', 'VT', 'TV'];
 
 export default new Vuex.Store({
   state: {
@@ -11,7 +11,9 @@ export default new Vuex.Store({
   },
   mutations: {
     toggleApi(state) {
-      state.locationApi = locationAPIs.find((api) => api !== state.locationApi);
+      const currentIndex = locationAPIs.indexOf(state.locationApi);
+      const nextIndex = (currentIndex + 1) % locationAPIs.length;
+      state.locationApi = locationAPIs[nextIndex];
     }
   },
   actions: {}

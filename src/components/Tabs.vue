@@ -20,7 +20,7 @@
 </template>
 <script>
 export default {
-  name: 'TabsComp',
+  name: 'TabsComponent',
   props: {
     tabs: {
       type: Array,
