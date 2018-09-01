@@ -1,6 +1,6 @@
 let positionPromise;
 
-function transformPosition({ coords }) {
+export function transformPosition({ coords }) {
   return {
     lat: coords.latitude,
     lng: coords.longitude

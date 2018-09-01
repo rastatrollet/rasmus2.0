@@ -28,13 +28,17 @@ function getClosestStop(pos) {
 
 function findStops(term) {
   const key = '76ea4bd8c1014b6490418de04bfd0b32';
-  const url = `typeahead.json?key=${key}&searchstring=${encodeURIComponent(term)}&maxresults=5`;
+  const url = `typeahead.json?key=${key}&searchstring=${encodeURIComponent(
+    term
+  )}&maxresults=5`;
   return makeRequest(url)
     .then((json) => asArray(json.ResponseData))
     .then((stops) =>
       stops
         .filter((stop, idx) => {
-          const firstIndex = stops.findIndex(({ SiteId }) => SiteId === stop.SiteId);
+          const firstIndex = stops.findIndex(
+            ({ SiteId }) => SiteId === stop.SiteId
+          );
           return firstIndex >= idx;
         })
         .slice(0, 5)
@@ -43,7 +47,8 @@ function findStops(term) {
           name: stop.Name,
           id: stop.SiteId,
           region: 'SL'
-        })))
+        }))
+    );
 }
 
 const vehicules = {
@@ -80,7 +85,8 @@ function getDeparturesFrom(siteId) {
       region: 'SL',
       href: '#',
       isLate: trip.TimeTabledDateTime !== trip.ExpectedDateTime
-    })))
+    }))
+  );
 }
 
 const lineNumberColors = {
@@ -126,12 +132,14 @@ function fetchMiddleware(response) {
 }
 
 function asArray(arg) {
-  return arg && [].concat(arg) || [];
+  return (arg && [].concat(arg)) || [];
 }
 
 function makeRequest(path) {
   const url = `${baseUrl}/${path}`;
-  const requestUrl = `https://request-proxy.herokuapp.com/?url=${encodeURIComponent(url)}`
+  const requestUrl = `https://request-proxy.herokuapp.com/?url=${encodeURIComponent(
+    url
+  )}`;
   return fetch(requestUrl, fetchOptions)
     .then(fetchMiddleware)
     .catch((err) => console.error(err));

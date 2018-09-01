@@ -15,9 +15,9 @@ const icons = {
 const getIcon = (prodtype) => {
   return L.icon({
     iconUrl: icons[prodtype],
-    iconSize:     [20, 20], // size of the icon
-    iconAnchor:   [10, 10], // point of the icon which will correspond to marker's location
-    popupAnchor:  [0, -16] // point from which the popup should open relative to the iconAnchor
+    iconSize: [20, 20], // size of the icon
+    iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
+    popupAnchor: [0, -16] // point from which the popup should open relative to the iconAnchor
   });
 };
 
@@ -31,7 +31,8 @@ function initMap({ rootElement, position, zoom = 13 }) {
   map = L.map(rootElement).setView([lat, lng], zoom);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+    attribution:
+      'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
   }).addTo(map);
 
@@ -54,7 +55,7 @@ function centerOnMe({ lat, lng }) {
 }
 
 function drawPolyLine(latlngs, color = 'red') {
-  const polyline = L.polyline(latlngs, {color}).addTo(map);
+  const polyline = L.polyline(latlngs, { color }).addTo(map);
   // zoom the map to the polyline
   map.fitBounds(polyline.getBounds());
   return polyline;
@@ -64,12 +65,16 @@ const createVehicleMarker = (vehicle) => {
   const { x, y, name, prodclass } = vehicle;
   const delay = parseInt(vehicle.delay, 10);
   const isDelayed = delay > 0;
-  const delayedText = isDelayed ?
-    `<p style="margin: .5em 0 0;">${delay} ${delay > 1 ? 'minuter' : 'minut'} försenad.</p>` :
-    '';
+  const delayedText = isDelayed
+    ? `<p style="margin: .5em 0 0;">${delay} ${
+        delay > 1 ? 'minuter' : 'minut'
+      } försenad.</p>`
+    : '';
 
   const content = `
-    <div class="marker-info" style="background-color: ${vehicle.bcolor}; color: ${vehicle.lcolor}; padding: .5em;">
+    <div class="marker-info" style="background-color: ${
+      vehicle.bcolor
+    }; color: ${vehicle.lcolor}; padding: .5em;">
       <h3 style="margin: .2em 0;">${name}</h3>
       <small>(${vehicle.gid})</small>
       ${delayedText}
@@ -77,16 +82,20 @@ const createVehicleMarker = (vehicle) => {
   `;
 
   const { lat, lng } = fromWGS84(y, x);
-  const marker = createMarker([lat, lng], {
-    icon: getIcon(prodclass),
-    title: vehicle.gid
-  }, content);
+  const marker = createMarker(
+    [lat, lng],
+    {
+      icon: getIcon(prodclass),
+      title: vehicle.gid
+    },
+    content
+  );
 
   return marker;
 };
 
 function updateVehicleMarkerPosition(marker, { y, x }) {
-  const {lat, lng} = fromWGS84(y, x);
+  const { lat, lng } = fromWGS84(y, x);
   marker.setLatLng([lat, lng]);
 }
 
