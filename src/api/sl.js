@@ -89,6 +89,19 @@ function getDeparturesFrom(siteId) {
   );
 }
 
+function getTrafficSituations(siteId) {
+  const key = '367eaa6107874c6e86bd985872f9cd46';
+  const url = `deviations.json?key=${key}&siteId=${siteId}`;
+  return makeRequest(url)
+    .then((json) => asArray(json.ResponseData))
+    .then((json) => {
+      console.log('TrafficSituations', json);
+      return {
+        messages: json.map(({ Details }) => Details)
+      };
+    });
+}
+
 const lineNumberColors = {
   '7': 'gray',
   '10': 'blue',
@@ -149,13 +162,9 @@ export default {
   getClosestStop,
   getClosestStops,
   getDeparturesFrom,
+  getTrafficSituations,
   findStops,
   init() {
     return Promise.resolve();
   },
-  getTrafficSituations() {
-    return Promise.resolve({
-      messages: []
-    });
-  }
 };
