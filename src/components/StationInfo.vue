@@ -276,7 +276,7 @@ export default {
             if (this.voice) {
               speak(
                 `${name} mot ${direction}, avgår ${
-                  inMinutes ? 'om ' + inMinutes + ' minuter' : 'nu'
+                  inMinutes > 0 ? 'om ' + inMinutes + ' minuter' : 'nu'
                 }`
               );
             }
