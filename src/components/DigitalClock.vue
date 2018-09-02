@@ -68,7 +68,7 @@ export default {
   font-weight: bold;
   padding: 0.5em 1em;
 }
-@media screen and (min-width: 450px) {
+@media (min-width: 450px) {
   .digital-clock {
     display: flex;
   }

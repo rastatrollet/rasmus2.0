@@ -1,48 +1,66 @@
 <template>
-  <aside :class="[$style.journeyDetails, { [$style.display]: isShowing }]">
-    <button
-      :class="$style.closeBtn"
-      @click.prevent="hide">&cross;</button>
-    <p :class="$style.heading">Detaljer</p>
-    <div :class="$style.stopList">
+  <aside :class="[$style.journeyDetails, { [$style.display]: showJourneyDetails }]">
+    <header :class="$style.header">
+      <h2 :class="$style.heading">Detaljer</h2>
+      <span>
+        {{ journey.name }} mot {{ journey.direction }}
+        <font-awesome
+          icon="spinner"
+          spin
+          v-if="loadingJourneyDetails"/>
+      </span>
+      <button
+        :class="$style.closeBtn"
+        @click.prevent="setShowJourneyDetails(false)">&cross;</button>
+    </header>
+    <div
+      :class="$style.stopList"
+      v-if="!loadingJourneyDetails">
       <div
-        :class="$style.stop"
+        v-for="stop of stops"
         :key="stop.depTime + stop.name"
-        v-for="stop of selectedJourney">
+        :class="[$style.stop, { [$style.stopPassed]: stop.didPass }]">
         <div :class="$style.stopDotCell"><div :class="$style.stopDot"/></div>
         <div :class="$style.stopTime">
           {{ stop.rtDepTime || stop.depTime }}
         </div>
-        <div :class="$style.stopName">{{ stop.name }}</div>
+        <div :class="$style.stopName">{{ stop.name }} {{ stop.didPass }}</div>
         <div :class="$style.stopTrack">{{ stop.track }}</div>
       </div>
     </div>
   </aside>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'JourneyDetails',
-  data() {
-    return {
-      isShowing: false
-    };
-  },
   computed: {
-    ...mapState(['selectedJourney', 'loadingJourneyDetails'])
-  },
-  watch: {
-    selectedJourney(value) {
-      if (value) {
-        this.isShowing = value;
-      }
+    ...mapState(['showJourneyDetails', 'loadingJourneyDetails']),
+    journey() {
+      const journey = this.$store.state.selectedJourney;
+      if (!journey) return {};
+      const journeyDir = [].concat(journey.Direction);
+      return {
+        name: [].concat(journey.JourneyName)[0].name,
+        direction: journeyDir[journeyDir.length - 1].$
+      };
+    },
+    stops() {
+      const journey = this.$store.state.selectedJourney;
+      if (!journey) return [];
+      const now = Date.now();
+      return journey.Stop.map((stop) => {
+        const departed = new Date(`${stop.depDate}T${stop.depTime}`).getTime();
+        return {
+          ...stop,
+          didPass: departed < now
+        };
+      });
     }
   },
   methods: {
-    hide() {
-      this.isShowing = false;
-    }
+    ...mapMutations(['setShowJourneyDetails'])
   }
 };
 </script>
@@ -51,32 +69,33 @@ export default {
   background: white;
   color: var(--dark-text-color);
   display: none;
-  padding: 0.5em;
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-}
-@media screen and (min-width: 650px) {
-  .journeyDetails {
-    position: static;
-  }
 }
 .display {
   display: block;
 }
+
+.header {
+  background: var(--brand-color);
+  border-left: 1px solid var(--brand-text-color);
+  color: var(--brand-text-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1em;
+}
+.heading {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0;
+}
 .closeBtn {
-  border: 0;
-  border-radius: 0;
+  background: transparent;
+  border: none;
+  color: var(--brand-text-color);
   cursor: pointer;
   font-size: 1em;
-  padding: 1em;
-  float: right;
-}
-
-.heading {
-  padding: 0 1em;
+  padding: 0.5em 1em;
 }
 
 .stopList {
@@ -131,6 +150,13 @@ export default {
 }
 .stop:last-child .stopDot:after {
   height: 0;
+}
+.stopPassed .stopDot {
+  background: blue;
+}
+.stopPassed .stopDot:before,
+.stopPassed .stopDot:after {
+  background: blue;
 }
 
 .stopTime {

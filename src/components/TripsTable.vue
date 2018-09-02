@@ -1,7 +1,7 @@
 <template>
-  <div :class="['trips-table', `trips-table--${locationApi}`]">
-    <table>
-      <thead>
+  <div :class="[$style.tripsTable, $style[locationApi], { [$style.showingJourneyDetails]: showJourneyDetails }]">
+    <table :class="$style.table">
+      <thead :class="$style.tableHead">
         <tr>
           <th>{{ metaLabel }}</th>
           <th>Tid</th>
@@ -10,7 +10,7 @@
           <th>{{ trackLabel }} {{ filter.track }}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody :class="$style.tableBody">
         <tr v-show="isLoading">
           <td colspan="5">
             Hämtar trafikdata...
@@ -22,26 +22,26 @@
         <tr
           v-for="trip in trips"
           :key="trip.id"
-          :class="['trip', { 'trip--cancelled': trip.cancelled }]"
+          :class="[$style.trip, { [$style.cancelled]: trip.cancelled }]"
           @click="getJourneyDetails(trip)">
           <td
             :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
-            class="trip-line">
+            :class="$style.tripLine">
             {{ trip.sname }}
           </td>
-          <td class="trip-time">{{ trip.time }}</td>
-          <td class="trip-dest">
+          <td :class="$style.tripTime">{{ trip.time }}</td>
+          <td :class="$style.tripDest">
             <div>
-              <span class="trip-dest-name">
+              <span :class="$style.tripName">
                 {{ trip.direction || trip.origin }}
               </span>
               <span v-if="trip.isAffected">&nbsp;⛔️</span>
               <span v-if="trip.cancelled">&nbsp;⚠️ Färd inställd</span>
             </div>
-            <div class="trip-dest-via"><small v-if="trip.via"> via {{ trip.via }}</small></div>
+            <div :class="$style.tripVia"><small v-if="trip.via"> via {{ trip.via }}</small></div>
           </td>
-          <td class="trip-time is-late"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
-          <td class="trip-track">{{ trip.track }}</td>
+          <td :class="[$style.tripTime, $style.isLate]"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
+          <td :class="$style.tripTrack">{{ trip.track }}</td>
         </tr>
         <tr v-show="!isLoading && from && trips.length === 0">
           <td colspan="5">Inga resor att visa</td>
@@ -80,7 +80,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['locationApi']),
+    ...mapState(['locationApi', 'showJourneyDetails']),
     metaLabel() {
       return apiDict[this.locationApi].sname;
     },
@@ -93,73 +93,69 @@ export default {
   }
 };
 </script>
-<style>
-.trips-table {
+<style module>
+.tripsTable {
   width: 100%;
 }
-.trips-table table {
+
+.showingJourneyDetails {
+  display: none;
+}
+@media (min-width: 900px) {
+  .showingJourneyDetails {
+    display: block;
+  }
+}
+
+.table {
   background-color: white;
   border: 0;
   border-collapse: collapse;
   color: rgb(0, 57, 77);
   width: 100%;
 }
-.trips-table thead,
-.trips-table thead select {
+
+.table td,
+.table th {
+  padding: 0.5em;
+}
+
+.tableHead {
   background-color: var(--brand-color);
   color: var(--brand-text-color);
 }
-
-.trips-table thead select {
-  -webkit-appearance: none;
-  font-size: 1em;
-  border: 0;
-}
-.trips-table thead select:focus {
-  outline: none;
-}
-
-.trips-table th {
+.tableHead th {
   font-weight: normal;
   text-align: left;
-}
-
-.trips-table tbody tr:nth-child(even) {
-  background: #eee;
-}
-
-.trips-table td,
-.trips-table th {
-  padding: 0.5em;
 }
 
 .trip {
   cursor: pointer;
 }
+.trip:nth-child(even) {
+  background: #eee;
+}
 
-.trips-table .trip-line {
+.tripLine {
   padding: 0.5em;
   text-align: center;
   width: 50px;
 }
 
-.trips-table .trip--cancelled .trip-dest-name {
+.cancelled .tripName {
   text-decoration: line-through;
 }
-.trips-table .trip-dest {
-}
-.trips-table .trip-dest-name {
+
+.tripName {
   font-weight: 500;
 }
-.trips-table .trip-dest-via {
-}
-.trips-table .trip-time {
+.tripTime {
   width: 60px;
 }
-.trips-table .trip-time.is-late {
+.isLate {
   color: var(--brand-color);
 }
-.trips-table .trip-track {
+.tripTrack {
   text-align: center;
   width: 50px;
 }

@@ -91,7 +91,7 @@ export default {
   display: none;
 }
 
-@media screen and (min-width: 650px) {
+@media (min-width: 900px) {
   .onlyMobile {
     display: none;
   }

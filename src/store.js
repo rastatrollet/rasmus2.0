@@ -7,9 +7,11 @@ Vue.use(Vuex);
 const locationAPIs = ['SL', 'VT', 'TV'];
 
 export default new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
   state: {
     locationApi: 'VT',
     selectedJourney: null,
+    showJourneyDetails: false,
     loadingJourneyDetails: false
   },
   mutations: {
@@ -21,6 +23,9 @@ export default new Vuex.Store({
     selectJourney(state, journey) {
       state.selectedJourney = journey;
     },
+    setShowJourneyDetails(state, value) {
+      state.showJourneyDetails = value;
+    },
     setLoadingJourneyDetails(state, value) {
       state.loadingJourneyDetails = value;
     }
@@ -31,11 +36,12 @@ export default new Vuex.Store({
         return Promise.resolve();
       }
       console.log('get details');
+      commit('setShowJourneyDetails', true);
       commit('setLoadingJourneyDetails', true);
       api.VT.getJourneyDetail(trip.JourneyDetailRef.ref)
         .then((resp) => {
-          console.log('got details');
-          commit('selectJourney', resp.Stop);
+          console.log('got details', resp);
+          commit('selectJourney', resp);
           commit('setLoadingJourneyDetails', false);
         })
         .catch((reason) => {
