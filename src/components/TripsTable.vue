@@ -22,7 +22,7 @@
         <tr
           v-for="trip in trips"
           :key="trip.id"
-          :class="{ 'trip--cancelled': trip.cancelled }"
+          :class="['trip', { 'trip--cancelled': trip.cancelled }]"
           @click="getJourneyDetails(trip)">
           <td
             :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 import { apiDict } from '../api';
 
@@ -89,12 +89,7 @@ export default {
     }
   },
   methods: {
-    getJourneyDetails(trip) {
-      if (!trip.JourneyDetailRef) return;
-      window.VT.getJourneyDetail(trip.JourneyDetailRef.ref).then((resp) => {
-        window.tripDetails = resp.Stop;
-      });
-    }
+    ...mapActions(['getJourneyDetails'])
   }
 };
 </script>
@@ -136,6 +131,10 @@ export default {
 .trips-table td,
 .trips-table th {
   padding: 0.5em;
+}
+
+.trip {
+  cursor: pointer;
 }
 
 .trips-table .trip-line {

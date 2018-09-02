@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.stationInfo">
+  <section :class="$style.stationInfo">
     <div :class="$style.form">
       <p v-if="!initialized">
         Initierar... <font-awesome
@@ -73,38 +73,44 @@
         </label>
       </li>
     </ul>
-    <TripsTable
-      :is-loading="isLoading"
-      :trips="filteredTrips"
-      :filter="filter"
-      :from="location.name"
-      :from-to-label="fromToLabel" />
-    <div
+    <div :class="$style.content">
+      <TripsTable
+        :is-loading="isLoading"
+        :trips="filteredTrips"
+        :filter="filter"
+        :from="location.name"
+        :from-to-label="fromToLabel" />
+      <JourneyDetails />
+    </div>
+    <footer
       v-if="location.name"
       :class="$style.situations">
       <p
         v-for="(msg, index) in info.messages"
         :key="index">{{ msg }}</p>
       <p v-if="info.messages.length === 0">Inga trafikstörningar.</p>
-    </div>
-  </div>
+    </footer>
+  </section>
 </template>
 <script>
 import { mapState } from 'vuex';
 
 import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
 import getDestinationVia from '../util/getDestinationVia';
-import LocationInput from './LocationInput.vue';
-import TripsTable from './TripsTable.vue';
 import { speak } from '../util/speechSynthesis';
 import apis from '../api';
 import googleDrive from '../api/googleDrive';
+
+import JourneyDetails from './JourneyDetails.vue';
+import LocationInput from './LocationInput.vue';
+import TripsTable from './TripsTable.vue';
 
 export default {
   name: 'StationInfo',
   components: {
     LocationInput,
-    TripsTable
+    TripsTable,
+    JourneyDetails
   },
   props: {
     arrivals: {
@@ -200,7 +206,6 @@ export default {
       }
     },
     isLive(value) {
-      console.log('isLive', value);
       if (value) {
         this.refreshDepartures();
       } else {
@@ -248,7 +253,6 @@ export default {
       }
     },
     setFrom(location) {
-      console.log('set location', location);
       this.location = location || {};
       this.getDepartures();
       this.refreshDepartures();
@@ -321,6 +325,9 @@ export default {
 }
 .voiceCheckbox {
   display: none;
+}
+.content {
+  position: relative;
 }
 .situations {
   background-color: var(--brand-color);
