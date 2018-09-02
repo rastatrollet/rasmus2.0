@@ -327,6 +327,7 @@ export default {
   display: none;
 }
 .content {
+  display: flex;
   position: relative;
 }
 .situations {

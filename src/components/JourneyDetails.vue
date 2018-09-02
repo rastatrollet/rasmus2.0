@@ -3,11 +3,11 @@
     <button
       :class="$style.closeBtn"
       @click.prevent="hide">&cross;</button>
-    <h2>Detaljer</h2>
+    <p :class="$style.heading">Detaljer</p>
     <div :class="$style.stopList">
       <div
         :class="$style.stop"
-        :key="stop.name"
+        :key="stop.depTime + stop.name"
         v-for="stop of selectedJourney">
         <div :class="$style.stopDotCell"><div :class="$style.stopDot"/></div>
         <div :class="$style.stopTime">
@@ -49,6 +49,7 @@ export default {
 <style module>
 .journeyDetails {
   background: white;
+  color: var(--dark-text-color);
   display: none;
   padding: 0.5em;
   position: absolute;
@@ -56,6 +57,11 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+}
+@media screen and (min-width: 650px) {
+  .journeyDetails {
+    position: static;
+  }
 }
 .display {
   display: block;
@@ -65,16 +71,21 @@ export default {
   border-radius: 0;
   cursor: pointer;
   font-size: 1em;
-  padding: 0.5em;
+  padding: 1em;
   float: right;
 }
+
+.heading {
+  padding: 0 1em;
+}
+
 .stopList {
 }
 .stop {
   display: flex;
   align-items: stretch;
   line-height: 2em;
-  padding: 0 1em;
+  padding: 0 1em 0 0.5em;
 }
 .stop > div:not(:first-child) {
   border-bottom: 1px solid lightgray;
@@ -83,6 +94,9 @@ export default {
 .stop > div:last-child {
   padding-right: 0;
 }
+.stop:last-child > div {
+  border-bottom: none;
+}
 
 .stopDotCell {
   flex-shrink: 0;
@@ -90,6 +104,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 0.5em;
 }
 .stopDot {
   background: lightblue;
@@ -103,7 +118,7 @@ export default {
   display: block;
   content: '';
   width: 4px;
-  height: 1em;
+  height: 50%;
   position: absolute;
   top: 0;
   left: calc(50% - 2px);
@@ -111,6 +126,13 @@ export default {
 .stopDot:after {
   top: 50%;
 }
+.stop:first-child .stopDot:before {
+  height: 0;
+}
+.stop:last-child .stopDot:after {
+  height: 0;
+}
+
 .stopTime {
   flex-basis: 60px;
   flex-shrink: 0;

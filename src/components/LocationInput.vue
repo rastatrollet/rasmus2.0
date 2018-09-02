@@ -18,6 +18,7 @@
         @keyup.enter="selectFirstSuggestion"
         @keydown="handleKeyInput">
       <font-awesome
+        class="location-input__spinner"
         icon="spinner"
         :spin="isLoading"
         v-if="isLoading"
@@ -287,10 +288,10 @@ export default {
   outline: none;
 }
 
-.location-input .fa {
+.location-input__spinner {
   position: absolute;
-  line-height: 2.2em;
-  right: 1.7em;
+  right: 0.5em;
+  top: 25%;
 }
 
 .location-input__suggestions {
