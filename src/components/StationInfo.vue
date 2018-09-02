@@ -280,8 +280,9 @@ export default {
                 speak(
                   `${name} mot ${direction}, avgår om ${inMinutes} minuter`
                 );
+              } else {
+                speak(`${name} mot ${direction}, avgår om mer än en timma`);
               }
-              speak(`${name} mot ${direction}, avgår om mer än en timma`);
             }
           }
           this.isLoading = false;
