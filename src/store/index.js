@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import api from './api';
+
+import apis from '../api';
+import user from './user';
 
 Vue.use(Vuex);
 
@@ -13,6 +15,11 @@ export default new Vuex.Store({
     selectedJourney: null,
     showJourneyDetails: false,
     loadingJourneyDetails: false
+  },
+  getters: {
+    api({ locationApi }) {
+      return apis[locationApi];
+    }
   },
   mutations: {
     toggleApi(state) {
@@ -38,7 +45,7 @@ export default new Vuex.Store({
       console.log('get details');
       commit('setShowJourneyDetails', true);
       commit('setLoadingJourneyDetails', true);
-      api.VT.getJourneyDetail(trip.JourneyDetailRef.ref)
+      apis.VT.getJourneyDetail(trip.JourneyDetailRef.ref)
         .then((resp) => {
           console.log('got details', resp);
           commit('selectJourney', resp);
@@ -49,5 +56,8 @@ export default new Vuex.Store({
           commit('setLoadingJourneyDetails', false);
         });
     }
+  },
+  modules: {
+    user
   }
 });

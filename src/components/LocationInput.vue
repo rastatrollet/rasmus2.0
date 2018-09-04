@@ -20,8 +20,8 @@
       <font-awesome
         class="location-input__spinner"
         icon="spinner"
-        :spin="isLoading"
-        v-if="isLoading"
+        :spin="isFetching"
+        v-if="isFetching"
         aria-hidden="true"/>
     </label>
 
@@ -29,29 +29,27 @@
       v-show="show"
       class="location-input__suggestions">
       <li
-        v-if="nearbyStations.length === 0"
+        v-if="showUseMyLocation"
         class="location-input__suggestion"
         @keyup="handleKeyInput">
         <button @click.prevent="getNearbyStops">
           <font-awesome icon="crosshairs"/>
-          <span v-if="!fetchingNearbyStops"> Använd min plats</span>
-          <span v-if="fetchingNearbyStops">
-            Hämtar närliggande hållplatser
-            <font-awesome
-              icon="spinner"
-              spin/>
-          </span>
+          <span> {{ nearbyStopsMessage }} </span>
+          <font-awesome
+            v-if="isLoadingNearbyStops"
+            icon="spinner"
+            spin/>
         </button>
       </li>
       <li
-        v-for="station in nearbyStations"
-        v-if="suggestions.length === 0 && !searchText"
-        :key="station.name"
+        v-for="stop in nearbyStops"
+        v-if="showNearbyStops"
+        :key="stop.name"
         class="location-input__suggestion"
         @keyup="handleKeyInput">
         <button
-          @click.prevent="onSelect(station)"
-          @keyup.space="onSelect(station)">{{ station.name }}</button>
+          @click.prevent="onSelect(stop)"
+          @keyup.space="onSelect(stop)">{{ stop.name }}</button>
       </li>
       <li
         v-if="suggestions.length === 0 && searchText && !isFetching"
@@ -71,11 +69,9 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
-import { getPositionPromise } from '../util/geoLocation';
 import debounce from '../util/debounce';
-import apis from '../api';
 
 export default {
   name: 'LocationInput',
@@ -84,19 +80,7 @@ export default {
       type: String,
       default: ''
     },
-    location: {
-      type: Object,
-      default: null
-    },
     disabled: {
-      type: Boolean,
-      default: false
-    },
-    parentLoading: {
-      type: Boolean,
-      default: false
-    },
-    displayNearbyStops: {
       type: Boolean,
       default: false
     }
@@ -105,23 +89,30 @@ export default {
     return {
       show: false,
       isFetching: false,
-      fetchingNearbyStops: false,
       searchText: '',
-      suggestions: [],
-      nearbyStations: []
+      suggestions: []
     };
   },
   computed: {
-    ...mapState(['locationApi']),
-    isLoading() {
-      return this.isFetching || this.parentLoading;
+    ...mapGetters(['api']),
+    ...mapGetters({ isLoadingNearbyStops: 'user/isLoading' }),
+    ...mapState('user', ['location', 'nearbyStops', 'nearbyStopsError']),
+    nearbyStopsMessage() {
+      if (this.isLoadingNearbyStops) return 'Hämtar närliggande hållplatser';
+      return this.nearbyStopsError || 'Använd min plats';
+    },
+    showUseMyLocation() {
+      return !this.searchText && !this.nearbyStops.length;
+    },
+    showNearbyStops() {
+      return !this.searchText && this.nearbyStops.length;
     },
     hasSuggestions() {
-      return this.suggestions.length || this.nearbyStations.length;
+      return this.suggestions.length || this.nearbyStops.length;
     }
   },
   watch: {
-    locationApi(newVal, oldVal) {
+    api(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.suggestions = [];
         if (this.location && this.location.name) {
@@ -137,27 +128,7 @@ export default {
     this.debouncedGetSuggestions = debounce(this.getSuggestions, 350, this);
   },
   methods: {
-    getNearbyStops() {
-      this.nearbyStations = [];
-      this.fetchingNearbyStops = true;
-      getPositionPromise()
-        .then(apis[this.locationApi].getClosestStops)
-        .then((stations) => {
-          // only update nearbyStations promise resolves with correct data
-          if (
-            stations &&
-            stations.length &&
-            stations[0].region === this.locationApi
-          ) {
-            this.nearbyStations = stations || [];
-          }
-          this.fetchingNearbyStops = false;
-        })
-        .catch((reason) => {
-          console.error(reason);
-          this.fetchingNearbyStops = false;
-        });
-    },
+    ...mapActions('user', ['getUserLocation', 'getNearbyStops']),
     onInput({ target: { value } }) {
       if (!value) {
         this.suggestions = [];
@@ -167,22 +138,11 @@ export default {
       }
     },
     getSuggestions(value) {
-      return apis[this.locationApi].findStops(value).then((stops) => {
+      return this.api.findStops(value).then((stops) => {
         this.isFetching = false;
         this.suggestions = [].concat(stops);
         this.showDropDown();
       });
-    },
-    findNearestStop() {
-      this.isFetching = true;
-      getPositionPromise()
-        .then(apis[this.locationApi].getClosestStop)
-        .then((location) => {
-          if (location) this.onSelect(location);
-          this.show = false;
-          this.isFetching = false;
-          this.isLoading = false;
-        });
     },
     onSelect(suggestion) {
       console.log('onSelect', suggestion);

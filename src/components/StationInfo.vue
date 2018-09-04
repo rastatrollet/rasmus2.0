@@ -7,10 +7,7 @@
           spin/>
       </p>
       <LocationInput
-        :location="location"
-        :parent-loading="isLoading"
         :disabled="!initialized"
-        display-nearby-stops
         label="Hållplats"
         @set-location="setFrom" />
     </div>
@@ -18,8 +15,8 @@
       v-if="location.id"
       :class="$style.tripsFilter">
       <li>
-        <font-awesome 
-          class="only-mobile" 
+        <font-awesome
+          class="only-mobile"
           icon="filter"/>
         <span class="only-desktop">Filter:</span>
       </li>
