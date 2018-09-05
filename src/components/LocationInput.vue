@@ -20,8 +20,8 @@
       <font-awesome
         class="location-input__spinner"
         icon="spinner"
-        :spin="isFetching"
-        v-if="isFetching"
+        spin
+        v-if="isLoading"
         aria-hidden="true"/>
     </label>
 
@@ -52,12 +52,12 @@
           @keyup.space="onSelect(stop)">{{ stop.name }}</button>
       </li>
       <li
-        v-if="suggestions.length === 0 && searchText && !isFetching"
+        v-if="searchText && !stops.length  && !isLoading"
         class="location-input__suggestion">
         <button @click.prevent>Inga resultat för söktermen</button>
       </li>
       <li
-        v-for="suggestion in suggestions"
+        v-for="suggestion in stops"
         :key="suggestion.id"
         class="location-input__suggestion"
         @keyup="handleKeyInput">
@@ -75,6 +75,12 @@ import debounce from '../util/debounce';
 
 export default {
   name: 'LocationInput',
+  mounted() {
+    if (this.location) {
+      this.searchText = this.location.name;
+    }
+    this.debouncedFindStops = debounce(this.findStops, 350, this);
+  },
   props: {
     label: {
       type: String,
@@ -88,7 +94,6 @@ export default {
   data() {
     return {
       show: false,
-      isFetching: false,
       searchText: '',
       suggestions: []
     };
@@ -97,6 +102,7 @@ export default {
     ...mapGetters(['api']),
     ...mapGetters({ isLoadingNearbyStops: 'user/isLoading' }),
     ...mapState('user', ['location', 'nearbyStops', 'nearbyStopsError']),
+    ...mapState('stops', ['stops', 'isLoading']),
     nearbyStopsMessage() {
       if (this.isLoadingNearbyStops) return 'Hämtar närliggande hållplatser';
       return this.nearbyStopsError || 'Använd min plats';
@@ -108,52 +114,38 @@ export default {
       return !this.searchText && this.nearbyStops.length;
     },
     hasSuggestions() {
-      return this.suggestions.length || this.nearbyStops.length;
+      return this.stops.length || this.nearbyStops.length;
     }
   },
   watch: {
     api(newVal, oldVal) {
       if (newVal !== oldVal) {
-        this.suggestions = [];
         if (this.location && this.location.name) {
           this.debouncedGetSuggestions(this.location.name);
         }
       }
     }
   },
-  mounted() {
-    if (this.location) {
-      this.searchText = this.location.name;
-    }
-    this.debouncedGetSuggestions = debounce(this.getSuggestions, 350, this);
-  },
   methods: {
     ...mapActions('user', ['getUserLocation', 'getNearbyStops']),
+    ...mapActions('stops', ['findStops']),
     onInput({ target: { value } }) {
-      if (!value) {
-        this.suggestions = [];
-      } else {
-        this.isFetching = true;
-        this.debouncedGetSuggestions(value);
-      }
-    },
-    getSuggestions(value) {
-      return this.api.findStops(value).then((stops) => {
-        this.isFetching = false;
-        this.suggestions = [].concat(stops);
-        this.showDropDown();
-      });
+      this.debouncedFindStops(value);
+      // TODO: make it work
+      // .then((stops) => {
+      //   if (stops.length) this.showDropDown();
+      // });
     },
     onSelect(suggestion) {
       console.log('onSelect', suggestion);
       this.searchText = suggestion.name;
       this.$emit('set-location', suggestion);
       this.hideDropDown();
-      this.getSuggestions(suggestion.name).then(this.hideDropDown);
+      this.findStops(suggestion.name).then(this.hideDropDown);
     },
     selectFirstSuggestion() {
-      if (this.suggestions.length === 0) return;
-      this.onSelect(this.suggestions[0]);
+      if (this.stops.length === 0) return;
+      this.onSelect(this.stops[0]);
     },
     handleKeyInput(e) {
       const dict = {
@@ -203,7 +195,7 @@ export default {
   --left-offset: 80px;
   position: relative;
   line-height: 2em;
-  margin: 0.5em 0;
+  margin-top: 0.5em;
 }
 
 .location-input .nearby-stations {

@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 
 import apis from '../api';
 import user from './user';
+import trips from './trips';
+import stops from './stops';
 
 Vue.use(Vuex);
 
@@ -58,6 +60,8 @@ export default new Vuex.Store({
     }
   },
   modules: {
-    user
+    user,
+    trips,
+    stops
   }
 });

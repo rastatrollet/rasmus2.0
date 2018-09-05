@@ -11,65 +11,7 @@
         label="Hållplats"
         @set-location="setFrom" />
     </div>
-    <ul
-      v-if="location.id"
-      :class="$style.tripsFilter">
-      <li>
-        <font-awesome
-          class="only-mobile"
-          icon="filter"/>
-        <span class="only-desktop">Filter:</span>
-      </li>
-      <li>
-        <select v-model="filter.dest">
-          <option value="">{{ fromToLabel }}</option>
-          <option
-            v-for="dest in destinations"
-            :key="dest"
-            :value="dest">{{ dest }}</option>
-        </select>
-      </li>
-      <li>
-        <select v-model="filter.track">
-          <option value="">Läge</option>
-          <option
-            v-for="track in tracks"
-            :key="track"
-            :value="track">{{ track }}</option>
-        </select>
-      </li>
-      <li>
-        <select v-model="timeSpan">
-          <option value="">{{ arriveDepartLabel }} inom</option>
-          <option value="30">30 min</option>
-          <option value="60">1 timme</option>
-          <option value="120">2 timmar</option>
-          <option value="180">3 timmar</option>
-          <option value="360">6 timmar</option>
-          <option value="720">12 timmar</option>
-          <option value="1440">24 timmar</option>
-        </select>
-      </li>
-      <li class="only-desktop">
-        <label>
-          Live
-          <input
-            v-model="isLive"
-            type="checkbox"
-            name="live">
-        </label>
-      </li>
-      <li>
-        <label :class="$style.voice">
-          <font-awesome :icon="['fas', voice ? 'volume-up' : 'volume-off']"/>
-          <input
-            :class="$style.voiceCheckbox"
-            v-model="voice"
-            type="checkbox"
-            name="voice">
-        </label>
-      </li>
-    </ul>
+    <TripsFilter v-if="location.name"/>
     <div :class="$style.content">
       <TripsTable
         :is-loading="isLoading"
@@ -101,13 +43,15 @@ import googleDrive from '../api/googleDrive';
 import JourneyDetails from './JourneyDetails.vue';
 import LocationInput from './LocationInput.vue';
 import TripsTable from './TripsTable.vue';
+import TripsFilter from './TripsFilter.vue';
 
 export default {
   name: 'StationInfo',
   components: {
     LocationInput,
+    JourneyDetails,
     TripsTable,
-    JourneyDetails
+    TripsFilter
   },
   props: {
     arrivals: {
@@ -305,28 +249,16 @@ export default {
 <style module>
 .stationInfo {
 }
+
 .form {
   padding: 0.5em;
 }
-.tripsFilter {
-  display: flex;
-  margin: 0 0 0.5em;
-  list-style-type: none;
-  padding-left: 0;
-}
-.tripsFilter li {
-  margin-left: 0.5em;
-}
-.voice {
-  cursor: pointer;
-}
-.voiceCheckbox {
-  display: none;
-}
+
 .content {
   display: flex;
   position: relative;
 }
+
 .situations {
   background-color: var(--brand-color);
   color: var(--brand-text-color);
