@@ -52,7 +52,7 @@
           @keyup.space="onSelect(stop)">{{ stop.name }}</button>
       </li>
       <li
-        v-if="searchText && !stops.length  && !isLoading"
+        v-if="searchText && !stops.length && !isLoading"
         class="location-input__suggestion">
         <button @click.prevent>Inga resultat för söktermen</button>
       </li>
@@ -99,7 +99,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['api']),
+    ...mapGetters('api', ['api']),
     ...mapGetters({ isLoadingNearbyStops: 'user/isLoading' }),
     ...mapState('user', ['location', 'nearbyStops', 'nearbyStopsError']),
     ...mapState('stops', ['stops', 'isLoading']),
@@ -129,6 +129,7 @@ export default {
   methods: {
     ...mapActions('user', ['getUserLocation', 'getNearbyStops']),
     ...mapActions('stops', ['findStops']),
+    ...mapActions('trips', ['updateLocation']),
     onInput({ target: { value } }) {
       this.debouncedFindStops(value);
       // TODO: make it work
@@ -136,12 +137,13 @@ export default {
       //   if (stops.length) this.showDropDown();
       // });
     },
-    onSelect(suggestion) {
-      console.log('onSelect', suggestion);
-      this.searchText = suggestion.name;
-      this.$emit('set-location', suggestion);
+    onSelect(location) {
+      console.log('onSelect', location);
+      this.searchText = location.name;
+      // TODO: set location
+      this.updateLocation(location);
       this.hideDropDown();
-      this.findStops(suggestion.name).then(this.hideDropDown);
+      this.findStops(location.name).then(this.hideDropDown);
     },
     selectFirstSuggestion() {
       if (this.stops.length === 0) return;

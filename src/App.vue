@@ -63,12 +63,12 @@ export default {
     };
   },
   computed: {
-    ...mapState(['locationApi']),
+    ...mapState({ apiName: ({ api }) => api.name }),
     tabs() {
       return [
         {
           ...baseTab,
-          name: this.locationApi,
+          name: this.apiName,
           small: true,
           onClick: this.toggleApi
         },
@@ -87,7 +87,7 @@ export default {
     changeTab(tab) {
       this.currentTab = tab;
     },
-    ...mapMutations(['toggleApi'])
+    ...mapMutations('api', ['toggleApi'])
   }
 };
 </script>

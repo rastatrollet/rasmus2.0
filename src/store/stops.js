@@ -12,7 +12,7 @@ const actions = {
     lastQuery = query;
 
     commit('setLoading', true);
-    return rootGetters.api
+    return rootGetters['api/api']
       .findStops(query)
       .then((stops) => {
         console.log('stops', stops);

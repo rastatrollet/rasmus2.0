@@ -1,22 +1,107 @@
+import getDestinationVia from '../util/getDestinationVia';
+// import { speak } from '../util/speechSynthesis';
+
 const state = {
-  filter: {},
+  filter: {
+    track: '',
+    dest: '',
+    timeSpan: ''
+  },
   options: {
     isLive: true,
     voice: false
   },
   trips: [],
+  situations: [],
   isLoading: false,
   location: null
 };
 
 const getters = {
-  filteredTrips({ trips }) {
-    return trips.filter(() => true);
+  filteredTrips({ trips, filter }) {
+    // return trips.filter(() => true);
+    const { track, dest } = filter;
+    // const { affectedLines = [] } = this.info;
+    // const now = Date.now();
+    // const filteredManual = this.manualTrips
+    //   .filter(({ origin }) => origin === this.location.name)
+    //   .filter(({ timestamp }) => timestamp > now);
+    // return [...filteredManual, ...filteredTrips]
+
+    return trips
+      .map((trip) => ({
+        ...trip
+        // isAffected: affectedLines.includes(trip.sname)
+      }))
+      .filter((trip) => (track ? trip.track === track : true))
+      .filter(
+        ({ direction, origin }) =>
+          dest ? direction === dest || origin === dest : true
+      )
+      .sort((a, b) => a.timestamp - b.timestamp);
+  },
+  destinations({ trips }) {
+    return Array.from(
+      new Set(trips.map(({ direction, origin }) => direction || origin))
+    );
+  },
+  tracks({ trips }) {
+    return Array.from(new Set(trips.map(({ track }) => track)));
   }
 };
 
 const actions = {
-  getTrips() {}
+  speakOut() {
+    // if (this.filteredTrips.length) {
+    //   const { name, direction, timestamp } = this.filteredTrips[0];
+    //   const inMinutes = Math.ceil((timestamp - Date.now()) / (1000 * 60));
+    //   if (this.voice) {
+    //     if (inMinutes <= 0) {
+    //       speak(`${name} mot ${direction}, avgår nu`);
+    //     } else if (inMinutes === 1) {
+    //       speak(`${name} mot ${direction}, avgår om en minut`);
+    //     } else if (inMinutes > 1 && inMinutes <= 60) {
+    //       speak(
+    //         `${name} mot ${direction}, avgår om ${inMinutes} minuter`
+    //       );
+    //     } else {
+    //       speak(`${name} mot ${direction}, avgår om mer än en timma`);
+    //     }
+    //   }
+    // }
+  },
+  getTrips({ commit, state, rootGetters }, location) {
+    commit('setLoading', true);
+    return rootGetters['api/api']
+      .getDeparturesFrom(location.id, state.filter.timeSpan)
+      .then((resp) => {
+        const trips = resp.map(getDestinationVia);
+        console.log('[getTrips]', trips);
+
+        commit('setTrips', trips);
+        commit('setLoading', false);
+      })
+      .catch((reason) => {
+        console.error('[getTrips]', reason);
+        commit('setLoading', false);
+      });
+  },
+  getTrafficSituations({ commit, rootGetters }, location) {
+    return rootGetters['api/api']
+      .getTrafficSituations(location.id, 'stoparea') // WTF?
+      .then((situations) => {
+        commit('setSituations', situations);
+      })
+      .catch((reason) => console.error('[getTrafficSituations]', reason));
+  },
+  updateLocation({ dispatch, commit, state }, location) {
+    if (state.location === location) return;
+
+    console.log('[updateLocation]', location);
+    commit('setLocation', location);
+    dispatch('getTrips', location);
+    dispatch('getTrafficSituations', location);
+  }
 };
 
 const mutations = {
@@ -34,6 +119,9 @@ const mutations = {
   },
   setTrips(state, trips) {
     state.trips = trips;
+  },
+  setSituations(state, situations) {
+    state.situations = situations;
   },
   setLoading(state, value) {
     state.isLoading = value;

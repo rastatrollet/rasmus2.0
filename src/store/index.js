@@ -5,30 +5,19 @@ import apis from '../api';
 import user from './user';
 import trips from './trips';
 import stops from './stops';
+import api from './api';
 
 Vue.use(Vuex);
-
-const locationAPIs = ['SL', 'VT', 'TV'];
 
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    locationApi: 'VT',
     selectedJourney: null,
     showJourneyDetails: false,
     loadingJourneyDetails: false
   },
-  getters: {
-    api({ locationApi }) {
-      return apis[locationApi];
-    }
-  },
+  getters: {},
   mutations: {
-    toggleApi(state) {
-      const currentIndex = locationAPIs.indexOf(state.locationApi);
-      const nextIndex = (currentIndex + 1) % locationAPIs.length;
-      state.locationApi = locationAPIs[nextIndex];
-    },
     selectJourney(state, journey) {
       state.selectedJourney = journey;
     },
@@ -60,6 +49,7 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    api,
     user,
     trips,
     stops

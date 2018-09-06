@@ -59,23 +59,21 @@
   </div>
 </template>
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: 'TripsFilter',
+  props: {
+    dict: Object
+  },
   computed: {
     ...mapState('trips', ['filter', 'options']),
+    ...mapGetters('trips', ['destinations', 'tracks']),
     fromToLabel() {
-      return 'fromToLabel';
+      return this.dict.origDest;
     },
     arriveDepartLabel() {
-      return 'arriveDepartLabel';
-    },
-    destinations() {
-      return [];
-    },
-    tracks() {
-      return [];
+      return this.dict.arrEaves;
     }
   },
   methods: {

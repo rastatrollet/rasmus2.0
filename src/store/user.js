@@ -24,7 +24,7 @@ const actions = {
     }
 
     commit('setLoading', { nearbyStops: true });
-    rootGetters.api
+    rootGetters['api/api']
       .getClosestStops(state.location)
       .then((nearbyStops) => {
         // only update nearbyStations promise resolves with correct data

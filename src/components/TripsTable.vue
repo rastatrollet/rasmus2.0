@@ -7,7 +7,7 @@
           <th>Tid</th>
           <th>{{ fromToLabel }}</th>
           <th>Ny tid</th>
-          <th>{{ trackLabel }} {{ filter.track }}</th>
+          <th>{{ trackLabel }}</th>
         </tr>
       </thead>
       <tbody :class="$style.tableBody">
@@ -43,7 +43,7 @@
           <td :class="[$style.tripTime, $style.isLate]"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
           <td :class="$style.tripTrack">{{ trip.track }}</td>
         </tr>
-        <tr v-show="!isLoading && from && trips.length === 0">
+        <tr v-show="!isLoading && location && trips.length === 0">
           <td colspan="5">Inga resor att visa</td>
         </tr>
       </tbody>
@@ -51,29 +51,11 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
-
-import { apiDict } from '../api';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'TripsTable',
   props: {
-    trips: {
-      type: Array,
-      default: () => []
-    },
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
-    filter: {
-      type: Object,
-      default: null
-    },
-    from: {
-      type: String,
-      default: ''
-    },
     fromToLabel: {
       type: String,
       default: ''
@@ -81,11 +63,14 @@ export default {
   },
   computed: {
     ...mapState(['locationApi', 'showJourneyDetails']),
+    ...mapState(['trips', 'isLoading', 'location', 'situations']),
+    ...mapGetters({ trips: 'trips/filteredTrips' }),
+    ...mapGetters('api', ['dict']),
     metaLabel() {
-      return apiDict[this.locationApi].sname;
+      return this.dict.sname;
     },
     trackLabel() {
-      return apiDict[this.locationApi].track;
+      return this.dict.track;
     }
   },
   methods: {

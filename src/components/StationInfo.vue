@@ -8,35 +8,28 @@
       </p>
       <LocationInput
         :disabled="!initialized"
-        label="Hållplats"
-        @set-location="setFrom" />
+        label="Hållplats" />
     </div>
-    <TripsFilter v-if="location.name"/>
+    <TripsFilter :dict="dict" v-if="location"/>
     <div :class="$style.content">
       <TripsTable
-        :is-loading="isLoading"
-        :trips="filteredTrips"
-        :filter="filter"
-        :from="location.name"
         :from-to-label="fromToLabel" />
       <JourneyDetails />
     </div>
     <footer
-      v-if="location.name"
+      v-if="location"
       :class="$style.situations">
       <p
-        v-for="(msg, index) in info.messages"
+        v-for="(msg, index) in situations"
         :key="index">{{ msg }}</p>
-      <p v-if="info.messages.length === 0">Inga trafikstörningar.</p>
+      <p v-if="situations.length === 0">Inga trafikstörningar.</p>
     </footer>
   </section>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
-import getDestinationVia from '../util/getDestinationVia';
-import { speak } from '../util/speechSynthesis';
 import apis from '../api';
 import googleDrive from '../api/googleDrive';
 
@@ -44,6 +37,17 @@ import JourneyDetails from './JourneyDetails.vue';
 import LocationInput from './LocationInput.vue';
 import TripsTable from './TripsTable.vue';
 import TripsFilter from './TripsFilter.vue';
+
+const dict = {
+  arrival: {
+    arrEaves: 'Ankommer',
+    origDest: 'Från'
+  },
+  departure: {
+    arrEaves: 'Avgår',
+    origDest: 'Till'
+  }
+};
 
 export default {
   name: 'StationInfo',
@@ -61,35 +65,26 @@ export default {
   },
   data() {
     // eslint-disable-next-line
-    const savedData = JSON.parse(window[this.$options._componentTag] || '{}');
+    // const savedData = JSON.parse(window[this.$options._componentTag] || '{}');
     return {
-      location: {},
-      isLoading: false,
       initialized: [],
-      trips: [],
       manualTrips: [],
-      info: {
-        messages: []
-      },
-      filter: {
-        track: '',
-        dest: ''
-      },
-      isLive: true,
-      voice: false,
-      timeSpan: '',
-      ...savedData
     };
   },
   computed: {
     ...mapState(['locationApi']),
+    ...mapState('trips', ['location', 'situations']),
+    ...mapGetters('api', ['api']),
+    dict() {
+      return this.arrivals ? dict.arrival : dict.departure;
+    },
     show() {
       return !!this.trips.length;
     },
     method() {
       return this.arrivals
-        ? apis[this.location.region].getArrivalsTo
-        : apis[this.location.region].getDeparturesFrom;
+        ? this.api.getArrivalsTo
+        : this.api.getDeparturesFrom;
     },
     tracks() {
       const tracks = []
@@ -106,29 +101,6 @@ export default {
         .map(({ direction, origin }) => direction || origin);
       return Array.from(new Set(destinations));
     },
-    filteredTrips() {
-      const { track, dest } = this.filter;
-      const { affectedLines = [] } = this.info;
-      const now = Date.now();
-      const filteredManual = this.manualTrips
-        .filter(({ origin }) => origin === this.location.name)
-        .filter(({ timestamp }) => timestamp > now);
-
-      const filteredTrips = this.trips
-        .map((trip) => ({
-          ...trip,
-          isAffected: affectedLines.includes(trip.sname)
-        }))
-        .filter((t) => (track ? t.track === track : true))
-        .filter(
-          ({ direction, origin }) =>
-            dest ? direction === dest || origin === dest : true
-        );
-
-      return [...filteredManual, ...filteredTrips].sort(
-        (a, b) => a.timestamp - b.timestamp
-      );
-    },
     fromToLabel() {
       return this.arrivals ? 'Från' : 'Till';
     },
@@ -141,7 +113,7 @@ export default {
       if (newVal !== oldVal) {
         this.trips = [];
         this.info = { messages: [] };
-        if (this.location.region) {
+        if (this.location) {
           this.getDepartures();
         }
       }
@@ -181,7 +153,7 @@ export default {
       if (this.initialized.includes(this.locationApi)) {
         return Promise.resolve();
       }
-      return apis[this.locationApi].init().then(() => {
+      return this.api.init().then(() => {
         this.initialized.push(this.locationApi);
       });
     },
@@ -193,11 +165,6 @@ export default {
         });
       }
     },
-    setFrom(location) {
-      this.location = location || {};
-      this.getDepartures();
-      this.refreshDepartures();
-    },
     refreshDepartures() {
       clearTimeout(this.lastTimeoutId);
       window.requestAnimationFrame(() => {
@@ -206,42 +173,6 @@ export default {
           this.refreshDepartures();
         }, 30000);
       });
-    },
-    getDepartures() {
-      this.isLoading = true;
-      this.method(this.location.id, this.timeSpan)
-        .then((resp) => {
-          this.trips = resp.map(getDestinationVia);
-          console.log('this.trips', this.trips);
-          if (this.filteredTrips.length) {
-            const { name, direction, timestamp } = this.filteredTrips[0];
-            const inMinutes = Math.ceil((timestamp - Date.now()) / (1000 * 60));
-            if (this.voice) {
-              if (inMinutes <= 0) {
-                speak(`${name} mot ${direction}, avgår nu`);
-              } else if (inMinutes === 1) {
-                speak(`${name} mot ${direction}, avgår om en minut`);
-              } else if (inMinutes > 1 && inMinutes <= 60) {
-                speak(
-                  `${name} mot ${direction}, avgår om ${inMinutes} minuter`
-                );
-              } else {
-                speak(`${name} mot ${direction}, avgår om mer än en timma`);
-              }
-            }
-          }
-          this.isLoading = false;
-        })
-        .catch((reason) => {
-          console.warn('reason', reason);
-          this.isLoading = false;
-        });
-
-      apis[this.location.region]
-        .getTrafficSituations(this.location.id, 'stoparea')
-        .then((situations) => {
-          this.info = situations;
-        });
     }
   }
 };
