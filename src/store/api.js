@@ -1,10 +1,16 @@
 import apis, { apiDict } from '../api';
 
-const locationAPIs = ['SL', 'VT', 'TV'];
-const defaultApi = locationAPIs[1];
+const locationAPIs = Object.keys(apis);
+const defaultApi = 'VT'; // Västtrafik
+if (!locationAPIs.includes(defaultApi)) {
+  throw new Error('defaultApi must exist');
+}
+
+const initializedAPIs = [];
 
 const state = {
-  name: defaultApi
+  name: defaultApi,
+  initializing: true
 };
 
 const getters = {
@@ -17,10 +23,37 @@ const getters = {
 };
 
 const mutations = {
-  toggleApi(state) {
+  setApi(state, value) {
+    state.name = value;
+  },
+  setInitializing(state, value) {
+    state.initializing = value;
+  }
+};
+
+const actions = {
+  initApi({ commit, state }) {
+    console.info('initializing', state.name);
+    commit('setInitializing', true);
+    apis[state.name]
+      .init()
+      .then(() => {
+        commit('setInitializing', false);
+        initializedAPIs.push(state.name);
+      })
+      .catch((reason) => {
+        console.error('[initApi]', reason);
+        commit('setInitializing', false);
+      });
+  },
+  toggleApi({ state, commit, dispatch }) {
     const currentIndex = locationAPIs.indexOf(state.name);
     const nextIndex = (currentIndex + 1) % locationAPIs.length;
-    state.name = locationAPIs[nextIndex];
+    const apiName = locationAPIs[nextIndex];
+    const isInitialized = initializedAPIs.includes(apiName);
+
+    commit('setApi', apiName);
+    if (!isInitialized) dispatch('initApi');
   }
 };
 
@@ -28,5 +61,6 @@ export default {
   namespaced: true,
   state,
   getters,
-  mutations
+  mutations,
+  actions
 };

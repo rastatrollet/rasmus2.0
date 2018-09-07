@@ -2,6 +2,7 @@ import getDestinationVia from '../util/getDestinationVia';
 // import { speak } from '../util/speechSynthesis';
 
 const state = {
+  arrivals: false,
   filter: {
     track: '',
     dest: '',
@@ -12,16 +13,19 @@ const state = {
     voice: false
   },
   trips: [],
-  situations: [],
+  situations: {
+    messages: [],
+    affectedLines: []
+  },
   isLoading: false,
   location: null
 };
 
 const getters = {
-  filteredTrips({ trips, filter }) {
+  filteredTrips({ trips, filter, situations }) {
     // return trips.filter(() => true);
     const { track, dest } = filter;
-    // const { affectedLines = [] } = this.info;
+    const { affectedLines = [] } = situations;
     // const now = Date.now();
     // const filteredManual = this.manualTrips
     //   .filter(({ origin }) => origin === this.location.name)
@@ -30,8 +34,8 @@ const getters = {
 
     return trips
       .map((trip) => ({
-        ...trip
-        // isAffected: affectedLines.includes(trip.sname)
+        ...trip,
+        isAffected: affectedLines.includes(trip.sname)
       }))
       .filter((trip) => (track ? trip.track === track : true))
       .filter(
@@ -71,9 +75,11 @@ const actions = {
     // }
   },
   getTrips({ commit, state, rootGetters }, location) {
+    const getTripsMethod = state.arrivals
+      ? rootGetters['api/api']['getArrivalsTo']
+      : rootGetters['api/api']['getDeparturesFrom'];
     commit('setLoading', true);
-    return rootGetters['api/api']
-      .getDeparturesFrom(location.id, state.filter.timeSpan)
+    return getTripsMethod(location.id, state.filter.timeSpan)
       .then((resp) => {
         const trips = resp.map(getDestinationVia);
         console.log('[getTrips]', trips);
@@ -90,6 +96,7 @@ const actions = {
     return rootGetters['api/api']
       .getTrafficSituations(location.id, 'stoparea') // WTF?
       .then((situations) => {
+        console.log('situations', situations);
         commit('setSituations', situations);
       })
       .catch((reason) => console.error('[getTrafficSituations]', reason));
@@ -128,6 +135,9 @@ const mutations = {
   },
   setLocation(state, location) {
     state.location = location;
+  },
+  setArrivals(state, value) {
+    state.arrivals = value;
   }
 };
 

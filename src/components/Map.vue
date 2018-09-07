@@ -53,7 +53,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['locationApi'])
+    ...mapState({ apiName: ({ api }) => api.name })
   },
   mounted() {
     getPositionPromise().then((position) => {
@@ -150,7 +150,7 @@ export default {
       this.isLoadingLiveMap = true;
       // TODO:
       // fix this
-      if (this.locationApi !== 'VT') return Promise.resolve();
+      if (this.apiName !== 'VT') return Promise.resolve();
 
       return VT.getLiveMap({ south, west, north, east })
         .then((vehicles) => {

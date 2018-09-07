@@ -1,5 +1,5 @@
 <template>
-  <div :class="[$style.tripsTable, $style[locationApi], { [$style.showingJourneyDetails]: showJourneyDetails }]">
+  <div :class="[$style.tripsTable, $style[apiName], { [$style.showingJourneyDetails]: showJourneyDetails }]">
     <table :class="$style.table">
       <thead :class="$style.tableHead">
         <tr>
@@ -62,8 +62,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(['locationApi', 'showJourneyDetails']),
-    ...mapState(['trips', 'isLoading', 'location', 'situations']),
+    ...mapState({
+      showJourneyDetails: (state) => state.showJourneyDetails,
+      apiName: ({ api }) => api.name
+    }),
+    ...mapState('trips', {
+      isLoading: ({ isLoading }) => isLoading,
+      location: ({ location }) => location
+    }),
     ...mapGetters({ trips: 'trips/filteredTrips' }),
     ...mapGetters('api', ['dict']),
     metaLabel() {

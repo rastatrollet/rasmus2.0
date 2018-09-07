@@ -8,12 +8,20 @@
         :class="$style.link"
         :title="tab.name"
         href="#"
-        @click.prevent="tab.onClick(tab.name)">
+        @click.prevent="tab.onClick(tab.name, tab.props.arrivals)">
         <font-awesome
           v-if="tab.icon"
           :icon="tab.icon"
           :class="$style.onlyMobile" />
-        <span :class="{ [$style.onlyDesktop]: tab.icon }">{{ tab.name }}</span>
+        <span
+          v-if="!tab.initializing"
+          :class="{ [$style.onlyDesktop]: tab.icon }">
+          {{ tab.name }}
+        </span>
+        <font-awesome
+          v-if="tab.initializing"
+          icon="spinner"
+          spin/>
       </a>
     </li>
   </ul>
@@ -41,6 +49,7 @@ export default {
 .tabs {
   flex-grow: 1;
   display: flex;
+  align-items: center;
   justify-content: center;
   list-style-type: none;
   margin: 0;
@@ -52,6 +61,7 @@ export default {
   border-right: 1px solid var(--brand-text-color-dim);
   color: var(--brand-text-color-dim);
   cursor: pointer;
+  flex-basis: 53px;
   flex-grow: 1;
   text-align: center;
 }

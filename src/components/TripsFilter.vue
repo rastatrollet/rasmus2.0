@@ -64,7 +64,10 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 export default {
   name: 'TripsFilter',
   props: {
-    dict: Object
+    dict: {
+      type: Object,
+      default: () => ({})
+    }
   },
   computed: {
     ...mapState('trips', ['filter', 'options']),

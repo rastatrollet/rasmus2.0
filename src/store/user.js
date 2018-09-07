@@ -32,7 +32,7 @@ const actions = {
         if (
           nearbyStops &&
           nearbyStops.length &&
-          nearbyStops[0].region === rootState.locationApi
+          nearbyStops[0].region === rootState.api.name
         ) {
           commit('setNearbyStops', nearbyStops);
         } else {

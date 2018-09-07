@@ -138,7 +138,6 @@ export default {
       // });
     },
     onSelect(location) {
-      console.log('onSelect', location);
       this.searchText = location.name;
       // TODO: set location
       this.updateLocation(location);

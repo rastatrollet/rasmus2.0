@@ -7,20 +7,21 @@ function getTrafficSituations(gid, method) {
   const url = method
     ? `${trafficSituations}/${method}/${gid}`
     : trafficSituations;
-  return anropaVasttrafik(url, { Accept: 'application/json' })
-    .then((sit) => (console.log('sit', sit), sit))
-    .then((situations) =>
+  return anropaVasttrafik(url, { Accept: 'application/json' }).then(
+    (situations) =>
       situations.reduce(
         (res, { title, description, affectedLines }) => ({
           messages: res.messages.concat(`${title} ${description}`),
-          affectedLines: [].concat(
-            res.affectedLines,
-            affectedLines.map(({ designation }) => designation)
-          )
+          affectedLines: []
+            .concat(
+              res.affectedLines,
+              affectedLines.map(({ designation }) => designation)
+            )
+            .filter((x) => x)
         }),
         { messages: [] }
       )
-    );
+  );
 }
 
 function getTripSuggestion(from, dest) {
@@ -100,7 +101,7 @@ function getTimeTable(id, requestUrl) {
   return anropaVasttrafik(requestUrl).then((res) => {
     const { error, errorText } = res;
     if (error || errorText) {
-      console.log('Error:', error || errorText);
+      console.error('[getTimeTable]', error || errorText);
     }
     return res;
   });
@@ -164,10 +165,10 @@ function getClosestStops({ lat, lng }, limit = 5, retry = true) {
     })
     .catch((reason) => {
       if (retry) {
-        console.log('[getClosestStops] error:', reason, 'retrying');
+        console.error('[getClosestStops]:', reason, 'retrying');
         getClosestStops({ lat, lng }, limit, false);
       } else {
-        console.log('[getClosestStops] error', reason);
+        console.error('[getClosestStops]', reason);
         throw reason;
       }
     });

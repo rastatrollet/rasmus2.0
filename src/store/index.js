@@ -30,20 +30,19 @@ export default new Vuex.Store({
   },
   actions: {
     getJourneyDetails({ commit, state }, trip) {
-      if (state.locationApi !== 'VT' || !trip.JourneyDetailRef) {
+      if (state.api.name !== 'VT' || !trip.JourneyDetailRef) {
+        console.log('[getJourneyDetails]', 'only available for VT');
         return Promise.resolve();
       }
-      console.log('get details');
       commit('setShowJourneyDetails', true);
       commit('setLoadingJourneyDetails', true);
       apis.VT.getJourneyDetail(trip.JourneyDetailRef.ref)
         .then((resp) => {
-          console.log('got details', resp);
           commit('selectJourney', resp);
           commit('setLoadingJourneyDetails', false);
         })
         .catch((reason) => {
-          console.log('error getting journey details', reason);
+          console.error('[getJourneyDetails]', reason);
           commit('setLoadingJourneyDetails', false);
         });
     }

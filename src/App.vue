@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 
 import DigitalClock from './components/DigitalClock.vue';
 import StationInfo from './components/StationInfo.vue';
@@ -24,7 +24,7 @@ import Tabs from './components/Tabs.vue';
 
 const baseTab = {
   icon: '',
-  props: {},
+  props: { arrivals: false },
   onClick() {}
 };
 const components = [
@@ -63,14 +63,18 @@ export default {
     };
   },
   computed: {
-    ...mapState({ apiName: ({ api }) => api.name }),
+    ...mapState({
+      apiName: ({ api }) => api.name,
+      initializing: ({ api }) => api.initializing
+    }),
     tabs() {
       return [
         {
           ...baseTab,
           name: this.apiName,
           small: true,
-          onClick: this.toggleApi
+          onClick: this.toggleApi,
+          initializing: this.initializing
         },
         ...components.map((comp) => ({
           ...baseTab,
@@ -84,10 +88,12 @@ export default {
     }
   },
   methods: {
-    changeTab(tab) {
+    ...mapMutations('trips', ['setArrivals']),
+    ...mapActions('api', ['toggleApi']),
+    changeTab(tab, arrivals) {
+      this.setArrivals(arrivals);
       this.currentTab = tab;
-    },
-    ...mapMutations('api', ['toggleApi'])
+    }
   }
 };
 </script>

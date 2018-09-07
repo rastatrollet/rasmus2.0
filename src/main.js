@@ -9,6 +9,7 @@ import './registerServiceWorker';
 import './components/FontAwesome';
 
 Vue.config.productionTip = false;
+store.dispatch('api/initApi');
 
 new Vue({
   store,

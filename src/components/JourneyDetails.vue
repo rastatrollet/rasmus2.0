@@ -2,13 +2,13 @@
   <aside :class="[$style.journeyDetails, { [$style.display]: showJourneyDetails }]">
     <header :class="$style.header">
       <h2 :class="$style.heading">Detaljer</h2>
-      <span>
+      <span v-if="!loadingJourneyDetails">
         {{ journey.name }} mot {{ journey.direction }}
-        <font-awesome
-          icon="spinner"
-          spin
-          v-if="loadingJourneyDetails"/>
       </span>
+      <font-awesome
+        v-if="loadingJourneyDetails"
+        icon="spinner"
+        spin/>
       <button
         :class="$style.closeBtn"
         @click.prevent="setShowJourneyDetails(false)">&cross;</button>

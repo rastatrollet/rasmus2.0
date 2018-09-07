@@ -1,16 +1,13 @@
 <template>
   <section :class="$style.stationInfo">
     <div :class="$style.form">
-      <p v-if="!initialized">
-        Initierar... <font-awesome
-          icon="spinner"
-          spin/>
-      </p>
       <LocationInput
-        :disabled="!initialized"
+        :disabled="initializing"
         label="Hållplats" />
     </div>
-    <TripsFilter :dict="dict" v-if="location"/>
+    <TripsFilter
+      :dict="dict"
+      v-if="location"/>
     <div :class="$style.content">
       <TripsTable
         :from-to-label="fromToLabel" />
@@ -20,14 +17,14 @@
       v-if="location"
       :class="$style.situations">
       <p
-        v-for="(msg, index) in situations"
+        v-for="(msg, index) in situations.messages"
         :key="index">{{ msg }}</p>
-      <p v-if="situations.length === 0">Inga trafikstörningar.</p>
+      <p v-if="situations.messages.length === 0">Inga trafikstörningar.</p>
     </footer>
   </section>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
 import apis from '../api';
@@ -67,24 +64,21 @@ export default {
     // eslint-disable-next-line
     // const savedData = JSON.parse(window[this.$options._componentTag] || '{}');
     return {
-      initialized: [],
-      manualTrips: [],
+      manualTrips: []
     };
   },
   computed: {
-    ...mapState(['locationApi']),
     ...mapState('trips', ['location', 'situations']),
+    ...mapState('api', {
+      apiName: ({ name }) => name,
+      initializing: ({ initializing }) => initializing
+    }),
     ...mapGetters('api', ['api']),
     dict() {
       return this.arrivals ? dict.arrival : dict.departure;
     },
     show() {
       return !!this.trips.length;
-    },
-    method() {
-      return this.arrivals
-        ? this.api.getArrivalsTo
-        : this.api.getDeparturesFrom;
     },
     tracks() {
       const tracks = []
@@ -111,37 +105,20 @@ export default {
   watch: {
     arrivals(newVal, oldVal) {
       if (newVal !== oldVal) {
-        this.trips = [];
-        this.info = { messages: [] };
         if (this.location) {
-          this.getDepartures();
+          this.getTrips(this.location);
         }
       }
     },
-    isLive(value) {
-      if (value) {
-        this.refreshDepartures();
-      } else {
-        clearTimeout(this.lastTimeoutId);
-      }
-    },
-    timeSpan() {
-      this.getDepartures();
-    },
-    locationApi(newVal, oldVal) {
+    apiName(newVal, oldVal) {
       if (newVal !== oldVal) {
         clearTimeout(this.lastTimeoutId);
-        this.trips = [];
-        this.filter = {
-          track: '',
-          dest: ''
-        };
-        this.init().then(() => this.loadManualDepartures());
+        this.loadManualDepartures();
       }
     }
   },
   mounted() {
-    this.init().then(() => this.loadManualDepartures());
+    this.loadManualDepartures();
   },
   beforeDestroy() {
     // eslint-disable-next-line
@@ -149,31 +126,26 @@ export default {
     clearTimeout(this.lastTimeoutId);
   },
   methods: {
-    init() {
-      if (this.initialized.includes(this.locationApi)) {
-        return Promise.resolve();
-      }
-      return this.api.init().then(() => {
-        this.initialized.push(this.locationApi);
-      });
-    },
+    ...mapActions('trips', ['getTrips']),
+    // TODO: move this somewhere else
     loadManualDepartures() {
-      if (this.locationApi === 'VT') {
+      if (this.apiName === 'SOMETHING THAT DOES NOT EXIST') {
         googleDrive.getManualDepartures().then((res) => {
           this.manualTrips = apis.VT.transformTrips(res);
           console.log('this.manualTrips', this.manualTrips);
         });
       }
-    },
-    refreshDepartures() {
-      clearTimeout(this.lastTimeoutId);
-      window.requestAnimationFrame(() => {
-        this.lastTimeoutId = setTimeout(() => {
-          this.getDepartures();
-          this.refreshDepartures();
-        }, 30000);
-      });
     }
+    // TODO: move this into trips
+    // refreshDepartures() {
+    //   clearTimeout(this.lastTimeoutId);
+    //   window.requestAnimationFrame(() => {
+    //     this.lastTimeoutId = setTimeout(() => {
+    //       this.getDepartures();
+    //       this.refreshDepartures();
+    //     }, 30000);
+    //   });
+    // }
   }
 };
 </script>
