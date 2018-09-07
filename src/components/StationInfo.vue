@@ -26,7 +26,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
 import apis from '../api';
 import googleDrive from '../api/googleDrive';
 
@@ -61,8 +60,6 @@ export default {
     }
   },
   data() {
-    // eslint-disable-next-line
-    // const savedData = JSON.parse(window[this.$options._componentTag] || '{}');
     return {
       manualTrips: []
     };
@@ -79,21 +76,6 @@ export default {
     },
     show() {
       return !!this.trips.length;
-    },
-    tracks() {
-      const tracks = []
-        .concat(this.trips)
-        .map(({ track }) => track)
-        .map(String)
-        .filter((x) => x);
-
-      return Array.from(new Set(tracks)).sort(sortNumbersAndLetters);
-    },
-    destinations() {
-      const destinations = []
-        .concat(this.trips)
-        .map(({ direction, origin }) => direction || origin);
-      return Array.from(new Set(destinations));
     },
     fromToLabel() {
       return this.arrivals ? 'Från' : 'Till';
@@ -121,8 +103,6 @@ export default {
     this.loadManualDepartures();
   },
   beforeDestroy() {
-    // eslint-disable-next-line
-    window[this.$options._componentTag] = JSON.stringify(this._data);
     clearTimeout(this.lastTimeoutId);
   },
   methods: {

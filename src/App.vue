@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 import DigitalClock from './components/DigitalClock.vue';
 import StationInfo from './components/StationInfo.vue';
@@ -67,6 +67,7 @@ export default {
       apiName: ({ api }) => api.name,
       initializing: ({ api }) => api.initializing
     }),
+    ...mapGetters('api', ['api']),
     tabs() {
       return [
         {
@@ -79,6 +80,10 @@ export default {
         ...components.map((comp) => ({
           ...baseTab,
           ...comp,
+          disabled:
+            comp.props &&
+            comp.props.arrivals &&
+            typeof this.api.getArrivalsTo !== 'function',
           onClick: this.changeTab
         }))
       ];

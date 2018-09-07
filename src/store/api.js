@@ -53,6 +53,8 @@ const actions = {
     const isInitialized = initializedAPIs.includes(apiName);
 
     commit('setApi', apiName);
+    commit('trips/reset', null, { root: true });
+    commit('stops/setStops', [], { root: true });
     if (!isInitialized) dispatch('initApi');
   }
 };

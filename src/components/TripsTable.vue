@@ -1,5 +1,11 @@
 <template>
-  <div :class="[$style.tripsTable, $style[apiName], { [$style.showingJourneyDetails]: showJourneyDetails }]">
+  <div 
+    :class="[$style.tripsTable, {
+      [$style.VT]: apiName === 'VT',
+      [$style.TV]: apiName === 'TV',
+      [$style.SL]: apiName === 'SL',
+      [$style.showingJourneyDetails]: showJourneyDetails
+  }]">
     <table :class="$style.table">
       <thead :class="$style.tableHead">
         <tr>
@@ -149,5 +155,18 @@ export default {
 .tripTrack {
   text-align: center;
   width: 50px;
+}
+
+/***
+ * API-BASED THEMES
+ */
+.VT {
+}
+
+.TV .tripLine {
+  text-align: left;
+}
+
+.SL {
 }
 </style>

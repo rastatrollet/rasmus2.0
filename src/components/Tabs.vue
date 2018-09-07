@@ -3,7 +3,11 @@
     <li
       v-for="tab in tabs"
       :key="tab.name"
-      :class="[$style.tab, { [$style.tabSmall]: tab.small, [$style.tabActive]: currentTab === tab.name }]">
+      :class="[$style.tab, {
+        [$style.tabSmall]: tab.small,
+        [$style.tabActive]: currentTab === tab.name,
+        [$style.tabDisabled]: tab.disabled
+    }]">
       <a
         :class="$style.link"
         :title="tab.name"
@@ -79,6 +83,11 @@ export default {
 }
 .tabApi {
   flex-grow: 0;
+}
+.tabDisabled {
+  text-decoration: line-through;
+  pointer-events: none;
+  cursor: disabled;
 }
 
 .tab:not(.tabActive):hover,

@@ -8,42 +8,49 @@
       <span class="only-desktop">Filter:</span>
     </div>
     <div :class="$style.filter">
-      <select v-model="filter.dest">
+      <select 
+        @change="updateFilter" 
+        name="dest">
         <option value="">{{ fromToLabel }}</option>
         <option
           v-for="dest in destinations"
+          :selected="filter.dest === dest"
           :key="dest"
           :value="dest">{{ dest }}</option>
       </select>
     </div>
     <div :class="$style.filter">
-      <select v-model="filter.track">
+      <select 
+        @change="updateFilter" 
+        name="track">
         <option value="">Läge</option>
         <option
           v-for="track in tracks"
+          :selected="filter.track === track"
           :key="track"
           :value="track">{{ track }}</option>
       </select>
     </div>
-    <div :class="$style.filter">
-      <select v-model="filter.timeSpan">
+    <!-- <div :class="$style.filter">
+      <select 
+        @change="updateFilter" 
+        name="timeSpan">
         <option value="">{{ arriveDepartLabel }} inom</option>
-        <option value="30">30 min</option>
-        <option value="60">1 timme</option>
-        <option value="120">2 timmar</option>
-        <option value="180">3 timmar</option>
-        <option value="360">6 timmar</option>
-        <option value="720">12 timmar</option>
-        <option value="1440">24 timmar</option>
+        <option
+          v-for="span in timeSpans"
+          :selected="span.value === filter.timeSpan"
+          :key="span.value"
+          :value="span.value">{{ span.name }}</option>
       </select>
-    </div>
+    </div> -->
     <div :class="[$style.filter, 'only-desktop']">
       <label>
         Live
         <input
-          v-model="options.isLive"
+          :checked="options.isLive"
+          @input="updateOption"
           type="checkbox"
-          name="live">
+          name="isLive">
       </label>
     </div>
     <div :class="$style.filter">
@@ -51,7 +58,8 @@
         <font-awesome :icon="['fas', options.voice ? 'volume-up' : 'volume-off']"/>
         <input
           :class="$style.voiceCheckbox"
-          v-model="options.voice"
+          :checked="options.voice"
+          @input="updateOption"
           type="checkbox"
           name="voice">
       </label>
@@ -60,6 +68,8 @@
 </template>
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
+import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
+import getFormData from '../util/getFormData';
 
 export default {
   name: 'TripsFilter',
@@ -69,18 +79,55 @@ export default {
       default: () => ({})
     }
   },
+  data() {
+    return {
+      radio: false,
+      timeSpans: [
+        { value: '30', name: '30 min' },
+        { value: '60', name: '1 timme' },
+        { value: '120', name: '2 timmar' },
+        { value: '180', name: '3 timmar' },
+        { value: '360', name: '6 timmar' },
+        { value: '720', name: '12 timmar' },
+        { value: '1440', name: '24 timmar' }
+      ]
+    };
+  },
   computed: {
     ...mapState('trips', ['filter', 'options']),
-    ...mapGetters('trips', ['destinations', 'tracks']),
+    ...mapGetters({ trips: 'trips/filteredTrips' }),
     fromToLabel() {
       return this.dict.origDest;
     },
     arriveDepartLabel() {
       return this.dict.arrEaves;
+    },
+    destinations() {
+      return Array.from(
+        new Set(this.trips.map(({ direction, origin }) => direction || origin))
+      );
+    },
+    tracks() {
+      const tracks = this.trips
+        .map(({ track }) => track)
+        .filter((x) => x)
+        .map(String);
+
+      return Array.from(new Set(tracks)).sort(sortNumbersAndLetters);
     }
   },
   methods: {
-    ...mapMutations('trips', ['setFilter'])
+    ...mapMutations('trips', ['setFilter', 'setOptions']),
+    updateFilter({ target }) {
+      const filter = getFormData(target);
+      if (!filter) return;
+      this.setFilter(filter);
+    },
+    updateOption({ target }) {
+      const option = getFormData(target);
+      if (!option) return;
+      this.setOptions(option);
+    }
   }
 };
 </script>

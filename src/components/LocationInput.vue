@@ -76,8 +76,8 @@ import debounce from '../util/debounce';
 export default {
   name: 'LocationInput',
   mounted() {
-    if (this.location) {
-      this.searchText = this.location.name;
+    if (this.selectedLocation) {
+      this.searchText = this.userLocation.name;
     }
     this.debouncedFindStops = debounce(this.findStops, 350, this);
   },
@@ -94,15 +94,18 @@ export default {
   data() {
     return {
       show: false,
-      searchText: '',
-      suggestions: []
+      searchText: ''
     };
   },
   computed: {
     ...mapGetters('api', ['api']),
     ...mapGetters({ isLoadingNearbyStops: 'user/isLoading' }),
-    ...mapState('user', ['location', 'nearbyStops', 'nearbyStopsError']),
+    ...mapState('user', ['nearbyStops', 'nearbyStopsError']),
     ...mapState('stops', ['stops', 'isLoading']),
+    ...mapState({
+      userLocation: ({ user }) => user.location,
+      selectedLocation: ({ trips }) => trips.location
+    }),
     nearbyStopsMessage() {
       if (this.isLoadingNearbyStops) return 'Hämtar närliggande hållplatser';
       return this.nearbyStopsError || 'Använd min plats';
@@ -118,12 +121,8 @@ export default {
     }
   },
   watch: {
-    api(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        if (this.location && this.location.name) {
-          this.debouncedGetSuggestions(this.location.name);
-        }
-      }
+    selectedLocation(newVal) {
+      if (!newVal) this.searchText = '';
     }
   },
   methods: {
@@ -139,7 +138,6 @@ export default {
     },
     onSelect(location) {
       this.searchText = location.name;
-      // TODO: set location
       this.updateLocation(location);
       this.hideDropDown();
       this.findStops(location.name).then(this.hideDropDown);

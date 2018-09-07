@@ -1,22 +1,31 @@
 import getDestinationVia from '../util/getDestinationVia';
 // import { speak } from '../util/speechSynthesis';
 
+const initialFilter = {
+  track: '',
+  dest: '',
+  timeSpan: ''
+};
+const initialSituations = {
+  messages: [],
+  affectedLines: []
+};
+const initialOptions = {
+  isLive: true,
+  voice: false
+};
+const filterKeys = Object.keys(initialFilter);
+const optionKeys = Object.keys(initialOptions);
+
 const state = {
   arrivals: false,
-  filter: {
-    track: '',
-    dest: '',
-    timeSpan: ''
-  },
+  filter: { ...initialFilter },
   options: {
     isLive: true,
     voice: false
   },
   trips: [],
-  situations: {
-    messages: [],
-    affectedLines: []
-  },
+  situations: { ...initialSituations },
   isLoading: false,
   location: null
 };
@@ -43,14 +52,6 @@ const getters = {
           dest ? direction === dest || origin === dest : true
       )
       .sort((a, b) => a.timestamp - b.timestamp);
-  },
-  destinations({ trips }) {
-    return Array.from(
-      new Set(trips.map(({ direction, origin }) => direction || origin))
-    );
-  },
-  tracks({ trips }) {
-    return Array.from(new Set(trips.map(({ track }) => track)));
   }
 };
 
@@ -112,13 +113,33 @@ const actions = {
 };
 
 const mutations = {
+  reset(state) {
+    state.trips = [];
+    state.filter = { ...initialFilter };
+    state.location = null;
+    state.situations = { ...initialSituations };
+  },
   setFilter(state, filter) {
+    if (!Object.keys(filter).every((key) => filterKeys.includes(key))) {
+      return console.error(
+        '[setFilter]',
+        'Non valid key(s) supplied, must be one of',
+        filterKeys
+      );
+    }
     state.filter = {
       ...state.filter,
       ...filter
     };
   },
   setOptions(state, options) {
+    if (!Object.keys(options).every((key) => optionKeys.includes(key))) {
+      return console.error(
+        '[setOptions]',
+        'Non valid key(s) supplied, must be one of',
+        optionKeys
+      );
+    }
     state.options = {
       ...state.options,
       ...options
