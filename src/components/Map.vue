@@ -168,7 +168,8 @@ export default {
 
       if (typeof this.api.getLiveMap !== 'function') return Promise.resolve();
 
-      return this.api.getLiveMap({ south, west, north, east })
+      return this.api
+        .getLiveMap({ south, west, north, east })
         .then((vehicles) => {
           this.plotVehicles(vehicles, requestId);
           this.getLiveMapError = '';

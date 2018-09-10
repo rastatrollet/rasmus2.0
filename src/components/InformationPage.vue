@@ -1,10 +1,10 @@
 <template>
   <section :class="$style.informationPage">
     <font-awesome
-        v-if="isLoading"
-        :class="$style.spinner"
-        icon="spinner"
-        spin/>
+      v-if="isLoading"
+      :class="$style.spinner"
+      icon="spinner"
+      spin/>
     <div :id="gdocElementId" />
     <a
       :href="editLink"
@@ -30,8 +30,8 @@ export default {
     googleDrive.init();
     googleDrive
       .printInfoDoc(this.gdocElementId)
-      .then(() => this.isLoading = false)
-      .catch(() => this.isLoading = false);
+      .then(() => (this.isLoading = false))
+      .catch(() => (this.isLoading = false));
   }
 };
 </script>
@@ -49,9 +49,9 @@ export default {
   left: 1em;
 }
 .spinner {
-    font-size: 5vw;
-    position: absolute;
-    left: calc(50% - 2.5vw);
-    top: calc(50% - 2.5vw);
+  font-size: 5vw;
+  position: absolute;
+  left: calc(50% - 2.5vw);
+  top: calc(50% - 2.5vw);
 }
 </style>
