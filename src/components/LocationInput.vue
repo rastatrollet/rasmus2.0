@@ -77,7 +77,7 @@ export default {
   name: 'LocationInput',
   mounted() {
     if (this.selectedLocation) {
-      this.searchText = this.userLocation.name;
+      this.searchText = this.selectedLocation.name;
     }
     this.debouncedFindStops = debounce(this.findStops, 350, this);
   },
