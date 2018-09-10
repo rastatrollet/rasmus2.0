@@ -24,9 +24,8 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
-import VT from '../api/vasttrafik';
 import map from '../util/map';
 import { getPositionPromise, transformPosition } from '../util/geoLocation';
 
@@ -50,7 +49,8 @@ export default {
     };
   },
   computed: {
-    ...mapState({ apiName: ({ api }) => api.name }),
+    ...mapState(['selectedJourney']),
+    ...mapGetters('api', ['api']),
     iconName() {
       if (this.isLoadingLiveMap) return 'spinner';
       if (this.getLiveMapError) return 'warning';
@@ -67,16 +67,13 @@ export default {
 
       this.setupEventListeners();
       this.updateMap();
-      console.log('updateInterval', this.updateInterval);
-      // TODO:
-      // replace with VUEX
-      if (window.tripDetails) {
-        console.log('window.tripDetails', window.tripDetails);
+
+      if (this.selectedJourney) {
         map.drawPolyLine(
-          window.tripDetails.map(({ lat, lon }) => [lat, lon]),
+          this.selectedJourney.Stop.map(({ lat, lon }) => [lat, lon]),
           '#009ddb'
         );
-        window.tripDetails.forEach((hpl) => {
+        this.selectedJourney.Stop.forEach((hpl) => {
           const message = hpl.depDate
             ? `Avgår <time datetime="${hpl.depDate}">${
                 hpl.depTime
@@ -143,7 +140,6 @@ export default {
       });
     },
     getLiveMap() {
-      console.log('get vehicle positions');
       const requestId = ++this.getLiveMapRequestId;
       const [west, south, east, north] = this.map
         .getBounds()
@@ -151,11 +147,10 @@ export default {
         .split(',')
         .map(Number);
       this.isLoadingLiveMap = true;
-      // TODO:
-      // fix this
-      if (this.apiName !== 'VT') return Promise.resolve();
 
-      return VT.getLiveMap({ south, west, north, east })
+      if (typeof this.api.getLiveMap !== 'function') return Promise.resolve();
+
+      return this.api.getLiveMap({ south, west, north, east })
         .then((vehicles) => {
           this.plotVehicles(vehicles, requestId);
           this.getLiveMapError = '';
