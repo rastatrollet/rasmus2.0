@@ -45,7 +45,6 @@ function getClosestStops({ lat, lng }, limit = 5) {
   const key = 'bf8e1f49392843a19e86ef1ccbaa15a0';
   const url = `nearbystops.json?key=${key}&originCoordLat=${lat}&originCoordLong=${lng}&maxresults=${limit}`;
   return makeRequest(url).then((json) => {
-    console.log('json', json);
     const stops = Array.from(json.LocationList.StopLocation);
     return stops.map(transformStop);
   });
@@ -127,7 +126,6 @@ function getTrafficSituations(siteId) {
   return makeRequest(url)
     .then((json) => asArray(json.ResponseData))
     .then((json) => {
-      console.log('TrafficSituations', json);
       return {
         messages: json.map(({ Details }) => Details)
       };
