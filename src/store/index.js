@@ -5,6 +5,7 @@ import apis from '../api';
 import user from './user';
 import trips from './trips';
 import stops from './stops';
+import tabs from './tabs';
 import api from './api';
 
 Vue.use(Vuex);
@@ -51,6 +52,7 @@ export default new Vuex.Store({
     api,
     user,
     trips,
-    stops
+    stops,
+    tabs
   }
 });

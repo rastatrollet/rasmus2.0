@@ -59,16 +59,12 @@ export default {
     DigitalClock,
     InformationPage
   },
-  data() {
-    return {
-      currentTab: 'Avgångar'
-    };
-  },
   computed: {
     ...mapState({
       apiName: ({ api }) => api.name,
       initializing: ({ api }) => api.initializing
     }),
+    ...mapState('tabs', ['currentTab']),
     ...mapGetters('api', ['api']),
     tabs() {
       return [
@@ -96,10 +92,11 @@ export default {
   },
   methods: {
     ...mapMutations('trips', ['setArrivals']),
+    ...mapMutations('tabs', ['setCurrentTab']),
     ...mapActions('api', ['toggleApi']),
     changeTab(tab, arrivals) {
       this.setArrivals(arrivals);
-      this.currentTab = tab;
+      this.setCurrentTab(tab);
     }
   }
 };
@@ -110,6 +107,7 @@ export default {
   --brand-text-color: white;
   --brand-text-color-dim: rgba(255, 255, 255, 0.75);
   --dark-text-color: dimgray;
+  --darker-text-color: rgb(0, 57, 77);
 }
 
 html {
