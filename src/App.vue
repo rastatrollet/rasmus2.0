@@ -145,16 +145,23 @@ body {
   height: calc(100% - 36px);
 }
 
-.only-desktop {
+.from-tablet,
+.from-desktop {
   display: none;
 }
 
-@media (min-width: 900px) {
-  .only-desktop {
+@media (min-width: 450px) {
+  .from-tablet {
     display: initial;
   }
   .only-mobile {
     display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .from-desktop {
+    display: initial;
   }
 }
 </style>

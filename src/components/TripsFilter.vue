@@ -5,7 +5,7 @@
       <font-awesome
         class="only-mobile"
         icon="filter"/>
-      <span class="only-desktop">Filter:</span>
+      <span class="from-tablet">Filter:</span>
     </div>
     <div :class="$style.filter">
       <select 
@@ -43,7 +43,7 @@
           :value="span.value">{{ span.name }}</option>
       </select>
     </div> -->
-    <div :class="[$style.filter, 'only-desktop']">
+    <div :class="[$style.filter, 'from-desktop']">
       <label>
         Live
         <input
