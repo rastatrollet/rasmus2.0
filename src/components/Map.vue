@@ -1,20 +1,16 @@
 <template>
   <div :class="$style.mapContainer">
+    <font-awesome
+      v-if="initializing"
+      :class="$style.initSpinner"
+      icon="spinner"
+      spin/>
     <div :class="$style.mapStatus">
       <span>Uppdates every {{ (updateInterval / 1000).toFixed(1) }}s.</span>
-      <i
-        v-if="isLoadingLiveMap"
-        class="fa fa-spin fa-spinner"
-        aria-hidden="true"/>
-      <i
-        v-if="!isLoadingLiveMap && !getLiveMapError && getLiveMapRequestId"
-        class="fa fa-check"
-        aria-hidden="true"/>
-      <i
-        v-if="!isLoadingLiveMap && getLiveMapError"
-        class="fa fa-warning"
+      <font-awesome
+        :icon="['fas', iconName]"
         :title="getLiveMapError"
-        aria-hidden="true"/>
+        :spin="isLoadingLiveMap"/>
       <label>
         Folllow me
         <input
@@ -48,15 +44,22 @@ export default {
       followMe: false,
       getLiveMapRequestId: 0,
       getLiveMapError: '',
+      initializing: true,
       isLoadingLiveMap: false,
       updateInterval: getUpdateInterval(13)
     };
   },
   computed: {
-    ...mapState({ apiName: ({ api }) => api.name })
+    ...mapState({ apiName: ({ api }) => api.name }),
+    iconName() {
+      if (this.isLoadingLiveMap) return 'spinner';
+      if (this.getLiveMapError) return 'warning';
+      return 'check';
+    }
   },
   mounted() {
     getPositionPromise().then((position) => {
+      this.initializing = false;
       this.map = map.initMap({
         rootElement: document.getElementById('map'),
         position
@@ -219,5 +222,11 @@ export default {
   top: 10px;
   user-select: none;
   z-index: 9999;
+}
+.initSpinner {
+  font-size: 5vw;
+  position: absolute;
+  left: calc(50% - 2.5vw);
+  top: calc(50% - 2.5vw);
 }
 </style>

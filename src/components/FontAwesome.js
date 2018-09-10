@@ -7,12 +7,14 @@ import {
   faCrosshairs,
   faFilter,
   faVolumeUp,
-  faVolumeOff
+  faVolumeOff,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 library.add(
   faMap,
+  faCheck,
   faInfoCircle,
   faSpinner,
   faCrosshairs,
