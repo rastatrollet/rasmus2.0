@@ -57,7 +57,6 @@ export default {
 <style>
 .digital-clock {
   background: var(--brand-color);
-  border-bottom: 1px solid gray;
   color: var(--brand-text-color-dim);
   flex: 1;
   display: none;
