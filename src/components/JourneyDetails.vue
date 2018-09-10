@@ -27,7 +27,7 @@
         <div :class="$style.stopTime">
           {{ stop.rtDepTime || stop.depTime }}
         </div>
-        <div :class="$style.stopName">{{ stop.name }} {{ stop.didPass }}</div>
+        <div :class="$style.stopName">{{ stop.name }}</div>
         <div :class="$style.stopTrack">{{ stop.track }}</div>
       </div>
     </div>
@@ -38,6 +38,20 @@ import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: 'JourneyDetails',
+  data() {
+    return {
+      now: Date.now(),
+      timeoutId: null
+    };
+  },
+  mounted() {
+    this.timeoutId = setInterval(() => {
+      this.now = Date.now();
+    }, 30000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timeoutId);
+  },
   computed: {
     ...mapState(['showJourneyDetails', 'loadingJourneyDetails', 'selectedJourney']),
     journey() {
@@ -52,12 +66,11 @@ export default {
     stops() {
       const journey = this.selectedJourney;
       if (!journey) return [];
-      const now = Date.now();
       return journey.Stop.map((stop) => {
         const departed = new Date(`${stop.depDate}T${stop.depTime}`).getTime();
         return {
           ...stop,
-          didPass: departed < now
+          didPass: departed < this.now
         };
       });
     }
@@ -116,6 +129,7 @@ export default {
 }
 
 .stopList {
+  margin-bottom: 2em;
 }
 .stop {
   display: flex;
@@ -169,11 +183,11 @@ export default {
   height: 0;
 }
 .stopPassed .stopDot {
-  background: blue;
+  background: var(--brand-color);
 }
 .stopPassed .stopDot:before,
 .stopPassed .stopDot:after {
-  background: blue;
+  background: var(--brand-color);
 }
 
 .stopTime {
