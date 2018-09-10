@@ -108,7 +108,7 @@ export default {
   background-color: white;
   border: 0;
   border-collapse: collapse;
-  color: rgb(0, 57, 77);
+  color: var(--darker-text-color);
   width: 100%;
 }
 

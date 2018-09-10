@@ -17,6 +17,12 @@
           v-model="followMe"
           type="checkbox" >
       </label>
+      <label>
+        Show live
+        <input
+          v-model="showLiveMap"
+          type="checkbox" >
+      </label>
     </div>
     <div
       id="map"
@@ -41,6 +47,7 @@ export default {
       vehicles: [],
       markers: [],
       followMe: false,
+      showLiveMap: false,
       getLiveMapRequestId: 0,
       getLiveMapError: '',
       initializing: true,
@@ -123,6 +130,15 @@ export default {
         console.log('unfollowing');
         navigator.geolocation.clearWatch(this.followMeIntervalId);
       }
+    },
+    showLiveMap(showLiveMap) {
+      if (showLiveMap) {
+        this.getLiveMap();
+        this.updateMap();
+      } else {
+        this.removeMarkers();
+        clearTimeout(this.timeoutId);
+      }
     }
   },
   methods: {
@@ -133,6 +149,7 @@ export default {
       });
     },
     updateMap() {
+      if (!this.showLiveMap) return;
       window.requestAnimationFrame(() => {
         this.timeoutId = setTimeout(() => {
           this.getLiveMap().then(this.updateMap);
@@ -140,6 +157,7 @@ export default {
       });
     },
     getLiveMap() {
+      if (!this.showLiveMap) return;
       const requestId = ++this.getLiveMapRequestId;
       const [west, south, east, north] = this.map
         .getBounds()
@@ -194,6 +212,12 @@ export default {
       }, []);
 
       this.markers = [...oldMarkers, ...newMarkers];
+    },
+    removeMarkers() {
+      this.markers.forEach((marker) => {
+        this.map.removeLayer(marker);
+      });
+      this.markers = [];
     }
   }
 };

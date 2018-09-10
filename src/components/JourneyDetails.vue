@@ -2,9 +2,6 @@
   <aside :class="[$style.journeyDetails, { [$style.display]: showJourneyDetails }]">
     <header :class="$style.header">
       <h2 :class="$style.heading">Detaljer</h2>
-      <span v-if="!loadingJourneyDetails">
-        {{ journey.name }} mot {{ journey.direction }}
-      </span>
       <font-awesome
         v-if="loadingJourneyDetails"
         icon="spinner"
@@ -13,6 +10,12 @@
         :class="$style.closeBtn"
         @click.prevent="setShowJourneyDetails(false)">&cross;</button>
     </header>
+    <p :class="$style.journeyMeta">
+      <span v-if="!loadingJourneyDetails">
+        {{ journey.name }} mot {{ journey.direction }}
+      </span>
+      <a :class="$style.mapLink" href="#" @click.prevent="setCurrentTab('Karta')">Visa på karta</a>
+    </p>
     <div
       :class="$style.stopList"
       v-if="!loadingJourneyDetails">
@@ -36,9 +39,9 @@ import { mapState, mapMutations } from 'vuex';
 export default {
   name: 'JourneyDetails',
   computed: {
-    ...mapState(['showJourneyDetails', 'loadingJourneyDetails']),
+    ...mapState(['showJourneyDetails', 'loadingJourneyDetails', 'selectedJourney']),
     journey() {
-      const journey = this.$store.state.selectedJourney;
+      const journey = this.selectedJourney;
       if (!journey) return {};
       const journeyDir = [].concat(journey.Direction);
       return {
@@ -47,7 +50,7 @@ export default {
       };
     },
     stops() {
-      const journey = this.$store.state.selectedJourney;
+      const journey = this.selectedJourney;
       if (!journey) return [];
       const now = Date.now();
       return journey.Stop.map((stop) => {
@@ -60,7 +63,8 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setShowJourneyDetails'])
+    ...mapMutations(['setShowJourneyDetails']),
+    ...mapMutations('tabs', ['setCurrentTab']),
   }
 };
 </script>
@@ -96,6 +100,19 @@ export default {
   cursor: pointer;
   font-size: 1em;
   padding: 0.5em 1em;
+}
+.journeyMeta {
+  color: var(--darker-text-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1em;
+}
+.mapLink {
+  color: var(--brand-color);
+  text-decoration: none;
+}
+.mapLink:hover {
+  text-decoration: underline;
 }
 
 .stopList {
