@@ -18,6 +18,7 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
+import InformationPage from './components/InformationPage.vue';
 import DigitalClock from './components/DigitalClock.vue';
 import StationInfo from './components/StationInfo.vue';
 import Tabs from './components/Tabs.vue';
@@ -54,8 +55,9 @@ export default {
   components: {
     MapComponent: () => import('./components/Map.vue'),
     Tabs,
+    StationInfo,
     DigitalClock,
-    StationInfo
+    InformationPage
   },
   data() {
     return {

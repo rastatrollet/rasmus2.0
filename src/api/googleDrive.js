@@ -33,12 +33,17 @@ const files = {
   }
 };
 
-/**
- *  On load, called to load the auth2 library and API client library.
- */
-window.handleClientLoad = function handleClientLoad() {
-  gapi.load('client:auth2', initClient);
-};
+let initialized = false;
+async function init() {
+  if (initialized) return;
+  const script = document.createElement('script');
+  script.addEventListener('load', () => {
+    initialized = true;
+    gapi.load('client:auth2', initClient);
+  });
+  script.src = 'https://apis.google.com/js/api.js';
+  document.body.appendChild(script);
+}
 
 /**
  *  Initializes the API client library and sets up sign-in state
@@ -66,15 +71,14 @@ function initClient() {
       discoveryDocs: DISCOVERY_DOCS,
       scope: SCOPES
     })
-    .then(() => console.log('gapi initiated'))
     .then(resolveGooglePromise)
     .catch(rejectGooglePromise);
 }
 
-function printInfoDoc() {
+function printInfoDoc(elementId) {
   return googleInitPromise.then(() =>
     getFile(files.infoDoc)
-      .then(printFile)
+      .then((response) => printFile(response, elementId))
       .catch((e) => console.error(e))
   );
 }
@@ -122,13 +126,14 @@ function getFile(options) {
 /**
  * Print file
  */
-function printFile(response) {
+function printFile(response, elementId) {
   const content = response.body.match(/<body[^>]*>(.*)<\/body><\/html>$/)[1];
-  const doc = document.getElementById('gdoc');
+  const doc = document.getElementById(elementId);
   doc.innerHTML = content;
 }
 
 export default {
+  init,
   printInfoDoc,
   getManualDepartures
 };
