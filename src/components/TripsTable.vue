@@ -1,5 +1,5 @@
 <template>
-  <div 
+  <div
     :class="[$style.tripsTable, {
       [$style.VT]: apiName === 'VT',
       [$style.TV]: apiName === 'TV',
@@ -61,6 +61,8 @@
 </template>
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import debounce from '../util/debounce';
+import { speak } from '../util/speechSynthesis';
 
 export default {
   name: 'TripsTable',
@@ -70,6 +72,9 @@ export default {
       default: ''
     }
   },
+  mounted() {
+    this.speak = debounce(this.speak, 250, this);
+  },
   computed: {
     ...mapState({
       showJourneyDetails: (state) => state.showJourneyDetails,
@@ -77,7 +82,8 @@ export default {
     }),
     ...mapState('trips', {
       isLoading: ({ isLoading }) => isLoading,
-      location: ({ location }) => location
+      location: ({ location }) => location,
+      doSpeak: ({ options }) => options.voice
     }),
     ...mapGetters({ trips: 'trips/filteredTrips' }),
     ...mapGetters('api', ['dict']),
@@ -88,8 +94,28 @@ export default {
       return this.dict.track;
     }
   },
+  watch: {
+    trips(trips) { this.speak(trips); }
+  },
   methods: {
-    ...mapActions(['getJourneyDetails'])
+    ...mapActions(['getJourneyDetails']),
+    speak(trips) {
+      console.log('trips updated', trips.length, this.doSpeak);
+      if (trips.length < 1 || !this.doSpeak) return;
+      const { name, direction, timestamp } = trips[0];
+      const inMinutes = Math.ceil((timestamp - Date.now()) / (1000 * 60));
+      if (inMinutes <= 0) {
+        speak(`${name} mot ${direction}, avgår nu`);
+      } else if (inMinutes === 1) {
+        speak(`${name} mot ${direction}, avgår om en minut`);
+      } else if (inMinutes > 1 && inMinutes <= 60) {
+        speak(
+          `${name} mot ${direction}, avgår om ${inMinutes} minuter`
+        );
+      } else {
+        speak(`${name} mot ${direction}, avgår om mer än en timma`);
+      }
+    }
   }
 };
 </script>

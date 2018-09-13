@@ -1,5 +1,4 @@
 import getDestinationVia from '../util/getDestinationVia';
-// import { speak } from '../util/speechSynthesis';
 
 const initialFilter = {
   track: '',
@@ -20,10 +19,7 @@ const optionKeys = Object.keys(initialOptions);
 const state = {
   arrivals: false,
   filter: { ...initialFilter },
-  options: {
-    isLive: true,
-    voice: false
-  },
+  options: { ...initialOptions },
   trips: [],
   situations: { ...initialSituations },
   isLoading: false,
@@ -35,6 +31,7 @@ const getters = {
     // return trips.filter(() => true);
     const { track, dest } = filter;
     const { affectedLines = [] } = situations;
+    // TODO: make manual trips work
     // const now = Date.now();
     // const filteredManual = this.manualTrips
     //   .filter(({ origin }) => origin === this.location.name)
@@ -56,25 +53,6 @@ const getters = {
 };
 
 const actions = {
-  speakOut() {
-    // if (this.filteredTrips.length) {
-    //   const { name, direction, timestamp } = this.filteredTrips[0];
-    //   const inMinutes = Math.ceil((timestamp - Date.now()) / (1000 * 60));
-    //   if (this.voice) {
-    //     if (inMinutes <= 0) {
-    //       speak(`${name} mot ${direction}, avgår nu`);
-    //     } else if (inMinutes === 1) {
-    //       speak(`${name} mot ${direction}, avgår om en minut`);
-    //     } else if (inMinutes > 1 && inMinutes <= 60) {
-    //       speak(
-    //         `${name} mot ${direction}, avgår om ${inMinutes} minuter`
-    //       );
-    //     } else {
-    //       speak(`${name} mot ${direction}, avgår om mer än en timma`);
-    //     }
-    //   }
-    // }
-  },
   getTrips({ commit, state, rootGetters }, location) {
     const getTripsMethod = state.arrivals
       ? rootGetters['api/api']['getArrivalsTo']
