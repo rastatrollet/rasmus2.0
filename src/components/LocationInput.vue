@@ -16,7 +16,7 @@
         @focus="showDropDown"
         @blur="possiblyHideDropDown"
         @keyup.enter="selectFirstSuggestion"
-        @keydown="handleKeyInput">
+        @keyup="handleKeyInput">
       <font-awesome
         class="location-input__spinner"
         icon="spinner"
