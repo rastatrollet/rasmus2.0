@@ -12,7 +12,7 @@
           <th>{{ metaLabel }}</th>
           <th>Tid</th>
           <th>{{ fromToLabel }}</th>
-          <th class="from-tablet">Ny tid</th>
+          <th :class="$style.tripNewTime">Ny tid</th>
           <th>{{ trackLabel }}</th>
         </tr>
       </thead>
@@ -49,7 +49,7 @@
             </div>
             <div :class="$style.tripVia"><small v-if="trip.via"> via {{ trip.via }}</small></div>
           </td>
-          <td :class="['from-tablet', $style.tripTime, $style.isLate]"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
+          <td :class="[$style.tripNewTime, $style.isLate]"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
           <td :class="$style.tripTrack">{{ trip.track }}</td>
         </tr>
         <tr v-show="!isLoading && location && trips.length === 0">
@@ -174,8 +174,12 @@ export default {
 .tripName {
   font-weight: 500;
 }
-.tripTime {
+.tripTime,
+.tripNewTime {
   width: 60px;
+}
+.tripNewTime {
+  display: none;
 }
 .isLate {
   color: var(--brand-color);
@@ -183,6 +187,12 @@ export default {
 .tripTrack {
   text-align: center;
   width: 50px;
+}
+
+@media screen and (min-width: 450px) {
+  .tripNewTime {
+    display: table-cell;
+  }
 }
 
 /***
