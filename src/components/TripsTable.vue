@@ -95,12 +95,13 @@ export default {
     }
   },
   watch: {
-    trips(trips) { this.speak(trips); }
+    trips(trips) {
+      this.speak(trips);
+    }
   },
   methods: {
     ...mapActions(['getJourneyDetails']),
-    speak(trips) {
-      console.log('trips updated', trips.length, this.doSpeak);
+    speak(trips) {
       if (trips.length < 1 || !this.doSpeak) return;
       const { name, direction, timestamp } = trips[0];
       const inMinutes = Math.ceil((timestamp - Date.now()) / (1000 * 60));
@@ -109,9 +110,7 @@ export default {
       } else if (inMinutes === 1) {
         speak(`${name} mot ${direction}, avgår om en minut`);
       } else if (inMinutes > 1 && inMinutes <= 60) {
-        speak(
-          `${name} mot ${direction}, avgår om ${inMinutes} minuter`
-        );
+        speak(`${name} mot ${direction}, avgår om ${inMinutes} minuter`);
       } else {
         speak(`${name} mot ${direction}, avgår om mer än en timma`);
       }

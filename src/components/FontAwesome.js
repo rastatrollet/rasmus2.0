@@ -2,25 +2,27 @@ import Vue from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faMap,
-  faInfoCircle,
-  faSpinner,
-  faCrosshairs,
+  faSync,
+  faCheck,
   faFilter,
+  faSpinner,
   faVolumeUp,
   faVolumeOff,
-  faCheck
+  faInfoCircle,
+  faCrosshairs
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 library.add(
   faMap,
+  faSync,
   faCheck,
-  faInfoCircle,
-  faSpinner,
-  faCrosshairs,
   faFilter,
+  faSpinner,
   faVolumeUp,
-  faVolumeOff
+  faVolumeOff,
+  faInfoCircle,
+  faCrosshairs
 );
 
 Vue.component('font-awesome', FontAwesomeIcon);

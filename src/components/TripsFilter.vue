@@ -8,8 +8,8 @@
       <span class="from-tablet">Filter:</span>
     </div>
     <div :class="$style.filter">
-      <select 
-        @change="updateFilter" 
+      <select
+        @change="updateFilter"
         name="dest">
         <option value="">{{ fromToLabel }}</option>
         <option
@@ -20,8 +20,8 @@
       </select>
     </div>
     <div :class="$style.filter">
-      <select 
-        @change="updateFilter" 
+      <select
+        @change="updateFilter"
         name="track">
         <option value="">Läge</option>
         <option
@@ -32,8 +32,8 @@
       </select>
     </div>
     <!-- <div :class="$style.filter">
-      <select 
-        @change="updateFilter" 
+      <select
+        @change="updateFilter"
         name="timeSpan">
         <option value="">{{ arriveDepartLabel }} inom</option>
         <option
@@ -64,10 +64,18 @@
           name="voice">
       </label>
     </div>
+    <div :class="$style.filter">
+      <button
+        :class="$style.refreshBtn"
+        @click.prevent="getTrips()"
+        title="Uppdatera">
+        <font-awesome icon="sync"/>
+      </button>
+    </div>
   </div>
 </template>
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
 import getFormData from '../util/getFormData';
 
@@ -118,6 +126,7 @@ export default {
   },
   methods: {
     ...mapMutations('trips', ['setFilter', 'setOptions']),
+    ...mapActions('trips', ['getTrips']),
     updateFilter({ target }) {
       const filter = getFormData(target);
       if (!filter) return;
@@ -145,5 +154,15 @@ export default {
 }
 .voiceCheckbox {
   display: none;
+}
+.refreshBtn {
+  background: transparent;
+  border: 0;
+  color: currentColor;
+  cursor: pointer;
+  font-size: 1em;
+}
+.refreshBtn:focus {
+  outline: none;
 }
 </style>

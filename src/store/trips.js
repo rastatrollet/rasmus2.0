@@ -53,7 +53,7 @@ const getters = {
 };
 
 const actions = {
-  getTrips({ commit, state, rootGetters }, location) {
+  getTrips({ commit, state, rootGetters }, location = state.location) {
     const getTripsMethod = state.arrivals
       ? rootGetters['api/api']['getArrivalsTo']
       : rootGetters['api/api']['getDeparturesFrom'];
