@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VuexPersistence from 'vuex-persist';
 
 import apis from '../api';
 import user from './user';
@@ -9,6 +10,13 @@ import tabs from './tabs';
 import api from './api';
 
 Vue.use(Vuex);
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage,
+  reducer: (state) => ({
+    trips: state.trips,
+    api: state.api
+  })
+});
 
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
@@ -54,5 +62,6 @@ export default new Vuex.Store({
     trips,
     stops,
     tabs
-  }
+  },
+  plugins: [vuexLocal.plugin]
 });
