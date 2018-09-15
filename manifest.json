@@ -1,0 +1,21 @@
+{
+  "short_name": "Resmus",
+  "name": "Rasmus rese-app",
+  "description": "Avgångar, ankomster och karta byggt mha öppna APIer",
+  "icons": [
+    {
+      "src": "/rasmus2.0/img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/rasmus2.0/img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/rasmus2.0/index.html",
+  "display": "standalone",
+  "background_color": "#eeeeee",
+  "theme_color": "#009ddb"
+}
