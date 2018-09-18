@@ -16,10 +16,7 @@
     <footer
       v-if="location"
       :class="$style.situations">
-      <p
-        v-for="(msg, index) in situations.messages"
-        :key="index">{{ msg }}</p>
-      <p v-if="situations.messages.length === 0">Inga trafikstörningar.</p>
+      <MessageCarousel :messages="situations.messages" />
     </footer>
   </section>
 </template>
@@ -29,6 +26,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import apis from '../api';
 import googleDrive from '../api/googleDrive';
 
+import MessageCarousel from './MessageCarousel.vue';
 import JourneyDetails from './JourneyDetails.vue';
 import LocationInput from './LocationInput.vue';
 import TripsTable from './TripsTable.vue';
@@ -51,7 +49,8 @@ export default {
     LocationInput,
     JourneyDetails,
     TripsTable,
-    TripsFilter
+    TripsFilter,
+    MessageCarousel
   },
   props: {
     arrivals: {
@@ -116,16 +115,6 @@ export default {
         });
       }
     }
-    // TODO: move this into trips
-    // refreshDepartures() {
-    //   clearTimeout(this.lastTimeoutId);
-    //   window.requestAnimationFrame(() => {
-    //     this.lastTimeoutId = setTimeout(() => {
-    //       this.getDepartures();
-    //       this.refreshDepartures();
-    //     }, 30000);
-    //   });
-    // }
   }
 };
 </script>
