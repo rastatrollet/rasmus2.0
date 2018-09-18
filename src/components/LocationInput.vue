@@ -131,10 +131,6 @@ export default {
     ...mapActions('trips', ['updateLocation']),
     onInput({ target: { value } }) {
       this.debouncedFindStops(value);
-      // TODO: make it work
-      // .then((stops) => {
-      //   if (stops.length) this.showDropDown();
-      // });
     },
     onSelect(location) {
       this.searchText = location.name;

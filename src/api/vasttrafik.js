@@ -55,7 +55,7 @@ function transformTrips(trips) {
     const time = trip.rtTime || trip.time;
     const date = trip.rtDate || trip.date;
     const timestamp = new Date(`${date}T${time}`).getTime();
-    // const journeyDetail = await anropaVasttrafik(trip.JourneyDetailRef.ref);
+
     return Object.assign({}, trip, {
       region: 'VT',
       cancelled: Boolean(trip.cancelled),

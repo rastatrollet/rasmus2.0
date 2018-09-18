@@ -104,7 +104,7 @@ export default {
     speak(trips) {
       if (trips.length < 1 || !this.doSpeak) return;
       const { name, direction, timestamp } = trips[0];
-      const via = trips[0].via && `via ${trips[0].via},` || '';
+      const via = (trips[0].via && `via ${trips[0].via},`) || '';
       const inMinutes = Math.ceil((timestamp - Date.now()) / (1000 * 60));
       if (inMinutes <= 0) {
         speak(`${name} mot ${direction}, ${via} avgår nu`);
