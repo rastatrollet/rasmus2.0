@@ -152,6 +152,9 @@ export default {
   cursor: pointer;
   padding: 1em;
 }
+.dotBtn:focus {
+  outline: none;
+}
 
 .dot {
   background-color: rgba(255, 255, 255, 0.5);
