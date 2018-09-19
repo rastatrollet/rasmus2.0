@@ -10,7 +10,7 @@ let selectedVoice;
 function loadVoices() {
   // Fetch the available voices.
   voices = window.speechSynthesis.getVoices();
-  selectedVoice = voices.find(({ name }) => name == 'Alva');
+  selectedVoice = voices.find((voice) => /sv-SE/.test(voice.lang));
   // Loop through each of the voices.
 }
 
