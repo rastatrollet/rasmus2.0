@@ -25,6 +25,7 @@ import Tabs from './components/Tabs.vue';
 
 const baseTab = {
   icon: '',
+  className: '',
   props: { arrivals: false },
   onClick() {}
 };
@@ -73,7 +74,8 @@ export default {
           name: this.apiName,
           small: true,
           onClick: this.toggleApi,
-          initializing: this.initializing
+          initializing: this.initializing,
+          className: this.apiName
         },
         ...components.map((comp) => ({
           ...baseTab,
@@ -148,6 +150,16 @@ body {
 .from-tablet,
 .from-desktop {
   display: none;
+}
+
+.VT {
+  background-color: #ee7201;
+}
+.TV {
+  background-color: #d12d2c;
+}
+.SL {
+  background-color: #039cd5;
 }
 
 @media (min-width: 450px) {
