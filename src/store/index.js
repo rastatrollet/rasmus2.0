@@ -21,12 +21,20 @@ const vuexLocal = new VuexPersistence({
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    online: true,
     selectedJourney: null,
+    updateAvailable: false,
     showJourneyDetails: false,
     loadingJourneyDetails: false
   },
   getters: {},
   mutations: {
+    setOnline(state, value) {
+      state.online = value;
+    },
+    setUpdateAvailable(state, value) {
+      state.updateAvailable = value;
+    },
     selectJourney(state, journey) {
       state.selectedJourney = journey;
     },

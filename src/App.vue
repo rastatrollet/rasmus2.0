@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <UpdateAvailable />
+    <OfflineIndicator />
     <div class="top-nav">
       <Tabs
         :tabs="tabs"
@@ -21,6 +23,8 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import InformationPage from './components/InformationPage.vue';
 import DigitalClock from './components/DigitalClock.vue';
 import StationInfo from './components/StationInfo.vue';
+import UpdateAvailable from './components/UpdateAvailable.vue';
+import OfflineIndicator from './components/OfflineIndicator.vue';
 import Tabs from './components/Tabs.vue';
 
 const baseTab = {
@@ -58,7 +62,9 @@ export default {
     Tabs,
     StationInfo,
     DigitalClock,
-    InformationPage
+    UpdateAvailable,
+    InformationPage,
+    OfflineIndicator
   },
   computed: {
     ...mapState({
