@@ -54,6 +54,8 @@ const getters = {
 
 const actions = {
   getTrips({ commit, state, rootGetters }, location = state.location) {
+    if (!location) return commit('setTrips', []);
+
     const getTripsMethod = state.arrivals
       ? rootGetters['api/api']['getArrivalsTo']
       : rootGetters['api/api']['getDeparturesFrom'];
@@ -72,6 +74,8 @@ const actions = {
       });
   },
   getTrafficSituations({ commit, rootGetters }, location) {
+    if (!location) return commit('setSituations', { ...initialSituations });
+
     return rootGetters['api/api']
       .getTrafficSituations(location.id, 'stoparea') // WTF?
       .then((situations) => {

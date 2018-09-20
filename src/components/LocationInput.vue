@@ -1,7 +1,6 @@
 <template>
   <div
-    :class="{ 'with-label': label }"
-    class="location-input"
+    :class="[$style.locationInput, { [$style.withLabel]: label }]"
     @focus="showDropDown"
     @keyup.esc="hideDropDown">
 
@@ -18,19 +17,24 @@
         @keyup.enter="selectFirstSuggestion"
         @keyup="handleKeyInput">
       <font-awesome
-        class="location-input__spinner"
+        :class="$style.spinner"
         icon="spinner"
         spin
         v-if="isLoading"
         aria-hidden="true"/>
+      <Button 
+        v-if="selectedLocation" 
+        :class="$style.resetLocationBtn" 
+        :onClick="resetLocation" 
+        icon="times" />
     </label>
 
     <ul
       v-show="show"
-      class="location-input__suggestions">
+      :class="$style.suggestions">
       <li
         v-if="showUseMyLocation"
-        class="location-input__suggestion"
+        :class="$style.suggestion"
         @keyup="handleKeyInput">
         <button @click.prevent="getNearbyStops">
           <font-awesome icon="crosshairs"/>
@@ -45,7 +49,7 @@
         v-for="stop in nearbyStops"
         v-if="showNearbyStops"
         :key="stop.name"
-        class="location-input__suggestion"
+        :class="$style.suggestion"
         @keyup="handleKeyInput">
         <button
           @click.prevent="onSelect(stop)"
@@ -53,13 +57,13 @@
       </li>
       <li
         v-if="searchText && !stops.length && !isLoading"
-        class="location-input__suggestion">
+        :class="$style.suggestion">
         <button @click.prevent>Inga resultat för söktermen</button>
       </li>
       <li
         v-for="suggestion in stops"
         :key="suggestion.id"
-        class="location-input__suggestion"
+        :class="$style.suggestion"
         @keyup="handleKeyInput">
         <button
           @click.prevent="onSelect(suggestion)"
@@ -71,15 +75,20 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 
+import Button from './Button.vue';
 import debounce from '../util/debounce';
 
 export default {
   name: 'LocationInput',
   mounted() {
+    this.debouncedFindStops = debounce(this.findStops, 350, this);
     if (this.selectedLocation) {
       this.searchText = this.selectedLocation.name;
+      this.debouncedFindStops(this.selectedLocation.name);
     }
-    this.debouncedFindStops = debounce(this.findStops, 350, this);
+  },
+  components: {
+    Button
   },
   props: {
     label: {
@@ -157,7 +166,7 @@ export default {
         this.hasSuggestions
       ) {
         const focused = this.$el.querySelector(
-          `.location-input__suggestions ${btnElement}:focus`
+          `.${this.$style.suggestions} ${btnElement}:focus`
         );
         if (focused) {
           const next = getSibling(focused);
@@ -166,7 +175,7 @@ export default {
           }
         } else {
           this.$el
-            .querySelector(`.location-input__suggestions ${btnElement}`)
+            .querySelector(`.${this.$style.suggestions} ${btnElement}`)
             .focus();
         }
       }
@@ -181,47 +190,27 @@ export default {
     possiblyHideDropDown(e) {
       if (e.relatedTarget && this.$el.contains(e.relatedTarget)) return;
       this.hideDropDown();
+    },
+    resetLocation() {
+      this.updateLocation(null);
     }
   }
 };
 </script>
-<style>
-.location-input {
+<style module>
+.locationInput {
   --left-offset: 80px;
   position: relative;
   line-height: 2em;
   margin-top: 0.5em;
 }
 
-.location-input .nearby-stations {
-  list-style-type: none;
-  padding: 0;
-}
-
-.location-input.with-label .nearby-stations {
-  margin: 0 0 0 var(--left-offset);
-  font-size: small;
-}
-
-.location-input .nearby-stations li {
-  display: inline-block;
-}
-.location-input .nearby-stations .nearby-station {
-  background: var(--brand-color);
-  color: var(--brand-text-color);
-  display: block;
-  line-height: 1.5em;
-  margin-left: 5px;
-  padding: 0 0.5em;
-  text-decoration: none;
-}
-
-.location-input label {
+.locationInput label {
   display: block;
   position: relative;
 }
 
-.location-input input {
+.locationInput input {
   -webkit-appearance: none;
   border: 1px solid whitesmoke;
   font: inherit;
@@ -230,18 +219,28 @@ export default {
   position: absolute;
   width: 100%;
 }
-.location-input input:focus {
+.locationInput input:focus {
   border: 1px solid gray;
   outline: none;
 }
 
-.location-input__spinner {
+.spinner {
   position: absolute;
   right: 0.5em;
   top: 25%;
 }
 
-.location-input__suggestions {
+.resetLocationBtn {
+  background: white;
+  line-height: 1em;
+  padding: 8px;
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  height: 100%;
+}
+
+.suggestions {
   background: var(--brand-color);
   list-style: none;
   font-size: 0.875em;
@@ -253,21 +252,16 @@ export default {
   z-index: 10;
 }
 
-.location-input__suggestion .fa {
-  position: initial;
-  margin-left: 0.5em;
-}
-
-.location-input.with-label input,
-.location-input.with-label .location-input__suggestions {
+.withLabel input,
+.withLabel .suggestions {
   left: var(--left-offset);
   width: calc(100% - var(--left-offset));
 }
 
-.location-input__suggestion:first-child {
+.suggestion:first-child {
   border-top: 1px solid var(--brand-color);
 }
-.location-input__suggestion:first-child:before {
+.suggestion:first-child:before {
   --arrow-size: 5px;
   border-left: var(--arrow-size) solid transparent;
   border-right: var(--arrow-size) solid transparent;
@@ -281,7 +275,7 @@ export default {
   height: 0;
 }
 
-.location-input__suggestion button {
+.suggestion button {
   -webkit-appearance: none;
   background: transparent;
   border: 0;
@@ -295,15 +289,15 @@ export default {
   width: 100%;
 }
 
-.location-input__suggestion:first-child button {
+.suggestion:first-child button {
   padding-top: 0.75em;
 }
-.location-input__suggestion:last-child button {
+.suggestion:last-child button {
   padding-bottom: 0.75em;
 }
 
-.location-input__suggestions button:hover,
-.location-input__suggestions button:focus {
+.suggestions button:hover,
+.suggestions button:focus {
   background: whitesmoke;
   color: var(--brand-color);
   outline: none;
