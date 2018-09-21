@@ -2,6 +2,7 @@
   <div id="app">
     <UpdateAvailable />
     <OfflineIndicator />
+    <div class="build-info">build: {{ buildTime }}</div>
     <div class="top-nav">
       <Tabs
         :tabs="tabs"
@@ -65,6 +66,11 @@ export default {
     UpdateAvailable,
     InformationPage,
     OfflineIndicator
+  },
+  data() {
+    return {
+      buildTime: process.env.BUILD_TIME
+    };
   },
   computed: {
     ...mapState({
@@ -141,6 +147,20 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.build-info {
+  background-color: var(--brand-color);
+  color: var(--brand-text-color);
+  font-size: 10px;
+  padding: 4em 1em 1em;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transform: translateY(-100%);
+  will-change: transform;
 }
 
 .top-nav {
