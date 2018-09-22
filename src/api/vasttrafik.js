@@ -54,12 +54,14 @@ function transformTrips(trips) {
     const isLate = trip.rtTime && trip.rtTime !== trip.time;
     const time = trip.rtTime || trip.time;
     const date = trip.rtDate || trip.date;
+    const bgColor = trip.bgColor || 'white';
     const timestamp = new Date(`${date}T${time}`).getTime();
 
     return Object.assign({}, trip, {
       region: 'VT',
       cancelled: Boolean(trip.cancelled),
       isLate,
+      bgColor,
       timestamp
     });
   });
