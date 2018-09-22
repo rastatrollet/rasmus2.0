@@ -15,6 +15,7 @@ import './components/FontAwesome';
 
 Vue.config.productionTip = false;
 store.dispatch('api/initApi');
+store.dispatch('trips/loadManualDepartures');
 
 new Vue({
   store,

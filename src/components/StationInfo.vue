@@ -23,9 +23,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-import apis from '../api';
-import googleDrive from '../api/googleDrive';
-
 import MessageCarousel from './MessageCarousel.vue';
 import JourneyDetails from './JourneyDetails.vue';
 import LocationInput from './LocationInput.vue';
@@ -58,11 +55,6 @@ export default {
       default: false
     }
   },
-  data() {
-    return {
-      manualTrips: []
-    };
-  },
   computed: {
     ...mapState('trips', ['location', 'situations']),
     ...mapState('api', {
@@ -94,27 +86,14 @@ export default {
     apiName(newVal, oldVal) {
       if (newVal !== oldVal) {
         clearTimeout(this.lastTimeoutId);
-        this.loadManualDepartures();
       }
     }
-  },
-  mounted() {
-    this.loadManualDepartures();
   },
   beforeDestroy() {
     clearTimeout(this.lastTimeoutId);
   },
   methods: {
-    ...mapActions('trips', ['getTrips']),
-    // TODO: move this somewhere else
-    loadManualDepartures() {
-      if (this.apiName === 'SOMETHING THAT DOES NOT EXIST') {
-        googleDrive.getManualDepartures().then((res) => {
-          this.manualTrips = apis.VT.transformTrips(res);
-          console.log('this.manualTrips', this.manualTrips);
-        });
-      }
-    }
+    ...mapActions('trips', ['getTrips'])
   }
 };
 </script>

@@ -56,9 +56,9 @@ const googleInitPromise = new Promise((resolve, reject) => {
   rejectGooglePromise = reject;
 }).then(() => {
   // Listen for sign-in state changes.
-  // gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+  gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
   // Handle the initial sign-in state.
-  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
     return gapi.auth2.getAuthInstance().signIn();
   }
 });
@@ -76,6 +76,7 @@ function initClient() {
 }
 
 function printInfoDoc(elementId) {
+  init();
   return googleInitPromise.then(() =>
     getFile(files.infoDoc)
       .then((response) => printFile(response, elementId))
@@ -84,6 +85,7 @@ function printInfoDoc(elementId) {
 }
 
 function getManualDepartures() {
+  init();
   return googleInitPromise.then(() =>
     getFile(files.manualDepartures)
       .then(({ body }) => body)
@@ -106,15 +108,11 @@ function getManualDepartures() {
  *  Called when the signed in status changes, to update the UI
  *  appropriately. After a sign-in, the API is called.
  */
-// function updateSigninStatus(isSignedIn) {
-//   if (isSignedIn) {
-//   } else {
-//     gapi.auth2
-//       .getAuthInstance()
-//       .signIn()
-//       .then(() => console.log("signed in"));
-//   }
-// }
+function updateSigninStatus(isSignedIn) {
+  if (!isSignedIn) {
+    gapi.auth2.getAuthInstance().signIn();
+  }
+}
 
 /**
  * getFile

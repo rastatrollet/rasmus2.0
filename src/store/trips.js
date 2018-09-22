@@ -1,3 +1,5 @@
+import apis from '../api';
+import googleDrive from '../api/googleDrive';
 import getDestinationVia from '../util/getDestinationVia';
 
 const initialFilter = {
@@ -21,24 +23,23 @@ const state = {
   filter: { ...initialFilter },
   options: { ...initialOptions },
   trips: [],
+  manualTrips: [],
   situations: { ...initialSituations },
   isLoading: false,
   location: null
 };
 
 const getters = {
-  filteredTrips({ trips, filter, situations }) {
-    // return trips.filter(() => true);
+  filteredTrips({ trips, manualTrips, location, filter, situations }) {
     const { track, dest } = filter;
     const { affectedLines = [] } = situations;
     // TODO: make manual trips work
-    // const now = Date.now();
-    // const filteredManual = this.manualTrips
-    //   .filter(({ origin }) => origin === this.location.name)
-    //   .filter(({ timestamp }) => timestamp > now);
-    // return [...filteredManual, ...filteredTrips]
+    const now = Date.now();
+    const filteredManual = manualTrips
+      .filter(({ origin }) => origin === location.name)
+      .filter(({ timestamp }) => timestamp > now);
 
-    return trips
+    return [...trips, ...filteredManual]
       .map((trip) => ({
         ...trip,
         isAffected: affectedLines.includes(trip.sname)
@@ -53,6 +54,11 @@ const getters = {
 };
 
 const actions = {
+  loadManualDepartures({ commit }) {
+    googleDrive.getManualDepartures().then((res) => {
+      commit('setManualTrips', apis.VT.transformTrips(res));
+    });
+  },
   getTrips({ commit, state, rootGetters }, location = state.location) {
     if (!location) return commit('setTrips', []);
 
@@ -129,6 +135,9 @@ const mutations = {
   },
   setTrips(state, trips) {
     state.trips = trips;
+  },
+  setManualTrips(state, trips) {
+    state.manualTrips = trips;
   },
   setSituations(state, situations) {
     state.situations = situations;
