@@ -5,7 +5,11 @@ module.exports = {
   pwa: {
     themeColor: '#009ddb',
     msTileColor: '',
-    appleMobileWebAppCapable: 'yes'
+    appleMobileWebAppCapable: 'yes',
+    workboxPluginMode: 'InjectManifest',
+    workboxOptions: {
+      swSrc: 'src/serviceWorker.js'
+    }
   },
   configureWebpack: {
     plugins: [
