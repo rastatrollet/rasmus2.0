@@ -36,7 +36,7 @@ const getters = {
     // TODO: make manual trips work
     const now = Date.now();
     const filteredManual = manualTrips
-      .filter(({ origin }) => origin === location.name)
+      .filter(({ origin }) => location && origin === location.name)
       .filter(({ timestamp }) => timestamp > now);
 
     return [...trips, ...filteredManual]
@@ -95,8 +95,12 @@ const actions = {
 
     console.log('[updateLocation]', location);
     commit('setLocation', location);
-    dispatch('getTrips', location);
-    dispatch('getTrafficSituations', location);
+    if (location) {
+      dispatch('getTrips', location);
+      dispatch('getTrafficSituations', location);
+    } else {
+      commit('reset');
+    }
   }
 };
 
