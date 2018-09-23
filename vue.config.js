@@ -8,7 +8,7 @@ module.exports = {
     appleMobileWebAppCapable: 'yes',
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: 'src/serviceWorker.js'
+      swSrc: 'src/service-worker.js'
     }
   },
   configureWebpack: {
