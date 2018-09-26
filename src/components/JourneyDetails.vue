@@ -67,9 +67,11 @@ export default {
       if (!journey) return {};
       const names = [].concat(journey.JourneyName);
       if (names.length === 0) {
-        bugsnagClient.notify(Error(`No name for jurney ${journey}, ${journey.JourneyName}`));
+        bugsnagClient.notify(
+          Error(`No name for jurney ${journey}, ${journey.JourneyName}`)
+        );
         return {};
-      };
+      }
       const journeyDir = [].concat(journey.Direction);
       return {
         name: names[0].name,
