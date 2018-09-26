@@ -14,9 +14,9 @@
       <span v-if="!loadingJourneyDetails">
         {{ journey.name }} mot {{ journey.direction }}
       </span>
-      <a 
-        :class="$style.mapLink" 
-        href="#" 
+      <a
+        :class="$style.mapLink"
+        href="#"
         @click.prevent="setCurrentTab('Karta')">Visa på karta</a>
     </p>
     <div
@@ -38,6 +38,7 @@
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex';
+import bugsnagClient from '../util/bugsnag';
 
 export default {
   name: 'JourneyDetails',
@@ -64,9 +65,14 @@ export default {
     journey() {
       const journey = this.selectedJourney;
       if (!journey) return {};
+      const names = [].concat(journey.JourneyName);
+      if (names.length === 0) {
+        bugsnagClient.notify(Error(`No name for jurney ${journey}, ${journey.JourneyName}`));
+        return {};
+      };
       const journeyDir = [].concat(journey.Direction);
       return {
-        name: [].concat(journey.JourneyName)[0].name,
+        name: names[0].name,
         direction: journeyDir[journeyDir.length - 1].$
       };
     },
