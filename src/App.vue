@@ -104,6 +104,16 @@ export default {
       return this.tabs.find(({ name }) => name === this.currentTab);
     }
   },
+  watch: {
+    apiName() {
+      if (
+        this.currentTab === 'Ankomster' &&
+        typeof this.api.getArrivalsTo !== 'function'
+      ) {
+        this.setCurrentTab('Avgångar');
+      }
+    }
+  },
   methods: {
     ...mapMutations('trips', ['setArrivals']),
     ...mapMutations('tabs', ['setCurrentTab']),
