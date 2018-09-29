@@ -91,12 +91,17 @@ function getDeparturesFrom(id, timeSpan) {
   if (timeSpan) {
     requestUrl = `${requestUrl}&timeSpan=${timeSpan}`;
   }
-  return (
-    getTimeTable(id, requestUrl)
-      .then((json) => json.DepartureBoard.Departure || [])
-      // .then(filterSimilar)
-      .then(transformTrips)
-  );
+  return getTimeTable(id, requestUrl)
+    .then((json) => json.DepartureBoard.Departure || [])
+    .then((trips) =>
+      trips.filter(
+        ({ journeyid }, idx) =>
+          !trips
+            .slice(0, idx)
+            .some((prevTrip) => prevTrip.journeyid === journeyid)
+      )
+    )
+    .then(transformTrips);
 }
 
 function getTimeTable(id, requestUrl) {
