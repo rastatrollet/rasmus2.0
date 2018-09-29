@@ -10,7 +10,7 @@ let selectedVoice;
 function loadVoices() {
   // Fetch the available voices.
   voices = window.speechSynthesis.getVoices();
-  selectedVoice = voices.find((voice) => /sv[-_]SE/.test(voice.lang));
+  selectedVoice = voices.find((voice) => /Alva/i.test(voice.name));
   // Loop through each of the voices.
 }
 
@@ -18,9 +18,7 @@ function loadVoices() {
 if (isSupported) loadVoices();
 
 // Chrome loads voices asynchronously.
-window.speechSynthesis.onvoiceschanged = function() {
-  loadVoices();
-};
+window.speechSynthesis.onvoiceschanged = loadVoices;
 
 // Create a new utterance for the specified text and add it to
 // the queue.
