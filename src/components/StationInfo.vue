@@ -115,6 +115,5 @@ export default {
   color: var(--brand-text-color);
   line-height: 1.4em;
   margin: 0;
-  padding: 1em 1.5em;
 }
 </style>

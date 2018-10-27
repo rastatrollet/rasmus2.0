@@ -10,10 +10,11 @@
       <thead :class="$style.tableHead">
         <tr>
           <th>{{ metaLabel }}</th>
-          <th>Tid</th>
           <th>{{ fromToLabel }}</th>
+          <th>Tid</th>
           <th :class="$style.tripNewTime">Ny tid</th>
           <th>{{ trackLabel }}</th>
+          <th>Anm</th>
         </tr>
       </thead>
       <tbody :class="$style.tableBody">
@@ -35,22 +36,24 @@
             :class="$style.tripLine">
             {{ trip.sname }}
           </td>
-          <td :class="$style.tripTime">
-            <span :class="['only-mobile', { [$style.isLate]: trip.isLate }]">{{ trip.rtTime || trip.time }}</span>
-            <span class="from-tablet">{{ trip.time }}</span>
-          </td>
           <td :class="$style.tripDest">
             <div>
               <span :class="$style.tripName">
                 {{ trip.direction || trip.origin }}
               </span>
-              <span v-if="trip.isAffected">&nbsp;⛔️</span>
-              <span v-if="trip.cancelled">&nbsp;⚠️ Färd inställd</span>
             </div>
             <div :class="$style.tripVia"><small v-if="trip.via"> via {{ trip.via }}</small></div>
           </td>
+          <td :class="$style.tripTime">
+            <span :class="['only-mobile', { [$style.isLate]: trip.isLate }]">{{ trip.rtTime || trip.time }}</span>
+            <span class="from-tablet">{{ trip.time }}</span>
+          </td>
           <td :class="[$style.tripNewTime, $style.isLate]"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
           <td :class="$style.tripTrack">{{ trip.track }}</td>
+          <td :class="$style.tripNote">
+            <span v-if="trip.isAffected">&nbsp;⛔️</span>
+            <span v-if="trip.cancelled">&nbsp;⚠️ Färd inställd</span>
+          </td>
         </tr>
         <tr v-show="!isLoading && location && trips.length === 0">
           <td colspan="5">Inga resor att visa</td>
@@ -188,6 +191,8 @@ export default {
 .tripTrack {
   text-align: center;
   width: 50px;
+}
+.tripNote {
 }
 
 @media screen and (min-width: 450px) {
