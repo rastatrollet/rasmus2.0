@@ -38,7 +38,6 @@
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex';
-import bugsnagClient from '../util/bugsnag';
 
 export default {
   name: 'JourneyDetails',
@@ -57,19 +56,12 @@ export default {
     clearInterval(this.timeoutId);
   },
   computed: {
-    ...mapState([
-      'showJourneyDetails',
-      'loadingJourneyDetails',
-      'selectedJourney'
-    ]),
+    ...mapState(['showJourneyDetails', 'loadingJourneyDetails', 'selectedJourney']),
     journey() {
       const journey = this.selectedJourney;
       if (!journey) return {};
       const names = [].concat(journey.JourneyName);
       if (names.length === 0) {
-        bugsnagClient.notify(
-          Error(`No name for jurney ${journey}, ${journey.JourneyName}`)
-        );
         return {};
       }
       const journeyDir = [].concat(journey.Direction);

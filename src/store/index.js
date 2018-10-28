@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import VuexPersistence from 'vuex-persist';
+import VuexPersist from 'vuex-persist';
 
 import apis from '../api';
 import user from './user';
@@ -10,11 +10,11 @@ import tabs from './tabs';
 import api from './api';
 
 Vue.use(Vuex);
-const vuexLocal = new VuexPersistence({
+const vuexLocal = new VuexPersist({
   storage: window.localStorage,
-  reducer: (state) => ({
-    trips: state.trips,
-    api: state.api
+  reducer: ({ trips, api }) => ({
+    trips,
+    api
   })
 });
 

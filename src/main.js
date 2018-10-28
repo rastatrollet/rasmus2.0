@@ -1,9 +1,5 @@
 import 'fg-loadcss';
 import Vue from 'vue';
-import bugsnagVue from 'bugsnag-vue';
-import bugsnagClient from './util/bugsnag';
-
-bugsnagClient.use(bugsnagVue(Vue));
 
 import App from './App.vue';
 import store from './store';
