@@ -85,8 +85,9 @@ const actions = {
     return rootGetters['api/api']
       .getTrafficSituations(location.id, 'stoparea') // WTF?
       .then((situations) => {
-        const messages = situations.messages.filter((msg, idx, self) =>
-          self.slice(0, idx - 1).some((prevMsg) => prevMsg === msg)
+        const messages = situations.messages.filter(
+          (msg, idx, self) =>
+            !self.slice(0, idx).some((prevMsg) => prevMsg === msg)
         );
         console.log('situations', situations, messages);
         commit('setSituations', {

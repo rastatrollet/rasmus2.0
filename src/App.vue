@@ -93,9 +93,7 @@ export default {
           ...baseTab,
           ...comp,
           disabled:
-            comp.props &&
-            comp.props.arrivals &&
-            typeof this.api.getArrivalsTo !== 'function',
+            comp.props && comp.props.arrivals && typeof this.api.getArrivalsTo !== 'function',
           onClick: this.changeTab
         }))
       ];
@@ -106,10 +104,7 @@ export default {
   },
   watch: {
     apiName() {
-      if (
-        this.currentTab === 'Ankomster' &&
-        typeof this.api.getArrivalsTo !== 'function'
-      ) {
+      if (this.currentTab === 'Ankomster' && typeof this.api.getArrivalsTo !== 'function') {
         this.setCurrentTab('Avgångar');
       }
     }

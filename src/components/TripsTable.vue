@@ -29,7 +29,7 @@
         <tr
           v-for="trip in trips"
           :key="trip.id"
-          :class="[$style.trip, { [$style.cancelled]: trip.cancelled }]"
+          :class="[$style.trip]"
           @click="getJourneyDetails(trip)">
           <td
             :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
@@ -51,8 +51,7 @@
           <td :class="[$style.tripNewTime, $style.isLate]"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
           <td :class="$style.tripTrack">{{ trip.track }}</td>
           <td :class="$style.tripNote">
-            <span v-if="trip.isAffected">&nbsp;⛔️</span>
-            <span v-if="trip.cancelled">&nbsp;⚠️ Färd inställd</span>
+            <span v-if="trip.cancelled">Inställd</span>
           </td>
         </tr>
         <tr v-show="!isLoading && location && trips.length === 0">
@@ -62,6 +61,7 @@
     </table>
   </div>
 </template>
+
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import debounce from '../util/debounce';
@@ -124,6 +124,7 @@ export default {
   }
 };
 </script>
+
 <style module>
 .tripsTable {
   width: 100%;
@@ -173,10 +174,6 @@ export default {
   width: 50px;
 }
 
-.cancelled .tripName {
-  text-decoration: line-through;
-}
-
 .tripName {
   font-weight: 500;
 }
@@ -195,6 +192,7 @@ export default {
   width: 50px;
 }
 .tripNote {
+  width: 1%;
 }
 
 @media screen and (min-width: 450px) {

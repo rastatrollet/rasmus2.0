@@ -74,6 +74,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import sortNumbersAndLetters from '../util/sortNumbersAndLetters';
@@ -111,9 +112,7 @@ export default {
       return this.dict.arrEaves;
     },
     destinations() {
-      return Array.from(
-        new Set(this.trips.map(({ direction, origin }) => direction || origin))
-      );
+      return Array.from(new Set(this.trips.map(({ direction, origin }) => direction || origin)));
     },
     tracks() {
       const tracks = this.trips
@@ -140,6 +139,7 @@ export default {
   }
 };
 </script>
+
 <style module>
 .tripsFilter {
   display: flex;

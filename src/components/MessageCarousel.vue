@@ -92,9 +92,7 @@ export default {
         if (deltaX > 0) {
           this.setActive((this.active + 1) % this.messages.length);
         } else {
-          this.setActive(
-            this.active > 0 ? this.active - 1 : this.messages.length - 1
-          );
+          this.setActive(this.active > 0 ? this.active - 1 : this.messages.length - 1);
         }
       };
       target.addEventListener('touchend', onTouchEnd);
@@ -117,6 +115,7 @@ export default {
   border: none;
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
+  display: none;
   font-size: 1em;
   margin-right: 0.5em;
   padding: 0;
