@@ -112,7 +112,9 @@ export default {
       return this.dict.arrEaves;
     },
     destinations() {
-      return Array.from(new Set(this.trips.map(({ direction, origin }) => direction || origin)));
+      return Array.from(
+        new Set(this.trips.map(({ direction, origin }) => direction || origin))
+      );
     },
     tracks() {
       const tracks = this.trips

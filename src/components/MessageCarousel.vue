@@ -92,7 +92,9 @@ export default {
         if (deltaX > 0) {
           this.setActive((this.active + 1) % this.messages.length);
         } else {
-          this.setActive(this.active > 0 ? this.active - 1 : this.messages.length - 1);
+          this.setActive(
+            this.active > 0 ? this.active - 1 : this.messages.length - 1
+          );
         }
       };
       target.addEventListener('touchend', onTouchEnd);
