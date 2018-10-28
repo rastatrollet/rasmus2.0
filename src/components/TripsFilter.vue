@@ -43,7 +43,7 @@
           :value="span.value">{{ span.name }}</option>
       </select>
     </div> -->
-    <div :class="[$style.filter, 'from-desktop']">
+    <!-- <div :class="[$style.filter, 'from-desktop']">
       <label>
         Live
         <input
@@ -52,7 +52,7 @@
           type="checkbox"
           name="isLive">
       </label>
-    </div>
+    </div> -->
     <div :class="$style.filter">
       <label :class="$style.voice">
         <font-awesome :icon="['fas', options.voice ? 'volume-up' : 'volume-off']"/>

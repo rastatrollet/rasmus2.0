@@ -69,8 +69,14 @@ export default {
   },
   data() {
     return {
-      buildTime: process.env.BUILD_TIME
+      buildTime: process.env.BUILD_TIME,
+      timeoutId: null
     };
+  },
+  mounted() {
+    if (this.location) {
+      this.getTripsAgainAndAgain();
+    }
   },
   computed: {
     ...mapState({
@@ -78,6 +84,7 @@ export default {
       initializing: ({ api }) => api.initializing
     }),
     ...mapState('tabs', ['currentTab']),
+    ...mapState('trips', ['location']),
     ...mapGetters('api', ['api']),
     tabs() {
       return [
@@ -105,6 +112,14 @@ export default {
     }
   },
   watch: {
+    location(newLoc, oldLoc) {
+      if (!newLoc) {
+        clearTimeout(this.timeoutId);
+      } else if (newLoc.id !== (oldLoc && oldLoc.id)) {
+        clearTimeout(this.timeoutId);
+        this.getTripsAgainAndAgain();
+      }
+    },
     apiName() {
       if (
         this.currentTab === 'Ankomster' &&
@@ -118,9 +133,19 @@ export default {
     ...mapMutations('trips', ['setArrivals']),
     ...mapMutations('tabs', ['setCurrentTab']),
     ...mapActions('api', ['toggleApi']),
+    ...mapActions('trips', ['getTrips']),
     changeTab(tab, arrivals) {
       this.setArrivals(arrivals);
       this.setCurrentTab(tab);
+    },
+    getTripsAgainAndAgain() {
+      window.requestAnimationFrame(() => {
+        this.getTrips();
+        this.timeoutId = setTimeout(
+          () => this.getTripsAgainAndAgain(),
+          1000 * 30
+        );
+      });
     }
   }
 };

@@ -72,6 +72,7 @@
     </ul>
   </div>
 </template>
+
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 
@@ -197,6 +198,7 @@ export default {
   }
 };
 </script>
+
 <style module>
 .locationInput {
   --left-offset: 80px;

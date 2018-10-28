@@ -89,7 +89,7 @@ const actions = {
           (msg, idx, self) =>
             !self.slice(0, idx).some((prevMsg) => prevMsg === msg)
         );
-        console.log('situations', situations, messages);
+        console.log('situations', situations);
         commit('setSituations', {
           ...situations,
           messages
