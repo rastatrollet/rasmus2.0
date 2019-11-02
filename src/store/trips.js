@@ -33,13 +33,19 @@ const getters = {
   filteredTrips({ trips, manualTrips, location, filter, situations }) {
     const { track, dest } = filter;
     const { affectedLines = [] } = situations;
-    // TODO: make manual trips work
-    const now = Date.now();
-    const filteredManual = manualTrips
-      .filter(({ origin }) => location && origin === location.name)
-      .filter(({ timestamp }) => timestamp > now);
 
-    return [...trips, ...filteredManual]
+    const now = Date.now();
+    const validManual = manualTrips.filter(({ origin, timestamp }) => {
+      const isSameLocation = origin === location.name;
+      const isFutureDate = timestamp >= now;
+      // TODO: validate same date
+      return isSameLocation && isFutureDate;
+    });
+
+    const merged = [...validManual, ...trips];
+    console.log('merged', merged);
+
+    return merged
       .map((trip) => ({
         ...trip,
         isAffected: affectedLines.includes(trip.sname)
@@ -55,8 +61,8 @@ const getters = {
 
 const actions = {
   loadManualDepartures({ commit }) {
-    googleDrive.getManualDepartures().then((res) => {
-      commit('setManualTrips', apis.VT.transformTrips(res));
+    googleDrive.getManualDepartures().then((manualTrips) => {
+      commit('setManualTrips', apis.VT.transformTrips(manualTrips));
     });
   },
   getTrips({ commit, state, rootGetters }, location = state.location) {

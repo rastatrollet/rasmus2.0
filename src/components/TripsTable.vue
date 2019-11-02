@@ -5,7 +5,8 @@
       [$style.TV]: apiName === 'TV',
       [$style.SL]: apiName === 'SL',
       [$style.showingJourneyDetails]: showJourneyDetails
-  }]">
+  }]"
+  >
     <table :class="$style.table">
       <thead :class="$style.tableHead">
         <tr>
@@ -21,37 +22,40 @@
         <tr v-show="isLoading">
           <td colspan="5">
             Hämtar trafikdata...
-            <font-awesome
-              icon="spinner"
-              spin />
+            <font-awesome icon="spinner" spin />
           </td>
         </tr>
         <tr
           v-for="trip in trips"
           :key="trip.id"
           :class="[$style.trip]"
-          @click="getJourneyDetails(trip)">
+          @click="getJourneyDetails(trip)"
+        >
           <td
             :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
-            :class="$style.tripLine">
-            {{ trip.sname }}
-          </td>
+            :class="$style.tripLine"
+          >{{ trip.sname }}</td>
           <td :class="$style.tripDest">
             <div>
-              <span :class="$style.tripName">
-                {{ trip.direction || trip.origin }}
-              </span>
+              <span :class="$style.tripName">{{ trip.direction || trip.origin }}</span>
             </div>
-            <div :class="$style.tripVia"><small v-if="trip.via"> via {{ trip.via }}</small></div>
+            <div :class="$style.tripVia">
+              <small v-if="trip.via">via {{ trip.via }}</small>
+            </div>
           </td>
           <td :class="$style.tripTime">
-            <span :class="['only-mobile', { [$style.isLate]: trip.isLate }]">{{ trip.rtTime || trip.time }}</span>
+            <span
+              :class="['only-mobile', { [$style.isLate]: trip.isLate }]"
+            >{{ trip.rtTime || trip.time }}</span>
             <span class="from-tablet">{{ trip.time }}</span>
           </td>
-          <td :class="[$style.tripNewTime, $style.isLate]"><span v-if="trip.isLate">{{ trip.rtTime }}</span></td>
-          <td :class="$style.tripTrack">{{ trip.track }}</td>
+          <td :class="[$style.tripNewTime, $style.isLate]">
+            <span v-if="trip.isLate">{{ trip.rtTime }}</span>
+          </td>
+          <td :class="$style.tripTrack">{{ trip.rtTrack || trip.track }}</td>
           <td :class="$style.tripNote">
             <span v-if="trip.cancelled">Inställd</span>
+            <span v-if="trip.remark">{{ trip.remark }}</span>
           </td>
         </tr>
         <tr v-show="!isLoading && location && trips.length === 0">

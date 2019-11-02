@@ -100,13 +100,24 @@ function getClosestStops({ lat, lng }) {
   );
 }
 
+let resolveStationMap;
+let rejectStationMap;
+const stationMapPromise = new Promise((resolve, reject) => {
+  resolveStationMap = resolve;
+  rejectStationMap = reject;
+});
+
 export default {
   init() {
-    return tvApiRequest('TrainStation').then((stations) =>
-      stations.forEach((station) => {
-        stationMap[station.LocationSignature] = station.AdvertisedLocationName;
+    return tvApiRequest('TrainStation')
+      .then((stations) => {
+        stations.forEach((station) => {
+          stationMap[station.LocationSignature] =
+            station.AdvertisedLocationName;
+        });
+        return resolveStationMap(stationMap);
       })
-    );
+      .catch(rejectStationMap);
   },
   getClosestStops,
   getClosestStop(pos) {
@@ -121,10 +132,14 @@ export default {
         )
       }));
   },
-  getDeparturesFrom(station) {
+  async getDeparturesFrom(station) {
     return tvApiRequest('TrainAnnouncement', station)
       .then((resp) => (resp || []).slice(0, 30))
       .then(logMiddleware)
+      .then(async (deps) => {
+        await stationMapPromise;
+        return deps;
+      })
       .then((deps) =>
         deps.map((dep) => ({
           ...dep,

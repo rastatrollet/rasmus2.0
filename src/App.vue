@@ -4,16 +4,11 @@
     <OfflineIndicator />
     <div class="build-info">build: {{ buildTime }}</div>
     <div class="top-nav">
-      <Tabs
-        :tabs="tabs"
-        :on-click="changeTab"
-        :current-tab="currentTab" />
+      <Tabs :tabs="tabs" :on-click="changeTab" :current-tab="currentTab" />
       <DigitalClock />
     </div>
     <div class="container">
-      <component
-        :is="currentTabComponent.componentName"
-        v-bind="currentTabComponent.props"/>
+      <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
     </div>
   </div>
 </template>

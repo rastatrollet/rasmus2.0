@@ -1,27 +1,35 @@
 /* globals gapi */
 
-const CLIENT_ID =
-  '499673240843-8f8bn77590948esm040d5cl5s4k32hkq.apps.googleusercontent.com';
-const API_KEY = 'AIzaSyAQVyCYvuXOxLcIMlT68G-ELLSxMVDqDGc';
-const DISCOVERY_DOCS = [
-  'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'
-];
-const SCOPES = [
-  'https://www.googleapis.com/auth/drive',
-  'https://www.googleapis.com/auth/drive.file',
-  'https://www.googleapis.com/auth/drive.readonly',
-  'https://www.googleapis.com/auth/drive.metadata.readonly'
-].join(' ');
+const sheetsApi = {
+  API_KEY: 'AIzaSyBqEDcu-o3wuB8Fwn31yIF84qKwSIUIeEg'
+};
+
+const driveApi = {
+  apiKey: 'AIzaSyAQVyCYvuXOxLcIMlT68G-ELLSxMVDqDGc',
+  clientId:
+    '499673240843-8f8bn77590948esm040d5cl5s4k32hkq.apps.googleusercontent.com',
+  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+  scope: [
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/drive.metadata.readonly'
+  ].join(' ')
+};
+
 const sweToVTLingo = {
-  Datum: 'date',
-  Hållplats: 'origin',
   Linje: 'sname',
-  Namn: 'direction',
+  Hpl: 'origin',
+  Till: 'direction',
+  Via: 'via',
+  Läge: 'track',
+  Anm: 'remark',
   Tid: 'time',
   'Ny tid': 'rtTime',
-  Läge: 'track',
-  Bakgrund: 'fgColor'
+  Datum: 'date',
+  Bakgrundsfärg: 'fgColor',
+  Textfärg: 'bgColor'
 };
+
 const files = {
   infoDoc: {
     fileId: '1TRE1P4EmB3kwlURit8lICniBtRp7aqnhcU8x7D6yzqI',
@@ -29,7 +37,7 @@ const files = {
   },
   manualDepartures: {
     fileId: '1XSzg87FgHsxUl6UqNfRJtYIkw8wyN0yB3RzIib3JsvM',
-    mimeType: 'text/tab-separated-values'
+    tabName: 'Manuella%20linjer'
   }
 };
 
@@ -54,25 +62,26 @@ let rejectGooglePromise;
 const googleInitPromise = new Promise((resolve, reject) => {
   resolveGooglePromise = resolve;
   rejectGooglePromise = reject;
-}).then(() => {
+});
+
+async function initClient() {
+  try {
+    await gapi.client.init(driveApi);
+  } catch (error) {
+    console.log('error init gapi', error);
+    return rejectGooglePromise(error);
+  }
+
   // Listen for sign-in state changes.
   gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
   // Handle the initial sign-in state.
-  if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-    return gapi.auth2.getAuthInstance().signIn();
-  }
-});
 
-function initClient() {
-  gapi.client
-    .init({
-      apiKey: API_KEY,
-      clientId: CLIENT_ID,
-      discoveryDocs: DISCOVERY_DOCS,
-      scope: SCOPES
-    })
-    .then(resolveGooglePromise)
-    .catch(rejectGooglePromise);
+  if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+    return resolveGooglePromise();
+  }
+
+  gapi.auth2.getAuthInstance().signIn();
+  resolveGooglePromise();
 }
 
 function printInfoDoc(elementId) {
@@ -85,33 +94,45 @@ function printInfoDoc(elementId) {
 }
 
 function getManualDepartures() {
-  init();
-  return googleInitPromise.then(() =>
-    getFile(files.manualDepartures)
-      .then(({ body }) => body)
-      .then((csv) => {
-        const rows = csv.split(/\n/);
-        const keys = rows[0].replace(/\n|\r/g, '').split(/\t/);
-        return rows.slice(1).map((row) => {
-          const values = row.split(/\t/);
-          return keys.reduce((res, curr, idx) => {
-            const key = sweToVTLingo[curr] || curr;
-            res[key] = values[idx];
-            return res;
-          }, {});
-        });
-      })
-  );
+  return fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${files.manualDepartures.fileId}/values/${files.manualDepartures.tabName}?key=${sheetsApi.API_KEY}`
+  )
+    .then((resp) => resp.json())
+    .then(({ values }) => {
+      const [keys, ...rows] = values;
+      const normalizedKeys = keys.map((key) => sweToVTLingo[key] || key);
+
+      return rows.map((row) => {
+        const trip = normalizedKeys.reduce(
+          (res, key, i) => ({
+            ...res,
+            [key]: row[i]
+          }),
+          {}
+        );
+
+        trip.timestamp =
+          trip.date && (trip.rtTime || trip.time)
+            ? new Date(`${trip.date} ${trip.rtTime || trip.time}`).getTime()
+            : Date.now();
+        trip.bgColor = trip.bgColor || 'black';
+
+        return trip;
+      });
+    });
 }
 
 /**
  *  Called when the signed in status changes, to update the UI
  *  appropriately. After a sign-in, the API is called.
  */
-function updateSigninStatus(isSignedIn) {
-  if (!isSignedIn) {
-    gapi.auth2.getAuthInstance().signIn();
-  }
+async function updateSigninStatus(isSignedIn) {
+  if (isSignedIn) return;
+
+  gapi.auth2
+    .getAuthInstance()
+    .signIn()
+    .then(resolveGooglePromise);
 }
 
 /**

@@ -209,10 +209,8 @@ function asArray(arg) {
   return arg ? [].concat(arg) : [];
 }
 
-const authTokenPromise = getAccessToken();
-
 function init() {
-  return authTokenPromise;
+  return getAccessToken();
 }
 
 export default {
