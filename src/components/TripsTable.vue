@@ -105,6 +105,7 @@ export default {
   },
   watch: {
     trips(trips) {
+      if (!trips || trips.length === 0) return;
       this.speak(trips);
     }
   },
