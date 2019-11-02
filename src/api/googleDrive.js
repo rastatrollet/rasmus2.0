@@ -95,7 +95,9 @@ function printInfoDoc(elementId) {
 
 function getManualDepartures() {
   return fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${files.manualDepartures.fileId}/values/${files.manualDepartures.tabName}?key=${sheetsApi.API_KEY}`
+    `https://sheets.googleapis.com/v4/spreadsheets/${
+      files.manualDepartures.fileId
+    }/values/${files.manualDepartures.tabName}?key=${sheetsApi.API_KEY}`
   )
     .then((resp) => resp.json())
     .then(({ values }) => {

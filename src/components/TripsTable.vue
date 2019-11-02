@@ -5,7 +5,7 @@
       [$style.TV]: apiName === 'TV',
       [$style.SL]: apiName === 'SL',
       [$style.showingJourneyDetails]: showJourneyDetails
-  }]"
+    }]"
   >
     <table :class="$style.table">
       <thead :class="$style.tableHead">
@@ -22,7 +22,9 @@
         <tr v-show="isLoading">
           <td colspan="5">
             Hämtar trafikdata...
-            <font-awesome icon="spinner" spin />
+            <font-awesome 
+              icon="spinner" 
+              spin />
           </td>
         </tr>
         <tr
