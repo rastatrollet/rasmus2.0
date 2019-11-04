@@ -7,7 +7,7 @@
         [$style.tabSmall]: tab.small,
         [$style.tabActive]: currentTab === tab.name,
         [$style.tabDisabled]: tab.disabled
-    }]"
+      }]"
     >
       <a
         :class="$style.link"
@@ -96,7 +96,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 0.5em 1em;
+  padding: 0.5em 1em 1.2em;
   text-decoration: none;
 }
 
@@ -115,6 +115,7 @@ export default {
 @media (min-width: 576px) {
   .link {
     flex-direction: row;
+    padding: 0.5em 1em;
   }
   .text {
     font-size: 1em;
