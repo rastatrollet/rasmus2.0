@@ -6,6 +6,7 @@
     <header class="app-header">
       <span>Resmus</span>
       <font-awesome v-if="isLoadingTrips" icon="spinner" spin />
+      <span>{{ fullApiName }}</span>
     </header>
     <div class="container">
       <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
@@ -24,6 +25,11 @@ import StationInfo from './components/StationInfo.vue';
 import UpdateAvailable from './components/UpdateAvailable.vue';
 import OfflineIndicator from './components/OfflineIndicator.vue';
 import Tabs from './components/Tabs.vue';
+
+const apiNameMap = {
+  VT: 'Västtrafik',
+  TV: 'Trafikverket'
+};
 
 const baseTab = {
   icon: '',
@@ -77,6 +83,9 @@ export default {
     ...mapState({
       apiName: ({ api }) => api.name
     }),
+    fullApiName() {
+      return apiNameMap[this.apiName] || this.apiName;
+    },
     ...mapState('trips', {
       isLoadingTrips: ({ isLoading }) => isLoading
     }),

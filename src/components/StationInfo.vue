@@ -1,9 +1,8 @@
 <template>
   <section :class="$style.stationInfo">
     <div :class="$style.form">
-      <LocationInput :disabled="initializing" :label="locationLabel" />
+      <LocationInput :disabled="initializing" label="Hållplats" />
     </div>
-    <TripsFilter v-if="location" :dict="dict" />
     <div :class="$style.content">
       <TripsTable :from-to-label="fromToLabel" />
       <JourneyDetails />
@@ -20,7 +19,6 @@ import MessageCarousel from './MessageCarousel.vue';
 import JourneyDetails from './JourneyDetails.vue';
 import LocationInput from './LocationInput.vue';
 import TripsTable from './TripsTable.vue';
-import TripsFilter from './TripsFilter.vue';
 
 const dict = {
   arrival: {
@@ -39,7 +37,6 @@ export default {
     LocationInput,
     JourneyDetails,
     TripsTable,
-    TripsFilter,
     MessageCarousel
   },
   props: {
@@ -60,9 +57,6 @@ export default {
     },
     show() {
       return !!this.trips.length;
-    },
-    locationLabel() {
-      return `${this.apiName} Hpl`;
     },
     fromToLabel() {
       return this.arrivals ? 'Från' : 'Till';

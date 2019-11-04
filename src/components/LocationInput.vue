@@ -5,14 +5,14 @@
     @keyup.esc="hideDropDown"
   >
     <label :class="[$style.label]">
-      <span :class="[$style.labelText]">{{ label }}:</span>
       <input
         ref="input"
         v-model="searchText"
         :disabled="disabled"
         :class="[$style.input]"
         type="search"
-        placeholder
+        :placeholder="label"
+        autofocus
         @input="onInput"
         @focus="showDropDown"
         @blur="possiblyHideDropDown"
@@ -134,6 +134,17 @@ export default {
       if (!newVal) this.searchText = '';
     }
   },
+  mounted() {
+    this.debouncedFindStops = debounce(this.findStops, 350, this);
+    if (this.selectedLocation) {
+      this.searchText = this.selectedLocation.name;
+      this.debouncedFindStops(this.selectedLocation.name);
+    }
+
+    const { offsetLeft, clientWidth } = this.$refs.input;
+    this.leftOffset = `${offsetLeft}px`;
+    this.sugestionsWidth = `${clientWidth + 2}px`;
+  },
   methods: {
     ...mapActions('user', ['getUserLocation', 'getNearbyStops']),
     ...mapActions('stops', ['findStops']),
@@ -172,16 +183,6 @@ export default {
         }
       }
     },
-    mounted() {
-      this.debouncedFindStops = debounce(this.findStops, 350, this);
-      if (this.selectedLocation) {
-        this.searchText = this.selectedLocation.name;
-        this.debouncedFindStops(this.selectedLocation.name);
-      }
-      const { offsetLeft, clientWidth } = this.$refs.input;
-      this.leftOffset = `${offsetLeft}px`;
-      this.sugestionsWidth = `${clientWidth + 2}px`;
-    },
     showDropDown() {
       this.show = true;
     },
@@ -218,13 +219,13 @@ export default {
 
 .input {
   -webkit-appearance: none;
-  border: 1px solid whitesmoke;
+  border: 1px solid var(--brand-color);
+  border-radius: 2px;
   font: inherit;
   flex: 1;
   padding: 0 0.5em;
 }
 .input:focus {
-  border: 1px solid gray;
   outline: none;
 }
 
@@ -239,9 +240,9 @@ export default {
   line-height: 1em;
   padding: 8px;
   position: absolute;
-  right: 1px;
-  top: 1px;
-  height: 100%;
+  right: 2px;
+  top: 2px;
+  height: calc(100% - 4px);
 }
 
 .suggestions {
