@@ -1,23 +1,16 @@
 <template>
   <section :class="$style.stationInfo">
     <div :class="$style.form">
-      <LocationInput
-        :disabled="initializing"
-        label="Hållplats" />
+      <LocationInput :disabled="initializing" :label="locationLabel" />
     </div>
-    <TripsFilter
-      :dict="dict"
-      v-if="location"/>
+    <TripsFilter :dict="dict" v-if="location" />
     <div :class="$style.content">
-      <TripsTable
-        :from-to-label="fromToLabel" />
+      <TripsTable :from-to-label="fromToLabel" />
       <JourneyDetails />
+      <footer v-if="location" :class="$style.situations">
+        <MessageCarousel :messages="situations.messages" />
+      </footer>
     </div>
-    <footer
-      v-if="location"
-      :class="$style.situations">
-      <MessageCarousel :messages="situations.messages" />
-    </footer>
   </section>
 </template>
 <script>
@@ -68,6 +61,9 @@ export default {
     show() {
       return !!this.trips.length;
     },
+    locationLabel() {
+      return `${this.apiName} Hpl`;
+    },
     fromToLabel() {
       return this.arrivals ? 'Från' : 'Till';
     },
@@ -99,6 +95,9 @@ export default {
 </script>
 <style module>
 .stationInfo {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .form {
@@ -107,6 +106,9 @@ export default {
 
 .content {
   display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: scroll;
   position: relative;
 }
 

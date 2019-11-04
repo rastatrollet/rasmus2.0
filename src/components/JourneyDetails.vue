@@ -2,34 +2,25 @@
   <aside :class="[$style.journeyDetails, { [$style.display]: showJourneyDetails }]">
     <header :class="$style.header">
       <h2 :class="$style.heading">Detaljer</h2>
-      <font-awesome
-        v-if="loadingJourneyDetails"
-        icon="spinner"
-        spin/>
-      <button
-        :class="$style.closeBtn"
-        @click.prevent="setShowJourneyDetails(false)">&cross;</button>
+      <font-awesome v-if="loadingJourneyDetails" icon="spinner" spin />
+      <button :class="$style.closeBtn" @click.prevent="setShowJourneyDetails(false)">
+        <font-awesome icon="times" />
+      </button>
     </header>
     <p :class="$style.journeyMeta">
-      <span v-if="!loadingJourneyDetails">
-        {{ journey.name }} mot {{ journey.direction }}
-      </span>
-      <a
-        :class="$style.mapLink"
-        href="#"
-        @click.prevent="setCurrentTab('Karta')">Visa på karta</a>
+      <span v-if="!loadingJourneyDetails">{{ journey.name }} mot {{ journey.direction }}</span>
+      <a :class="$style.mapLink" href="#" @click.prevent="setCurrentTab('Karta')">Visa på karta</a>
     </p>
-    <div
-      :class="$style.stopList"
-      v-if="!loadingJourneyDetails">
+    <div :class="$style.stopList" v-if="!loadingJourneyDetails">
       <div
         v-for="stop of stops"
         :key="stop.depTime + stop.name"
-        :class="[$style.stop, { [$style.stopPassed]: stop.didPass }]">
-        <div :class="$style.stopDotCell"><div :class="$style.stopDot"/></div>
-        <div :class="$style.stopTime">
-          {{ stop.rtDepTime || stop.depTime }}
+        :class="[$style.stop, { [$style.stopPassed]: stop.didPass }]"
+      >
+        <div :class="$style.stopDotCell">
+          <div :class="$style.stopDot" />
         </div>
+        <div :class="$style.stopTime">{{ stop.rtDepTime || stop.depTime }}</div>
         <div :class="$style.stopName">{{ stop.name }}</div>
         <div :class="$style.stopTrack">{{ stop.track }}</div>
       </div>
@@ -97,6 +88,7 @@ export default {
   background: white;
   color: var(--dark-text-color);
   display: none;
+  flex: 1;
   width: 100%;
 }
 .display {

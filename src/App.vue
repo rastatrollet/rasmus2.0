@@ -3,17 +3,15 @@
     <UpdateAvailable />
     <OfflineIndicator />
     <div class="build-info">build: {{ buildTime }}</div>
-    <div class="top-nav">
-      <Tabs 
-        :tabs="tabs" 
-        :on-click="changeTab" 
-        :current-tab="currentTab" />
-      <DigitalClock />
-    </div>
+    <header class="app-header">
+      <span>Resmus</span>
+      <font-awesome icon="spinner" spin v-if="isLoadingTrips"></font-awesome>
+    </header>
     <div class="container">
-      <component 
-        :is="currentTabComponent.componentName" 
-        v-bind="currentTabComponent.props" />
+      <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
+    </div>
+    <div class="top-nav">
+      <Tabs :tabs="tabs" :on-click="changeTab" :current-tab="currentTab" />
     </div>
   </div>
 </template>
@@ -21,8 +19,7 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
-import InformationPage from './components/InformationPage.vue';
-import DigitalClock from './components/DigitalClock.vue';
+import AppSettings from './components/AppSettings.vue';
 import StationInfo from './components/StationInfo.vue';
 import UpdateAvailable from './components/UpdateAvailable.vue';
 import OfflineIndicator from './components/OfflineIndicator.vue';
@@ -37,12 +34,14 @@ const baseTab = {
 const components = [
   {
     name: 'Avgångar',
-    componentName: 'station-info'
+    componentName: 'station-info',
+    icon: ['fas', 'plane-departure']
   },
   {
     name: 'Ankomster',
     componentName: 'station-info',
-    props: { arrivals: true }
+    props: { arrivals: true },
+    icon: ['fas', 'plane-arrival']
   },
   {
     name: 'Karta',
@@ -50,9 +49,11 @@ const components = [
     icon: 'map'
   },
   {
-    name: 'Info',
-    componentName: 'information-page',
-    icon: 'info-circle'
+    name: 'Inställningar',
+    componentName: 'app-settings',
+    icon: 'cog',
+    small: true,
+    onlyIcon: true
   }
 ];
 
@@ -62,9 +63,8 @@ export default {
     MapComponent: () => import('./components/Map.vue'),
     Tabs,
     StationInfo,
-    DigitalClock,
+    AppSettings,
     UpdateAvailable,
-    InformationPage,
     OfflineIndicator
   },
   data() {
@@ -80,32 +80,24 @@ export default {
   },
   computed: {
     ...mapState({
-      apiName: ({ api }) => api.name,
-      initializing: ({ api }) => api.initializing
+      apiName: ({ api }) => api.name
+    }),
+    ...mapState('trips', {
+      isLoadingTrips: ({ isLoading }) => isLoading
     }),
     ...mapState('tabs', ['currentTab']),
     ...mapState('trips', ['location']),
     ...mapGetters('api', ['api']),
     tabs() {
-      return [
-        {
-          ...baseTab,
-          name: this.apiName,
-          small: true,
-          onClick: this.toggleApi,
-          initializing: this.initializing,
-          className: this.apiName
-        },
-        ...components.map((comp) => ({
-          ...baseTab,
-          ...comp,
-          disabled:
-            comp.props &&
-            comp.props.arrivals &&
-            typeof this.api.getArrivalsTo !== 'function',
-          onClick: this.changeTab
-        }))
-      ];
+      return components.map((comp) => ({
+        ...baseTab,
+        ...comp,
+        disabled:
+          comp.props &&
+          comp.props.arrivals &&
+          typeof this.api.getArrivalsTo !== 'function',
+        onClick: this.changeTab
+      }));
     },
     currentTabComponent() {
       return this.tabs.find(({ name }) => name === this.currentTab);
@@ -132,7 +124,6 @@ export default {
   methods: {
     ...mapMutations('trips', ['setArrivals']),
     ...mapMutations('tabs', ['setCurrentTab']),
-    ...mapActions('api', ['toggleApi']),
     ...mapActions('trips', ['getTrips']),
     changeTab(tab, arrivals) {
       this.setArrivals(arrivals);
@@ -150,6 +141,7 @@ export default {
   }
 };
 </script>
+
 <style>
 :root {
   --brand-color: rgb(0, 157, 219);
@@ -161,7 +153,6 @@ export default {
 
 html {
   box-sizing: border-box;
-  height: 100%;
 }
 
 *,
@@ -171,9 +162,9 @@ html {
 }
 
 body {
-  font-family: system-ui, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   color: var(--brand-color);
-  height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -181,7 +172,8 @@ body {
 #app {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 
 .build-info {
@@ -198,14 +190,19 @@ body {
   will-change: transform;
 }
 
-.top-nav {
+.app-header {
+  background-color: var(--brand-color);
+  color: var(--brand-text-color);
   display: flex;
   justify-content: space-between;
-  flex-shrink: 0;
+  padding: 0.5em;
 }
 
 .container {
-  height: calc(100% - 36px);
+  flex: 1;
+  position: relative;
+  width: 100vw;
+  overflow: hidden;
 }
 
 .from-tablet,

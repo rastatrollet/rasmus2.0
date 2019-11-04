@@ -2,47 +2,48 @@
   <div
     :class="[$style.locationInput, { [$style.withLabel]: label }]"
     @focus="showDropDown"
-    @keyup.esc="hideDropDown">
-
-    <label>
-      {{ label }}:
+    @keyup.esc="hideDropDown"
+  >
+    <label :class="[$style.label]">
+      <span :class="[$style.labelText]">{{ label }}:</span>
       <input
+        ref="input"
         v-model="searchText"
         :disabled="disabled"
+        :class="[$style.input]"
         type="search"
-        placeholder=""
+        placeholder
         @input="onInput"
         @focus="showDropDown"
         @blur="possiblyHideDropDown"
         @keyup.enter="selectFirstSuggestion"
-        @keyup="handleKeyInput">
+        @keyup="handleKeyInput"
+      />
       <font-awesome
         :class="$style.spinner"
         icon="spinner"
         spin
         v-if="isLoading"
-        aria-hidden="true"/>
-      <Button 
-        v-if="selectedLocation" 
-        :class="$style.resetLocationBtn" 
-        :onClick="resetLocation" 
-        icon="times" />
+        aria-hidden="true"
+      />
+      <Button
+        v-if="selectedLocation"
+        :class="$style.resetLocationBtn"
+        :onClick="resetLocation"
+        icon="times"
+      />
     </label>
 
     <ul
       v-show="show"
-      :class="$style.suggestions">
-      <li
-        v-if="showUseMyLocation"
-        :class="$style.suggestion"
-        @keyup="handleKeyInput">
+      :class="$style.suggestions"
+      :style="{left: leftOffset, width: sugestionsWidth }"
+    >
+      <li v-if="showUseMyLocation" :class="$style.suggestion" @keyup="handleKeyInput">
         <button @click.prevent="getNearbyStops">
-          <font-awesome icon="crosshairs"/>
-          <span> {{ nearbyStopsMessage }} </span>
-          <font-awesome
-            v-if="isLoadingNearbyStops"
-            icon="spinner"
-            spin/>
+          <font-awesome icon="crosshairs" />
+          <span>{{ nearbyStopsMessage }}</span>
+          <font-awesome v-if="isLoadingNearbyStops" icon="spinner" spin />
         </button>
       </li>
       <li
@@ -50,24 +51,23 @@
         v-if="showNearbyStops"
         :key="stop.name"
         :class="$style.suggestion"
-        @keyup="handleKeyInput">
-        <button
-          @click.prevent="onSelect(stop)"
-          @keyup.space="onSelect(stop)">{{ stop.name }}</button>
+        @keyup="handleKeyInput"
+      >
+        <button @click.prevent="onSelect(stop)" @keyup.space="onSelect(stop)">{{ stop.name }}</button>
       </li>
-      <li
-        v-if="searchText && !stops.length && !isLoading"
-        :class="$style.suggestion">
+      <li v-if="searchText && !stops.length && !isLoading" :class="$style.suggestion">
         <button @click.prevent>Inga resultat för söktermen</button>
       </li>
       <li
         v-for="suggestion in stops"
         :key="suggestion.id"
         :class="$style.suggestion"
-        @keyup="handleKeyInput">
+        @keyup="handleKeyInput"
+      >
         <button
           @click.prevent="onSelect(suggestion)"
-          @keyup.space="onSelect(suggestion)">{{ suggestion.name }}</button>
+          @keyup.space="onSelect(suggestion)"
+        >{{ suggestion.name }}</button>
       </li>
     </ul>
   </div>
@@ -87,6 +87,9 @@ export default {
       this.searchText = this.selectedLocation.name;
       this.debouncedFindStops(this.selectedLocation.name);
     }
+    const { offsetLeft, clientWidth } = this.$refs.input;
+    this.leftOffset = `${offsetLeft}px`;
+    this.sugestionsWidth = `${clientWidth + 2}px`;
   },
   components: {
     Button
@@ -104,7 +107,9 @@ export default {
   data() {
     return {
       show: false,
-      searchText: ''
+      searchText: '',
+      leftOffset: 0,
+      sugestionsWidth: 'auto'
     };
   },
   computed: {
@@ -201,27 +206,28 @@ export default {
 
 <style module>
 .locationInput {
-  --left-offset: 80px;
   position: relative;
   line-height: 2em;
-  margin-top: 0.5em;
+  margin-top: 0;
 }
 
-.locationInput label {
-  display: block;
+.label {
+  display: flex;
   position: relative;
 }
 
-.locationInput input {
+.labelText {
+  padding-right: 0.3em;
+}
+
+.input {
   -webkit-appearance: none;
   border: 1px solid whitesmoke;
   font: inherit;
-  left: 0;
+  flex: 1;
   padding: 0 0.5em;
-  position: absolute;
-  width: 100%;
 }
-.locationInput input:focus {
+.input:focus {
   border: 1px solid gray;
   outline: none;
 }
@@ -249,15 +255,7 @@ export default {
   padding: 0;
   position: absolute;
   top: 1.5em;
-  left: 0;
-  width: 100%;
   z-index: 10;
-}
-
-.withLabel input,
-.withLabel .suggestions {
-  left: var(--left-offset);
-  width: calc(100% - var(--left-offset));
 }
 
 .suggestion:first-child {

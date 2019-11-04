@@ -36,6 +36,7 @@ const getters = {
 
     const now = Date.now();
     const validManual = manualTrips.filter(({ origin, timestamp }) => {
+      if (!location) return false;
       const isSameLocation = origin === location.name;
       const isFutureDate = timestamp >= now;
       // TODO: validate same date

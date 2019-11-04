@@ -46,10 +46,10 @@ const actions = {
         commit('setInitializing', false);
       });
   },
-  toggleApi({ state, commit, dispatch }) {
+  toggleApi({ state, commit, dispatch }, next) {
     const currentIndex = locationAPIs.indexOf(state.name);
     const nextIndex = (currentIndex + 1) % locationAPIs.length;
-    const apiName = locationAPIs[nextIndex];
+    const apiName = next || locationAPIs[nextIndex];
     const isInitialized = initializedAPIs.includes(apiName);
 
     commit('setApi', apiName);

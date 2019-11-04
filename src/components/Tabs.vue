@@ -7,25 +7,16 @@
         [$style.tabSmall]: tab.small,
         [$style.tabActive]: currentTab === tab.name,
         [$style.tabDisabled]: tab.disabled
-    }]">
+    }]"
+    >
       <a
         :class="$style.link"
         :title="tab.name"
         href="#"
-        @click.prevent="tab.onClick(tab.name, tab.props.arrivals)">
-        <font-awesome
-          v-if="tab.icon"
-          :icon="tab.icon"
-          :class="$style.onlyMobile" />
-        <span
-          v-if="!tab.initializing"
-          :class="{ [$style.onlyDesktop]: tab.icon }">
-          {{ tab.name }}
-        </span>
-        <font-awesome
-          v-if="tab.initializing"
-          icon="spinner"
-          spin/>
+        @click.prevent="tab.onClick(tab.name, tab.props.arrivals)"
+      >
+        <font-awesome v-if="tab.icon" :icon="tab.icon" :class="$style.icon" />
+        <span v-if="!tab.onlyIcon" :class="[$style.text]">{{ tab.name }}</span>
       </a>
     </li>
   </ul>
@@ -51,6 +42,7 @@ export default {
 </script>
 <style module>
 .tabs {
+  border-top: 1px solid var(--brand-text-color);
   flex-grow: 1;
   display: flex;
   align-items: center;
@@ -61,9 +53,10 @@ export default {
 }
 
 .tab {
+  align-self: stretch;
   background-color: var(--brand-color);
   border-right: 1px solid var(--brand-text-color-dim);
-  color: var(--brand-text-color-dim);
+  color: var(--brand-text-color);
   cursor: pointer;
   flex-basis: 53px;
   flex-grow: 1;
@@ -87,6 +80,7 @@ export default {
 .tabDisabled {
   text-decoration: line-through;
   pointer-events: none;
+  color: var(--brand-text-color-dim);
   cursor: disabled;
 }
 
@@ -97,7 +91,11 @@ export default {
 
 .link {
   color: inherit;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
   padding: 0.5em 1em;
   text-decoration: none;
 }
@@ -106,19 +104,24 @@ export default {
   outline: none;
 }
 
-.onlyDesktop {
-  display: none;
+.text {
+  font-size: 0.7em;
 }
 
-@media (min-width: 900px) {
-  .onlyMobile {
-    display: none;
+.icon {
+  margin-bottom: 0.2em;
+}
+
+@media (min-width: 576px) {
+  .link {
+    flex-direction: row;
   }
-  .onlyDesktop {
-    display: unset;
+  .text {
+    font-size: 1em;
   }
-  .tab:last-child {
-    border-right-width: 1px;
+  .icon {
+    margin-bottom: 0;
+    margin-right: 1vw;
   }
 }
 </style>

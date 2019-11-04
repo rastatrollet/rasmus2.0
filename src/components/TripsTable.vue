@@ -19,14 +19,6 @@
         </tr>
       </thead>
       <tbody :class="$style.tableBody">
-        <tr v-show="isLoading">
-          <td colspan="5">
-            Hämtar trafikdata...
-            <font-awesome 
-              icon="spinner" 
-              spin />
-          </td>
-        </tr>
         <tr
           v-for="trip in trips"
           :key="trip.id"
@@ -134,6 +126,7 @@ export default {
 
 <style module>
 .tripsTable {
+  flex: 1;
   width: 100%;
 }
 
