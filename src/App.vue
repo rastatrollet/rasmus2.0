@@ -162,14 +162,16 @@ html {
 }
 
 body {
+  background-color: var(--brand-color);
+  color: var(--brand-color);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: var(--brand-color);
   margin: 0;
   padding: 0;
 }
 
 #app {
+  background-color: var(--brand-text-color);
   display: flex;
   flex-direction: column;
   height: 100vh;

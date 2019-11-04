@@ -96,7 +96,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 0.5em 1em 1.2em;
+  padding: 0.5em 1em 1.5em;
   text-decoration: none;
 }
 
