@@ -7,7 +7,7 @@
       <TripsTable :from-to-label="fromToLabel" />
       <JourneyDetails />
       <footer v-if="location" :class="$style.situations">
-        <MessageCarousel :messages="situations.messages" />
+        <MessageCarousel :messages="mergedSituations" />
       </footer>
     </div>
   </section>
@@ -46,11 +46,25 @@ export default {
     }
   },
   computed: {
-    ...mapState('trips', ['location', 'situations']),
+    ...mapState('trips', ['location', 'situations', 'manualSituations']),
     ...mapState('api', {
       apiName: ({ name }) => name,
       initializing: ({ initializing }) => initializing
     }),
+    mergedSituations() {
+      const location = this.location && this.location.name;
+      if (!location) return [];
+
+      const now = Date.now();
+      const validManualSituations = this.manualSituations
+        .filter((situation) => {
+          const sameLocation = situation.location === location;
+          const isValid = situation.validFrom < now && situation.validUntil > now;
+          return sameLocation && isValid;
+        })
+        .map(({ message }) => message);
+      return this.situations.messages.concat(validManualSituations);
+    },
     ...mapGetters('api', ['api']),
     dict() {
       return this.arrivals ? dict.arrival : dict.departure;

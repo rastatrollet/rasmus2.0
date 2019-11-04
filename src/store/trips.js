@@ -25,6 +25,7 @@ const state = {
   trips: [],
   manualTrips: [],
   situations: { ...initialSituations },
+  manualSituations: [],
   isLoading: false,
   location: null
 };
@@ -61,6 +62,9 @@ const actions = {
   loadManualDepartures({ commit }) {
     googleDrive.getManualDepartures().then((manualTrips) => {
       commit('setManualTrips', apis.VT.transformTrips(manualTrips));
+    });
+    googleDrive.getManualInformation().then((situations) => {
+      commit('setManualSituations', situations);
     });
   },
   getTrips({ commit, state, rootGetters }, location = state.location) {
@@ -144,6 +148,9 @@ const mutations = {
   },
   setManualTrips(state, trips) {
     state.manualTrips = trips;
+  },
+  setManualSituations(state, situations) {
+    state.manualSituations = situations;
   },
   setSituations(state, situations) {
     state.situations = situations;
