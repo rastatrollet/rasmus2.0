@@ -5,7 +5,7 @@ import SL from './sl';
 export const apiDict = {
   TV: {
     track: 'Spår',
-    sname: 'Anmärkn.'
+    sname: 'Linje'
   },
   VT: {
     track: 'Läge',
