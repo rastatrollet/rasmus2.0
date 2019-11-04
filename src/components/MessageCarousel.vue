@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.carousel">
+  <div v-if="messages.length > 0" :class="$style.carousel">
     <div
       :class="$style.items"
       :style="{ transform: `translateX(${translateX})` }"
@@ -8,9 +8,6 @@
       <div v-for="(msg, idx) in messages" :key="idx" :class="$style.item">
         {{ msg }}
       </div>
-    </div>
-    <div v-if="messages.length === 0" :class="$style.item">
-      Inga trafikstörningar.
     </div>
     <div :class="$style.dots">
       <button :class="$style.playPauseBtn" @click="playPause">
