@@ -31,7 +31,9 @@
           <td
             :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
             :class="$style.tripLine"
-          >{{ trip.sname }}</td>
+          >
+            {{ trip.sname }}
+          </td>
           <td :class="$style.tripDest">
             <div>
               <span :class="$style.tripName">{{ trip.direction || trip.origin }}</span>
@@ -41,9 +43,9 @@
             </div>
           </td>
           <td :class="$style.tripTime">
-            <span
-              :class="['only-mobile', { [$style.isLate]: trip.isLate }]"
-            >{{ trip.rtTime || trip.time }}</span>
+            <span :class="['only-mobile', { [$style.isLate]: trip.isLate }]">{{
+              trip.rtTime || trip.time
+            }}</span>
             <span class="from-tablet">{{ trip.time }}</span>
           </td>
           <td :class="[$style.tripNewTime, $style.isLate]">

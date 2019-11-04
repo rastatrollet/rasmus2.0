@@ -5,7 +5,7 @@
     <div class="build-info">build: {{ buildTime }}</div>
     <header class="app-header">
       <span>Resmus</span>
-      <font-awesome icon="spinner" spin v-if="isLoadingTrips" />
+      <font-awesome v-if="isLoadingTrips" icon="spinner" spin />
     </header>
     <div class="container">
       <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
@@ -73,11 +73,6 @@ export default {
       timeoutId: null
     };
   },
-  mounted() {
-    if (this.location) {
-      this.getTripsAgainAndAgain();
-    }
-  },
   computed: {
     ...mapState({
       apiName: ({ api }) => api.name
@@ -113,6 +108,11 @@ export default {
       if (this.currentTab === 'Ankomster' && typeof this.api.getArrivalsTo !== 'function') {
         this.setCurrentTab('Avgångar');
       }
+    }
+  },
+  mounted() {
+    if (this.location) {
+      this.getTripsAgainAndAgain();
     }
   },
   methods: {

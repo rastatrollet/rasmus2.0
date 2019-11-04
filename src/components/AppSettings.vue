@@ -5,10 +5,10 @@
     <p>API</p>
     <div :class="$style.apis">
       <button
-        @click="toggleApi(api)"
         v-for="api in apis"
         :key="api"
         :class="[$style.apiBtn, api === apiName && $style.apiBtnActive]"
+        @click="toggleApi(api)"
       >
         {{ getLongName(api) }}
         <font-awesome v-if="api === apiName && initializing" icon="spinner" spin />

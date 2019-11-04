@@ -51,44 +51,6 @@ export default {
       return 'check';
     }
   },
-  mounted() {
-    getPositionPromise().then((position) => {
-      this.initializing = false;
-      this.map = map.initMap({
-        rootElement: document.getElementById('map'),
-        position
-      });
-
-      this.setupEventListeners();
-      this.updateMap();
-
-      if (this.selectedJourney) {
-        map.drawPolyLine(this.selectedJourney.Stop.map(({ lat, lon }) => [lat, lon]), '#009ddb');
-        this.selectedJourney.Stop.forEach((hpl) => {
-          const message = hpl.depDate
-            ? `Avgår <time datetime="${hpl.depDate}">${hpl.depTime}</time> från läge ${hpl.track}`
-            : `Ankommer <time datetime="${hpl.arrDate}">${hpl.arrTime}</time> till läge ${hpl.track}`;
-
-          map.createMarker(
-            [hpl.lat, hpl.lon],
-            {},
-            `
-              <div>
-                <h4>${hpl.name}</h4>
-                <p>${message}</p>
-              </div>
-            `
-          );
-        });
-      }
-    });
-  },
-  beforeDestroy() {
-    if (this.map) {
-      this.map.off();
-    }
-    clearTimeout(this.timeoutId);
-  },
   watch: {
     followMe(doFollow) {
       if (doFollow) {
@@ -159,6 +121,44 @@ export default {
           this.getLiveMapError = reason.toString();
           this.isLoadingLiveMap = false;
         });
+    },
+    mounted() {
+      getPositionPromise().then((position) => {
+        this.initializing = false;
+        this.map = map.initMap({
+          rootElement: document.getElementById('map'),
+          position
+        });
+
+        this.setupEventListeners();
+        this.updateMap();
+
+        if (this.selectedJourney) {
+          map.drawPolyLine(this.selectedJourney.Stop.map(({ lat, lon }) => [lat, lon]), '#009ddb');
+          this.selectedJourney.Stop.forEach((hpl) => {
+            const message = hpl.depDate
+              ? `Avgår <time datetime="${hpl.depDate}">${hpl.depTime}</time> från läge ${hpl.track}`
+              : `Ankommer <time datetime="${hpl.arrDate}">${hpl.arrTime}</time> till läge ${hpl.track}`;
+
+            map.createMarker(
+              [hpl.lat, hpl.lon],
+              {},
+              `
+              <div>
+                <h4>${hpl.name}</h4>
+                <p>${message}</p>
+              </div>
+            `
+            );
+          });
+        }
+      });
+    },
+    beforeDestroy() {
+      if (this.map) {
+        this.map.off();
+      }
+      clearTimeout(this.timeoutId);
     },
     plotVehicles(vehicles, requestId) {
       // only plot positions from latest request

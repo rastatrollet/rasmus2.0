@@ -5,24 +5,24 @@
       <span class="from-tablet">Filter:</span>
     </div>
     <div :class="$style.filter">
-      <select @change="updateFilter" name="dest">
+      <select name="dest" @change="updateFilter">
         <option value="">{{ fromToLabel }}</option>
         <option
           v-for="dest in destinations"
-          :selected="filter.dest === dest"
           :key="dest"
+          :selected="filter.dest === dest"
           :value="dest"
           >{{ dest }}</option
         >
       </select>
     </div>
     <div :class="$style.filter">
-      <select @change="updateFilter" name="track">
+      <select name="track" @change="updateFilter">
         <option value="">Läge</option>
         <option
           v-for="track in tracks"
-          :selected="filter.track === track"
           :key="track"
+          :selected="filter.track === track"
           :value="track"
           >{{ track }}</option
         >
@@ -56,14 +56,14 @@
         <input
           :class="$style.voiceCheckbox"
           :checked="options.voice"
-          @input="updateOption"
-          type="checkbox"
           name="voice"
+          type="checkbox"
+          @input="updateOption"
         />
       </label>
     </div>
     <div :class="$style.filter">
-      <button :class="$style.refreshBtn" @click.prevent="getTrips()" title="Uppdatera">
+      <button title="Uppdatera" :class="$style.refreshBtn" @click.prevent="getTrips()">
         <font-awesome icon="sync" />
       </button>
     </div>

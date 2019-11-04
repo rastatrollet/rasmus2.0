@@ -3,7 +3,7 @@
     <div :class="$style.form">
       <LocationInput :disabled="initializing" :label="locationLabel" />
     </div>
-    <TripsFilter :dict="dict" v-if="location" />
+    <TripsFilter v-if="location" :dict="dict" />
     <div :class="$style.content">
       <TripsTable :from-to-label="fromToLabel" />
       <JourneyDetails />

@@ -20,10 +20,10 @@
         @keyup="handleKeyInput"
       />
       <font-awesome
+        v-if="isLoading"
         :class="$style.spinner"
         icon="spinner"
         spin
-        v-if="isLoading"
         aria-hidden="true"
       />
       <Button
@@ -47,8 +47,7 @@
         </button>
       </li>
       <li
-        v-for="stop in nearbyStops"
-        v-if="showNearbyStops"
+        v-for="stop in filteredNearbyStops"
         :key="stop.name"
         :class="$style.suggestion"
         @keyup="handleKeyInput"
@@ -82,16 +81,6 @@ import debounce from '../util/debounce';
 
 export default {
   name: 'LocationInput',
-  mounted() {
-    this.debouncedFindStops = debounce(this.findStops, 350, this);
-    if (this.selectedLocation) {
-      this.searchText = this.selectedLocation.name;
-      this.debouncedFindStops(this.selectedLocation.name);
-    }
-    const { offsetLeft, clientWidth } = this.$refs.input;
-    this.leftOffset = `${offsetLeft}px`;
-    this.sugestionsWidth = `${clientWidth + 2}px`;
-  },
   components: {
     Button
   },
@@ -134,6 +123,10 @@ export default {
     },
     hasSuggestions() {
       return this.stops.length || this.nearbyStops.length;
+    },
+    filteredNearbyStops() {
+      if (!this.showNearbyStops) return [];
+      return this.nearbyStops;
     }
   },
   watch: {
@@ -178,6 +171,16 @@ export default {
           this.$el.querySelector(`.${this.$style.suggestions} ${btnElement}`).focus();
         }
       }
+    },
+    mounted() {
+      this.debouncedFindStops = debounce(this.findStops, 350, this);
+      if (this.selectedLocation) {
+        this.searchText = this.selectedLocation.name;
+        this.debouncedFindStops(this.selectedLocation.name);
+      }
+      const { offsetLeft, clientWidth } = this.$refs.input;
+      this.leftOffset = `${offsetLeft}px`;
+      this.sugestionsWidth = `${clientWidth + 2}px`;
     },
     showDropDown() {
       this.show = true;

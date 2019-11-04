@@ -11,7 +11,7 @@
       <span v-if="!loadingJourneyDetails">{{ journey.name }} mot {{ journey.direction }}</span>
       <a :class="$style.mapLink" href="#" @click.prevent="setCurrentTab('Karta')">Visa på karta</a>
     </p>
-    <div :class="$style.stopList" v-if="!loadingJourneyDetails">
+    <div v-if="!loadingJourneyDetails" :class="$style.stopList">
       <div
         v-for="stop of stops"
         :key="stop.depTime + stop.name"
@@ -37,14 +37,6 @@ export default {
       now: Date.now(),
       timeoutId: null
     };
-  },
-  mounted() {
-    this.timeoutId = setInterval(() => {
-      this.now = Date.now();
-    }, 30000);
-  },
-  beforeDestroy() {
-    clearInterval(this.timeoutId);
   },
   computed: {
     ...mapState(['showJourneyDetails', 'loadingJourneyDetails', 'selectedJourney']),
@@ -72,6 +64,14 @@ export default {
         };
       });
     }
+  },
+  mounted() {
+    this.timeoutId = setInterval(() => {
+      this.now = Date.now();
+    }, 30000);
+  },
+  beforeDestroy() {
+    clearInterval(this.timeoutId);
   },
   methods: {
     ...mapMutations(['setShowJourneyDetails']),

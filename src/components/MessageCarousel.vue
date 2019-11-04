@@ -1,15 +1,15 @@
 <template>
   <div :class="$style.carousel">
     <div
-      @touchstart="onTouchStart"
       :class="$style.items"
       :style="{ transform: `translateX(${translateX})` }"
+      @touchstart="onTouchStart"
     >
-      <div :class="$style.item" v-for="(msg, idx) in messages" :key="idx">
+      <div v-for="(msg, idx) in messages" :key="idx" :class="$style.item">
         {{ msg }}
       </div>
     </div>
-    <div :class="$style.item" v-if="messages.length === 0">
+    <div v-if="messages.length === 0" :class="$style.item">
       Inga trafikstörningar.
     </div>
     <div :class="$style.dots">
@@ -17,9 +17,9 @@
         <font-awesome :icon="['fas', intervalId ? 'pause' : 'play']" />
       </button>
       <button
-        :class="$style.dotBtn"
         v-for="(msg, idx) in messages"
         :key="msg"
+        :class="$style.dotBtn"
         @click="setActive(idx)"
       >
         <div :class="[$style.dot, { [$style.activeDot]: active === idx }]" />
