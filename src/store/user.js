@@ -29,17 +29,10 @@ const actions = {
       .then((nearbyStops) => {
         // only update nearbyStations promise resolves with correct data
         console.log('nearbySyops', nearbyStops);
-        if (
-          nearbyStops &&
-          nearbyStops.length &&
-          nearbyStops[0].region === rootState.api.name
-        ) {
+        if (nearbyStops && nearbyStops.length && nearbyStops[0].region === rootState.api.name) {
           commit('setNearbyStops', nearbyStops);
         } else {
-          commit(
-            'setNearbyStopsError',
-            'Hittade ingen närliggande hållplats 😥'
-          );
+          commit('setNearbyStopsError', 'Hittade ingen närliggande hållplats 😥');
           setTimeout(() => commit('setNearbyStopsError', ''), 7000);
         }
         commit('setLoading', { nearbyStops: false });

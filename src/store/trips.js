@@ -1,5 +1,5 @@
 import apis from '../api';
-import googleDrive from '../api/googleDrive';
+import * as googleDrive from '../api/googleDrive';
 import getDestinationVia from '../util/getDestinationVia';
 
 const initialFilter = {
@@ -52,10 +52,7 @@ const getters = {
         isAffected: affectedLines.includes(trip.sname)
       }))
       .filter((trip) => (track ? trip.track === track : true))
-      .filter(
-        ({ direction, origin }) =>
-          dest ? direction === dest || origin === dest : true
-      )
+      .filter(({ direction, origin }) => (dest ? direction === dest || origin === dest : true))
       .sort((a, b) => a.timestamp - b.timestamp);
   }
 };
@@ -93,8 +90,7 @@ const actions = {
       .getTrafficSituations(location.id, 'stoparea') // WTF?
       .then((situations) => {
         const messages = situations.messages.filter(
-          (msg, idx, self) =>
-            !self.slice(0, idx).some((prevMsg) => prevMsg === msg)
+          (msg, idx, self) => !self.slice(0, idx).some((prevMsg) => prevMsg === msg)
         );
         console.log('situations', situations);
         commit('setSituations', {
@@ -127,11 +123,7 @@ const mutations = {
   },
   setFilter(state, filter) {
     if (!Object.keys(filter).every((key) => filterKeys.includes(key))) {
-      return console.error(
-        '[setFilter]',
-        'Non valid key(s) supplied, must be one of',
-        filterKeys
-      );
+      return console.error('[setFilter]', 'Non valid key(s) supplied, must be one of', filterKeys);
     }
     state.filter = {
       ...state.filter,
@@ -140,11 +132,7 @@ const mutations = {
   },
   setOptions(state, options) {
     if (!Object.keys(options).every((key) => optionKeys.includes(key))) {
-      return console.error(
-        '[setOptions]',
-        'Non valid key(s) supplied, must be one of',
-        optionKeys
-      );
+      return console.error('[setOptions]', 'Non valid key(s) supplied, must be one of', optionKeys);
     }
     state.options = {
       ...state.options,

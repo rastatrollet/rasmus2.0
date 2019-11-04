@@ -5,7 +5,7 @@
     <div class="build-info">build: {{ buildTime }}</div>
     <header class="app-header">
       <span>Resmus</span>
-      <font-awesome icon="spinner" spin v-if="isLoadingTrips"></font-awesome>
+      <font-awesome icon="spinner" spin v-if="isLoadingTrips" />
     </header>
     <div class="container">
       <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
@@ -92,10 +92,7 @@ export default {
       return components.map((comp) => ({
         ...baseTab,
         ...comp,
-        disabled:
-          comp.props &&
-          comp.props.arrivals &&
-          typeof this.api.getArrivalsTo !== 'function',
+        disabled: comp.props && comp.props.arrivals && typeof this.api.getArrivalsTo !== 'function',
         onClick: this.changeTab
       }));
     },
@@ -113,10 +110,7 @@ export default {
       }
     },
     apiName() {
-      if (
-        this.currentTab === 'Ankomster' &&
-        typeof this.api.getArrivalsTo !== 'function'
-      ) {
+      if (this.currentTab === 'Ankomster' && typeof this.api.getArrivalsTo !== 'function') {
         this.setCurrentTab('Avgångar');
       }
     }
@@ -132,10 +126,7 @@ export default {
     getTripsAgainAndAgain() {
       window.requestAnimationFrame(() => {
         this.getTrips();
-        this.timeoutId = setTimeout(
-          () => this.getTripsAgainAndAgain(),
-          1000 * 30
-        );
+        this.timeoutId = setTimeout(() => this.getTripsAgainAndAgain(), 1000 * 30);
       });
     }
   }
@@ -164,8 +155,8 @@ html {
 body {
   background-color: var(--brand-color);
   color: var(--brand-color);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
 }

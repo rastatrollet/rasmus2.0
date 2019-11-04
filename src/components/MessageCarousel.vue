@@ -3,28 +3,25 @@
     <div
       @touchstart="onTouchStart"
       :class="$style.items"
-      :style="{ transform: `translateX(${translateX})` }">
-      <div
-        :class="$style.item"
-        v-for="(msg, idx) in messages"
-        :key="idx">
+      :style="{ transform: `translateX(${translateX})` }"
+    >
+      <div :class="$style.item" v-for="(msg, idx) in messages" :key="idx">
         {{ msg }}
       </div>
     </div>
-    <div
-      :class="$style.item"
-      v-if="messages.length === 0">Inga trafikstörningar.</div>
+    <div :class="$style.item" v-if="messages.length === 0">
+      Inga trafikstörningar.
+    </div>
     <div :class="$style.dots">
-      <button
-        :class="$style.playPauseBtn"
-        @click="playPause">
+      <button :class="$style.playPauseBtn" @click="playPause">
         <font-awesome :icon="['fas', intervalId ? 'pause' : 'play']" />
       </button>
       <button
         :class="$style.dotBtn"
         v-for="(msg, idx) in messages"
         :key="msg"
-        @click="setActive(idx)">
+        @click="setActive(idx)"
+      >
         <div :class="[$style.dot, { [$style.activeDot]: active === idx }]" />
       </button>
     </div>
@@ -92,9 +89,7 @@ export default {
         if (deltaX > 0) {
           this.setActive((this.active + 1) % this.messages.length);
         } else {
-          this.setActive(
-            this.active > 0 ? this.active - 1 : this.messages.length - 1
-          );
+          this.setActive(this.active > 0 ? this.active - 1 : this.messages.length - 1);
         }
       };
       target.addEventListener('touchend', onTouchEnd);

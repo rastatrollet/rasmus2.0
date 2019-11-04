@@ -1,7 +1,5 @@
 <template>
-  <div
-    v-if="!isOnline"
-    :class="$style.offlineIndicator">
+  <div v-if="!isOnline" :class="$style.offlineIndicator">
     Ingen internetanslutning 😥
   </div>
 </template>

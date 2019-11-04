@@ -58,9 +58,7 @@ function tvApiRequest(objectType, ...args) {
       <REQUEST>
         ${auth}
         <QUERY objecttype="${objectType}" ${
-      objectType === 'TrainAnnouncement'
-        ? 'orderby="AdvertisedTimeAtLocation"'
-        : ''
+      objectType === 'TrainAnnouncement' ? 'orderby="AdvertisedTimeAtLocation"' : ''
     }>
           ${api[objectType](...args)}
         </QUERY>
@@ -95,8 +93,8 @@ function transformStation(station) {
 }
 
 function getClosestStops({ lat, lng }) {
-  return tvApiRequest('TrainStation', { lat, long: lng }, 5000).then(
-    (response) => response.slice(0, 5).map(transformStation)
+  return tvApiRequest('TrainStation', { lat, long: lng }, 5000).then((response) =>
+    response.slice(0, 5).map(transformStation)
   );
 }
 
@@ -112,8 +110,7 @@ export default {
     return tvApiRequest('TrainStation')
       .then((stations) => {
         stations.forEach((station) => {
-          stationMap[station.LocationSignature] =
-            station.AdvertisedLocationName;
+          stationMap[station.LocationSignature] = station.AdvertisedLocationName;
         });
         return resolveStationMap(stationMap);
       })
@@ -127,9 +124,7 @@ export default {
     return tvApiRequest('TrainMessage', location)
       .then(logMiddleware)
       .then((situations) => ({
-        messages: situations.map(
-          ({ ExternalDescription }) => ExternalDescription
-        )
+        messages: situations.map(({ ExternalDescription }) => ExternalDescription)
       }));
   },
   async getDeparturesFrom(station) {
@@ -144,12 +139,8 @@ export default {
         deps.map((dep) => ({
           ...dep,
           id: dep.ActivityId,
-          direction:
-            dep.ToLocation &&
-            (stationMap[dep.ToLocation[0].LocationName] || ''),
-          via:
-            dep.ViaToLocation &&
-            (stationMap[dep.ViaToLocation[0].LocationName] || ''),
+          direction: dep.ToLocation && (stationMap[dep.ToLocation[0].LocationName] || ''),
+          via: dep.ViaToLocation && (stationMap[dep.ViaToLocation[0].LocationName] || ''),
           name: `${dep.ProductInformation.join(' ')}`,
           time: dep.AdvertisedTimeAtLocation.substr(-8, 5),
           timestamp: new Date(dep.AdvertisedTimeAtLocation).getTime(),

@@ -1,11 +1,14 @@
 <template>
   <div
-    :class="[$style.tripsTable, {
-      [$style.VT]: apiName === 'VT',
-      [$style.TV]: apiName === 'TV',
-      [$style.SL]: apiName === 'SL',
-      [$style.showingJourneyDetails]: showJourneyDetails
-    }]"
+    :class="[
+      $style.tripsTable,
+      {
+        [$style.VT]: apiName === 'VT',
+        [$style.TV]: apiName === 'TV',
+        [$style.SL]: apiName === 'SL',
+        [$style.showingJourneyDetails]: showJourneyDetails
+      }
+    ]"
   >
     <table :class="$style.table">
       <thead :class="$style.tableHead">
@@ -73,9 +76,6 @@ export default {
       default: ''
     }
   },
-  mounted() {
-    this.speak = debounce(this.speak, 250, this);
-  },
   computed: {
     ...mapState({
       showJourneyDetails: (state) => state.showJourneyDetails,
@@ -100,6 +100,9 @@ export default {
       if (!trips || trips.length === 0) return;
       this.speak(trips);
     }
+  },
+  mounted() {
+    this.speak = debounce(this.speak, 250, this);
   },
   methods: {
     ...mapActions(['getJourneyDetails']),

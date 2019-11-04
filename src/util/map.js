@@ -31,8 +31,7 @@ function initMap({ rootElement, position, zoom = 13 }) {
   map = L.map(rootElement).setView([lat, lng], zoom);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution:
-      'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
     maxZoom: 18
   }).addTo(map);
 
@@ -66,15 +65,11 @@ const createVehicleMarker = (vehicle) => {
   const delay = parseInt(vehicle.delay, 10);
   const isDelayed = delay > 0;
   const delayedText = isDelayed
-    ? `<p style="margin: .5em 0 0;">${delay} ${
-        delay > 1 ? 'minuter' : 'minut'
-      } försenad.</p>`
+    ? `<p style="margin: .5em 0 0;">${delay} ${delay > 1 ? 'minuter' : 'minut'} försenad.</p>`
     : '';
 
   const content = `
-    <div class="marker-info" style="background-color: ${
-      vehicle.bcolor
-    }; color: ${vehicle.lcolor}; padding: .5em;">
+    <div class="marker-info" style="background-color: ${vehicle.bcolor}; color: ${vehicle.lcolor}; padding: .5em;">
       <h3 style="margin: .2em 0;">${name}</h3>
       <small>(${vehicle.gid})</small>
       ${delayedText}

@@ -3,11 +3,15 @@
     <li
       v-for="tab in tabs"
       :key="tab.name"
-      :class="[$style.tab, tab.className, {
-        [$style.tabSmall]: tab.small,
-        [$style.tabActive]: currentTab === tab.name,
-        [$style.tabDisabled]: tab.disabled
-      }]"
+      :class="[
+        $style.tab,
+        tab.className,
+        {
+          [$style.tabSmall]: tab.small,
+          [$style.tabActive]: currentTab === tab.name,
+          [$style.tabDisabled]: tab.disabled
+        }
+      ]"
     >
       <a
         :class="$style.link"

@@ -47,11 +47,7 @@ export default {
     clearInterval(this.timeoutId);
   },
   computed: {
-    ...mapState([
-      'showJourneyDetails',
-      'loadingJourneyDetails',
-      'selectedJourney'
-    ]),
+    ...mapState(['showJourneyDetails', 'loadingJourneyDetails', 'selectedJourney']),
     journey() {
       const journey = this.selectedJourney;
       if (!journey) return {};

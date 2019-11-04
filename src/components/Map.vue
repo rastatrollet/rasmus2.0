@@ -1,32 +1,19 @@
 <template>
   <div :class="$style.mapContainer">
-    <font-awesome
-      v-if="initializing"
-      :class="$style.initSpinner"
-      icon="spinner"
-      spin/>
+    <font-awesome v-if="initializing" :class="$style.initSpinner" icon="spinner" spin />
     <div :class="$style.mapStatus">
       <span>Uppdates every {{ (updateInterval / 1000).toFixed(1) }}s.</span>
-      <font-awesome
-        :icon="['fas', iconName]"
-        :title="getLiveMapError"
-        :spin="isLoadingLiveMap"/>
+      <font-awesome :icon="['fas', iconName]" :title="getLiveMapError" :spin="isLoadingLiveMap" />
       <label>
         Folllow me
-        <input
-          v-model="followMe"
-          type="checkbox" >
+        <input v-model="followMe" type="checkbox" />
       </label>
       <label>
         Show live
-        <input
-          v-model="showLiveMap"
-          type="checkbox" >
+        <input v-model="showLiveMap" type="checkbox" />
       </label>
     </div>
-    <div
-      id="map"
-      style="height: 100%"/>
+    <div id="map" style="height: 100%" />
   </div>
 </template>
 <script>
@@ -76,18 +63,11 @@ export default {
       this.updateMap();
 
       if (this.selectedJourney) {
-        map.drawPolyLine(
-          this.selectedJourney.Stop.map(({ lat, lon }) => [lat, lon]),
-          '#009ddb'
-        );
+        map.drawPolyLine(this.selectedJourney.Stop.map(({ lat, lon }) => [lat, lon]), '#009ddb');
         this.selectedJourney.Stop.forEach((hpl) => {
           const message = hpl.depDate
-            ? `Avgår <time datetime="${hpl.depDate}">${
-                hpl.depTime
-              }</time> från läge ${hpl.track}`
-            : `Ankommer <time datetime="${hpl.arrDate}">${
-                hpl.arrTime
-              }</time> till läge ${hpl.track}`;
+            ? `Avgår <time datetime="${hpl.depDate}">${hpl.depTime}</time> från läge ${hpl.track}`
+            : `Ankommer <time datetime="${hpl.arrDate}">${hpl.arrTime}</time> till läge ${hpl.track}`;
 
           map.createMarker(
             [hpl.lat, hpl.lon],
@@ -194,16 +174,11 @@ export default {
       }
 
       const newMarkers = vehicles
-        .filter(
-          ({ gid }) =>
-            !this.markers.some(({ options: { title } }) => gid === title)
-        )
+        .filter(({ gid }) => !this.markers.some(({ options: { title } }) => gid === title))
         .map(map.createVehicleMarker);
 
       const oldMarkers = this.markers.reduce((res, marker) => {
-        const vehicle = vehicles.find(
-          ({ gid }) => gid === marker.options.title
-        );
+        const vehicle = vehicles.find(({ gid }) => gid === marker.options.title);
         if (vehicle) {
           map.updateVehicleMarkerPosition(marker, vehicle);
           return [...res, marker];

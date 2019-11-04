@@ -1,13 +1,7 @@
 <template>
-  <button
-    :class="[$style.button, className]"
-    :type="type"
-    :title="title"
-    @click.prevent="onClick">
+  <button :class="[$style.button, className]" :type="type" :title="title" @click.prevent="onClick">
     {{ text }}
-    <font-awesome 
-      v-if="icon" 
-      :icon="['fas', icon]" />
+    <font-awesome v-if="icon" :icon="['fas', icon]" />
   </button>
 </template>
 <script>

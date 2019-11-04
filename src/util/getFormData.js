@@ -10,9 +10,7 @@ export default function getFormData(node) {
     };
   }
   if (nodeName === 'INPUT') {
-    const value = ['checkbox', 'radio'].includes(node.type)
-      ? node.checked
-      : node.value;
+    const value = ['checkbox', 'radio'].includes(node.type) ? node.checked : node.value;
     return {
       [name]: value
     };

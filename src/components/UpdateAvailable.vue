@@ -1,16 +1,11 @@
 <template>
-  <div
-    :class="[$style.updateAvailable, { [$style.updateAvailableActive]: hasUpdate }]">
-    🎉<strong>Uppdatering tillgänglig</strong> 🎉<br>
-    <a
-      :class="$style.reloadLink"
-      href="#"
-      @click.prevent="reload">Ladda om</a> för att uppdatera 😆
-    <Button
-      icon="times"
-      :className="$style.closeBtn"
-      :onClick="closeUpdateToaster"
-      title="Stäng" />
+  <div :class="[$style.updateAvailable, { [$style.updateAvailableActive]: hasUpdate }]">
+    🎉
+    <strong>Uppdatering tillgänglig</strong> 🎉
+    <br />
+    <a :class="$style.reloadLink" href="#" @click.prevent="reload">Ladda om</a>
+    för att uppdatera 😆
+    <Button icon="times" :className="$style.closeBtn" :onClick="closeUpdateToaster" title="Stäng" />
   </div>
 </template>
 <script>

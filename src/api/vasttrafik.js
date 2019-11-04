@@ -4,23 +4,17 @@ let authToken;
 let expDate;
 
 function getTrafficSituations(gid, method) {
-  const url = method
-    ? `${trafficSituations}/${method}/${gid}`
-    : trafficSituations;
-  return anropaVasttrafik(url, { Accept: 'application/json' }).then(
-    (situations) =>
-      situations.reduce(
-        (res, { title, description, affectedLines }) => ({
-          messages: res.messages.concat(`${title} ${description}`),
-          affectedLines: []
-            .concat(
-              res.affectedLines,
-              affectedLines.map(({ designation }) => designation)
-            )
-            .filter((x) => x)
-        }),
-        { messages: [] }
-      )
+  const url = method ? `${trafficSituations}/${method}/${gid}` : trafficSituations;
+  return anropaVasttrafik(url, { Accept: 'application/json' }).then((situations) =>
+    situations.reduce(
+      (res, { title, description, affectedLines }) => ({
+        messages: res.messages.concat(`${title} ${description}`),
+        affectedLines: []
+          .concat(res.affectedLines, affectedLines.map(({ designation }) => designation))
+          .filter((x) => x)
+      }),
+      { messages: [] }
+    )
   );
 }
 
@@ -35,9 +29,7 @@ function getTripSuggestion(from, dest) {
 }
 
 function findStops(text) {
-  const requestUrl = `${travelPlanner}/location.name?input=${encodeURIComponent(
-    text
-  )}&format=json`;
+  const requestUrl = `${travelPlanner}/location.name?input=${encodeURIComponent(text)}&format=json`;
   return anropaVasttrafik(requestUrl)
     .then((json) => asArray(json.LocationList.StopLocation).slice(0, 5))
     .then((stops) =>
@@ -73,9 +65,7 @@ function getArrivalsTo(id, timeSpan) {
   const time = now.toLocaleTimeString().substr(0, 5);
   let requestUrl = `${travelPlanner}/arrivalBoard?id=${encodeURIComponent(
     id
-  )}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(
-    time
-  )}&format=json`;
+  )}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}&format=json`;
   if (timeSpan) {
     requestUrl = `${requestUrl}&timeSpan=${timeSpan}`;
   }
@@ -85,9 +75,7 @@ function getArrivalsTo(id, timeSpan) {
 }
 
 function getDeparturesFrom(id, timeSpan) {
-  let requestUrl = `${travelPlanner}/departureBoard?id=${encodeURIComponent(
-    id
-  )}&format=json`;
+  let requestUrl = `${travelPlanner}/departureBoard?id=${encodeURIComponent(id)}&format=json`;
   if (timeSpan) {
     requestUrl = `${requestUrl}&timeSpan=${timeSpan}`;
   }
@@ -96,9 +84,7 @@ function getDeparturesFrom(id, timeSpan) {
     .then((trips) =>
       trips.filter(
         ({ journeyid }, idx) =>
-          !trips
-            .slice(0, idx)
-            .some((prevTrip) => prevTrip.journeyid === journeyid)
+          !trips.slice(0, idx).some((prevTrip) => prevTrip.journeyid === journeyid)
       )
     )
     .then(transformTrips);
@@ -142,9 +128,7 @@ function anropaVasttrafik(url, userHeaders) {
     accessTokenPromise.then(getAccessToken);
   }
 
-  return accessTokenPromise
-    .then(() => fetch(url, { headers }))
-    .then(fetchMiddleware);
+  return accessTokenPromise.then(() => fetch(url, { headers })).then(fetchMiddleware);
 }
 
 function getClosestStops({ lat, lng }, limit = 5, retry = true) {

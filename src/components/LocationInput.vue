@@ -37,7 +37,7 @@
     <ul
       v-show="show"
       :class="$style.suggestions"
-      :style="{left: leftOffset, width: sugestionsWidth }"
+      :style="{ left: leftOffset, width: sugestionsWidth }"
     >
       <li v-if="showUseMyLocation" :class="$style.suggestion" @keyup="handleKeyInput">
         <button @click.prevent="getNearbyStops">
@@ -53,7 +53,9 @@
         :class="$style.suggestion"
         @keyup="handleKeyInput"
       >
-        <button @click.prevent="onSelect(stop)" @keyup.space="onSelect(stop)">{{ stop.name }}</button>
+        <button @click.prevent="onSelect(stop)" @keyup.space="onSelect(stop)">
+          {{ stop.name }}
+        </button>
       </li>
       <li v-if="searchText && !stops.length && !isLoading" :class="$style.suggestion">
         <button @click.prevent>Inga resultat för söktermen</button>
@@ -64,10 +66,9 @@
         :class="$style.suggestion"
         @keyup="handleKeyInput"
       >
-        <button
-          @click.prevent="onSelect(suggestion)"
-          @keyup.space="onSelect(suggestion)"
-        >{{ suggestion.name }}</button>
+        <button @click.prevent="onSelect(suggestion)" @keyup.space="onSelect(suggestion)">
+          {{ suggestion.name }}
+        </button>
       </li>
     </ul>
   </div>
@@ -166,23 +167,15 @@ export default {
 
       const getSibling = (el) => el.parentElement[dict[e.key]];
 
-      if (
-        ['ArrowDown', 'ArrowUp'].includes(e.key) &&
-        this.show &&
-        this.hasSuggestions
-      ) {
-        const focused = this.$el.querySelector(
-          `.${this.$style.suggestions} ${btnElement}:focus`
-        );
+      if (['ArrowDown', 'ArrowUp'].includes(e.key) && this.show && this.hasSuggestions) {
+        const focused = this.$el.querySelector(`.${this.$style.suggestions} ${btnElement}:focus`);
         if (focused) {
           const next = getSibling(focused);
           if (next) {
             next.querySelector(btnElement).focus();
           }
         } else {
-          this.$el
-            .querySelector(`.${this.$style.suggestions} ${btnElement}`)
-            .focus();
+          this.$el.querySelector(`.${this.$style.suggestions} ${btnElement}`).focus();
         }
       }
     },

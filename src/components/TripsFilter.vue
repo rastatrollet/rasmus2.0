@@ -1,34 +1,31 @@
 <template>
-  <div
-    :class="$style.tripsFilter">
+  <div :class="$style.tripsFilter">
     <div :class="$style.filter">
-      <font-awesome
-        class="only-mobile"
-        icon="filter"/>
+      <font-awesome class="only-mobile" icon="filter" />
       <span class="from-tablet">Filter:</span>
     </div>
     <div :class="$style.filter">
-      <select
-        @change="updateFilter"
-        name="dest">
+      <select @change="updateFilter" name="dest">
         <option value="">{{ fromToLabel }}</option>
         <option
           v-for="dest in destinations"
           :selected="filter.dest === dest"
           :key="dest"
-          :value="dest">{{ dest }}</option>
+          :value="dest"
+          >{{ dest }}</option
+        >
       </select>
     </div>
     <div :class="$style.filter">
-      <select
-        @change="updateFilter"
-        name="track">
+      <select @change="updateFilter" name="track">
         <option value="">Läge</option>
         <option
           v-for="track in tracks"
           :selected="filter.track === track"
           :key="track"
-          :value="track">{{ track }}</option>
+          :value="track"
+          >{{ track }}</option
+        >
       </select>
     </div>
     <!-- <div :class="$style.filter">
@@ -55,21 +52,19 @@
     </div> -->
     <div :class="$style.filter">
       <label :class="$style.voice">
-        <font-awesome :icon="['fas', options.voice ? 'volume-up' : 'volume-off']"/>
+        <font-awesome :icon="['fas', options.voice ? 'volume-up' : 'volume-off']" />
         <input
           :class="$style.voiceCheckbox"
           :checked="options.voice"
           @input="updateOption"
           type="checkbox"
-          name="voice">
+          name="voice"
+        />
       </label>
     </div>
     <div :class="$style.filter">
-      <button
-        :class="$style.refreshBtn"
-        @click.prevent="getTrips()"
-        title="Uppdatera">
-        <font-awesome icon="sync"/>
+      <button :class="$style.refreshBtn" @click.prevent="getTrips()" title="Uppdatera">
+        <font-awesome icon="sync" />
       </button>
     </div>
   </div>
@@ -112,9 +107,7 @@ export default {
       return this.dict.arrEaves;
     },
     destinations() {
-      return Array.from(
-        new Set(this.trips.map(({ direction, origin }) => direction || origin))
-      );
+      return Array.from(new Set(this.trips.map(({ direction, origin }) => direction || origin)));
     },
     tracks() {
       const tracks = this.trips

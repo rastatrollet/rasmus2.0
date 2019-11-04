@@ -56,17 +56,13 @@ function getClosestStop(pos) {
 
 function findStops(term) {
   const key = '76ea4bd8c1014b6490418de04bfd0b32';
-  const url = `typeahead.json?key=${key}&searchstring=${encodeURIComponent(
-    term
-  )}&maxresults=5`;
+  const url = `typeahead.json?key=${key}&searchstring=${encodeURIComponent(term)}&maxresults=5`;
   return makeRequest(url)
     .then((json) => asArray(json.ResponseData))
     .then((stops) =>
       stops
         .filter((stop, idx) => {
-          const firstIndex = stops.findIndex(
-            ({ SiteId }) => SiteId === stop.SiteId
-          );
+          const firstIndex = stops.findIndex(({ SiteId }) => SiteId === stop.SiteId);
           return firstIndex >= idx;
         })
         .slice(0, 5)
@@ -105,9 +101,7 @@ function getDeparturesFrom(siteId) {
       fgColor: getColorFromLineNo(trip.LineNumber),
       bgColor: 'white',
       direction: trip.Destination,
-      timestamp: new Date(
-        trip.ExpectedDateTime || trip.TimeTabledDateTime
-      ).getTime(),
+      timestamp: new Date(trip.ExpectedDateTime || trip.TimeTabledDateTime).getTime(),
       time: trip.TimeTabledDateTime.substr(11, 5),
       rtTime: trip.ExpectedDateTime.substr(11, 5),
       name: `${vehicule(trip.TransportMode)} ${trip.LineNumber}`,
@@ -151,9 +145,7 @@ function asArray(arg) {
 
 function makeRequest(path) {
   const url = `${baseUrl}/${path}`;
-  const requestUrl = `https://request-proxy.herokuapp.com/?url=${encodeURIComponent(
-    url
-  )}`;
+  const requestUrl = `https://request-proxy.herokuapp.com/?url=${encodeURIComponent(url)}`;
   return fetch(requestUrl, fetchOptions)
     .then(fetchMiddleware)
     .catch((err) => console.error(err));
