@@ -9,7 +9,6 @@ workbox.core.setCacheNameDetails({ prefix: 'Resmus' });
  * See https://goo.gl/S9QRab
  */
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
-workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 workbox.clientsClaim();
 workbox.skipWaiting();
