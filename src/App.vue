@@ -4,11 +4,7 @@
     <InstallToHomeScreenPrompt />
     <OfflineIndicator />
     <div class="build-info">build: {{ buildTime }}</div>
-    <header class="app-header">
-      <span>Resmus</span>
-      <font-awesome v-if="isLoadingTrips" icon="spinner" spin />
-      <span>{{ fullApiName }}</span>
-    </header>
+    <Header />
     <div class="container">
       <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
     </div>
@@ -21,17 +17,13 @@
 <script>
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
+import Header from './components/Header.vue';
 import AppSettings from './components/AppSettings.vue';
 import StationInfo from './components/StationInfo.vue';
 import InstallToHomeScreenPrompt from './components/InstallToHomeScreenPrompt.vue';
 import UpdateAvailable from './components/UpdateAvailable.vue';
 import OfflineIndicator from './components/OfflineIndicator.vue';
 import Tabs from './components/Tabs.vue';
-
-const apiNameMap = {
-  VT: 'Västtrafik',
-  TV: 'Trafikverket'
-};
 
 const baseTab = {
   icon: '',
@@ -68,10 +60,11 @@ const components = [
 export default {
   name: 'App',
   components: {
-    MapComponent: () => import('./components/Map.vue'),
+    Header,
     Tabs,
     StationInfo,
     AppSettings,
+    MapComponent: () => import('./components/Map.vue'),
     UpdateAvailable,
     OfflineIndicator,
     InstallToHomeScreenPrompt
@@ -85,12 +78,6 @@ export default {
   computed: {
     ...mapState({
       apiName: ({ api }) => api.name
-    }),
-    fullApiName() {
-      return apiNameMap[this.apiName] || this.apiName;
-    },
-    ...mapState('trips', {
-      isLoadingTrips: ({ isLoading }) => isLoading
     }),
     ...mapState('tabs', ['currentTab']),
     ...mapState('trips', ['location']),
@@ -147,7 +134,7 @@ export default {
 
 <style>
 :root {
-  --brand-color: rgb(0, 157, 219);
+  --brand-color: #04ace5; /* rgb(0, 157, 219); */
   --brand-text-color: white;
   --brand-text-color-dim: rgba(255, 255, 255, 0.75);
   --dark-text-color: dimgray;
@@ -193,14 +180,6 @@ body {
   text-align: center;
   transform: translateY(-100%);
   will-change: transform;
-}
-
-.app-header {
-  background-color: var(--brand-color);
-  color: var(--brand-text-color);
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5em;
 }
 
 .container {

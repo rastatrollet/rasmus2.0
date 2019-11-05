@@ -28,6 +28,13 @@ workbox.routing.registerRoute(
 workbox.routing.registerRoute(
   new RegExp('https://unpkg.com/leaflet'),
   workbox.strategies.cacheFirst({
-    cacheName: 'map-files'
+    cacheName: 'leaflet-assets'
+  })
+);
+
+workbox.routing.registerRoute(
+  new RegExp('tile.openstreetmap.org/'),
+  workbox.strategies.cacheFirst({
+    cacheName: 'map-images'
   })
 );
