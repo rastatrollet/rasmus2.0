@@ -1,6 +1,6 @@
 <template>
   <aside :class="[$style.contaier, { [$style.contaierVisible]: beforeInstallPrompt }]">
-    <img :class="$style.img" src="/img/icons/android-chrome-512x512.png" alt="app logo" />
+    <img :class="$style.img" src="img/icons/android-chrome-512x512.png" alt="app logo" />
     <h3 :class="$style.heading">Lägg till på hemskärmen?</h3>
     <p :class="$style.website">{{ url }}</p>
     <div :class="$style.actions">
