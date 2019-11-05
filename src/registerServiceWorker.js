@@ -7,6 +7,10 @@ store.commit('setOnline', navigator.onLine);
 
 window.addEventListener('offline', () => store.commit('setOnline', false));
 window.addEventListener('online', () => store.commit('setOnline', true));
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  store.commit('setBeforeInstallPrompt', event);
+});
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {

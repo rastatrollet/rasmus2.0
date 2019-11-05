@@ -22,6 +22,7 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     online: true,
+    beforeInstallPrompt: null,
     selectedJourney: null,
     updateAvailable: false,
     showJourneyDetails: false,
@@ -31,6 +32,9 @@ export default new Vuex.Store({
   mutations: {
     setOnline(state, value) {
       state.online = value;
+    },
+    setBeforeInstallPrompt(state, event) {
+      state.beforeInstallPrompt = event;
     },
     setUpdateAvailable(state, value) {
       state.updateAvailable = value;

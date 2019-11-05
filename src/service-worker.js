@@ -10,5 +10,10 @@ workbox.core.setCacheNameDetails({ prefix: 'Resmus' });
  */
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
-workbox.clientsClaim();
-workbox.skipWaiting();
+
+workbox.routing.registerRoute(
+  new RegExp('https://sheets.googleapis.com/v4/spreadsheets/'),
+  workbox.strategies.networkFirst({
+    cacheName: 'google-sheets-api'
+  })
+);

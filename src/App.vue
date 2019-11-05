@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <UpdateAvailable />
+    <InstallToHomeScreenPrompt />
     <OfflineIndicator />
     <div class="build-info">build: {{ buildTime }}</div>
     <header class="app-header">
@@ -22,6 +23,7 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 import AppSettings from './components/AppSettings.vue';
 import StationInfo from './components/StationInfo.vue';
+import InstallToHomeScreenPrompt from './components/InstallToHomeScreenPrompt.vue';
 import UpdateAvailable from './components/UpdateAvailable.vue';
 import OfflineIndicator from './components/OfflineIndicator.vue';
 import Tabs from './components/Tabs.vue';
@@ -71,7 +73,8 @@ export default {
     StationInfo,
     AppSettings,
     UpdateAvailable,
-    OfflineIndicator
+    OfflineIndicator,
+    InstallToHomeScreenPrompt
   },
   data() {
     return {
