@@ -17,3 +17,17 @@ workbox.routing.registerRoute(
     cacheName: 'google-sheets-api'
   })
 );
+
+workbox.routing.registerRoute(
+  new RegExp('https://rrp.vasttrafik.se/img'),
+  workbox.strategies.cacheFirst({
+    cacheName: 'vasttrafik-images'
+  })
+);
+
+workbox.routing.registerRoute(
+  new RegExp('https://unpkg.com/leaflet'),
+  workbox.strategies.cacheFirst({
+    cacheName: 'map-files'
+  })
+);
