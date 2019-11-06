@@ -7,9 +7,42 @@ module.exports = {
     msTileColor: '',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black-translucent',
-    workboxPluginMode: 'InjectManifest',
+    workboxPluginMode: 'GenerateSW',
     workboxOptions: {
-      swSrc: 'src/service-worker.js'
+      swDest: 'service-worker.js',
+      skipWaiting: true,
+      clientsClaim: true,
+      runtimeCaching: [
+        {
+          urlPattern: new RegExp('^https://sheets.googleapis.com/v4/spreadsheets/'),
+          handler: 'NetworkFirst',
+          options: {
+            networkTimeoutSeconds: 10,
+            cacheName: 'google-sheets-api'
+          }
+        },
+        {
+          urlPattern: new RegExp('^https://rrp.vasttrafik.se/img'),
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'vasttrafik-images'
+          }
+        },
+        {
+          urlPattern: new RegExp('^https://unpkg.com/leaflet'),
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'leaflet-assets'
+          }
+        },
+        {
+          urlPattern: new RegExp('^https://\\w.tile.openstreetmap.org/'),
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'map-images'
+          }
+        }
+      ]
     }
   },
   configureWebpack: {

@@ -4,7 +4,7 @@
 set -e
 
 # build
-npm run lint && npm run build -- --modern
+npm run lint && npm run build
 
 # navigate into the build output directory
 cd dist
