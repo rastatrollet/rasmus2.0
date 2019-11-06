@@ -18,7 +18,7 @@
           <th>Tid</th>
           <th :class="$style.tripNewTime">Ny tid</th>
           <th>{{ trackLabel }}</th>
-          <!-- <th>Anm</th> -->
+          <th>Anm</th>
         </tr>
       </thead>
       <tbody :class="$style.tableBody">
@@ -52,10 +52,10 @@
             <span v-if="trip.isLate">{{ trip.rtTime }}</span>
           </td>
           <td :class="$style.tripTrack">{{ trip.rtTrack || trip.track }}</td>
-          <!-- <td :class="$style.tripNote">
+          <td :class="$style.tripNote">
             <span v-if="trip.cancelled">Inställd</span>
             <span v-if="trip.remark">{{ trip.remark }}</span>
-          </td> -->
+          </td>
         </tr>
         <tr v-show="!isLoading && location && trips.length === 0">
           <td colspan="5">Inga resor att visa</td>

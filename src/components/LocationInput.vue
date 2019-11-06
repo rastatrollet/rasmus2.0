@@ -14,7 +14,6 @@
         :placeholder="label"
         @input="onInput"
         @focus="showDropDown"
-        @blur="possiblyHideDropDown"
         @keyup.enter="selectFirstSuggestion"
         @keyup="handleKeyInput"
       />
@@ -33,42 +32,50 @@
       />
     </label>
 
-    <ul
+    <div v-show="show" :class="$style.suggestionsFocusTrap" @click.prevent="hideDropDown" />
+    <div
       v-show="show"
       :class="$style.suggestions"
       :style="{ left: leftOffset, width: sugestionsWidth }"
     >
-      <li v-if="showUseMyLocation" :class="$style.suggestion" @keyup="handleKeyInput">
-        <button @click.prevent="getNearbyStops">
-          <font-awesome icon="crosshairs" />
-          <span>{{ nearbyStopsMessage }}</span>
-          <font-awesome v-if="isLoadingNearbyStops" icon="spinner" spin />
-        </button>
-      </li>
-      <li
+      <button
+        v-if="showUseMyLocation"
+        :class="$style.suggestion"
+        @keyup="handleKeyInput"
+        @click.prevent="getNearbyStops"
+      >
+        <font-awesome icon="crosshairs" />
+        <span>{{ nearbyStopsMessage }}</span>
+        <font-awesome v-if="isLoadingNearbyStops" icon="spinner" spin />
+      </button>
+      <button
         v-for="stop in filteredNearbyStops"
         :key="stop.name"
         :class="$style.suggestion"
         @keyup="handleKeyInput"
+        @click.prevent="onSelect(stop)"
+        @keyup.space="onSelect(stop)"
       >
-        <button @click.prevent="onSelect(stop)" @keyup.space="onSelect(stop)">
-          {{ stop.name }}
-        </button>
-      </li>
-      <li v-if="searchText && !stops.length && !isLoading" :class="$style.suggestion">
-        <button @click.prevent>Inga resultat för söktermen</button>
-      </li>
-      <li
+        {{ stop.name }}
+      </button>
+      <button
+        v-if="searchText && !stops.length && !isLoading"
+        :class="$style.suggestion"
+        @click.prevent
+      >
+        Inga resultat för söktermen
+      </button>
+      <button
         v-for="suggestion in stops"
         :key="suggestion.id"
         :class="$style.suggestion"
         @keyup="handleKeyInput"
+        @click.prevent="onSelect(suggestion)"
+        @keyup.space="onSelect(suggestion)"
       >
-        <button @click.prevent="onSelect(suggestion)" @keyup.space="onSelect(suggestion)">
-          {{ suggestion.name }}
-        </button>
-      </li>
-    </ul>
+        {{ suggestion.name }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -77,6 +84,11 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 
 import Button from './Button.vue';
 import debounce from '../util/debounce';
+
+const keyToNextElementDict = {
+  ArrowUp: 'previousElementSibling',
+  ArrowDown: 'nextElementSibling'
+};
 
 export default {
   name: 'LocationInput',
@@ -161,24 +173,20 @@ export default {
       if (this.stops.length === 0) return;
       this.onSelect(this.stops[0]);
     },
-    handleKeyInput(e) {
-      const dict = {
-        ArrowUp: 'previousElementSibling',
-        ArrowDown: 'nextElementSibling'
-      };
-      const btnElement = 'button';
+    handleKeyInput({ key }) {
+      const btnElSelector = `.${this.$style.suggestions} button`;
 
-      const getSibling = (el) => el.parentElement[dict[e.key]];
+      const getSibling = (el) => el[keyToNextElementDict[key]];
 
-      if (['ArrowDown', 'ArrowUp'].includes(e.key) && this.show && this.hasSuggestions) {
-        const focused = this.$el.querySelector(`.${this.$style.suggestions} ${btnElement}:focus`);
-        if (focused) {
-          const next = getSibling(focused);
-          if (next) {
-            next.querySelector(btnElement).focus();
+      if (['ArrowDown', 'ArrowUp'].includes(key) && this.show && this.hasSuggestions) {
+        const focusedBtn = this.$el.querySelector(`${btnElSelector}:focus`);
+        if (focusedBtn) {
+          const nextBtn = getSibling(focusedBtn);
+          if (nextBtn) {
+            nextBtn.focus();
           }
         } else {
-          this.$el.querySelector(`.${this.$style.suggestions} ${btnElement}`).focus();
+          this.$el.querySelector(btnElSelector).focus();
         }
       }
     },
@@ -188,10 +196,6 @@ export default {
     hideDropDown() {
       this.show = false;
       document.activeElement.blur();
-    },
-    possiblyHideDropDown(e) {
-      if (e.relatedTarget && this.$el.contains(e.relatedTarget)) return;
-      this.hideDropDown();
     },
     resetLocation() {
       this.updateLocation(null);
@@ -237,63 +241,56 @@ export default {
 .resetLocationBtn {
   background: white;
   line-height: 1em;
-  padding: 8px;
+  padding: 5px 10px;
   position: absolute;
-  right: 2px;
-  top: 2px;
-  height: calc(100% - 4px);
+  right: 4px;
+  top: 4px;
+  height: calc(100% - 8px);
+}
+
+.suggestionsFocusTrap {
+  background: transparent;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .suggestions {
+  display: flex;
+  flex-direction: column;
   background: var(--brand-color);
-  list-style: none;
-  font-size: 0.875em;
-  padding: 0;
+  font-size: 1em;
+  margin: 0;
   position: absolute;
-  top: 1.5em;
+  top: 33px;
   z-index: 10;
 }
 
-.suggestion:first-child {
-  border-top: 1px solid var(--brand-color);
-}
-.suggestion:first-child:before {
-  --arrow-size: 5px;
-  border-left: var(--arrow-size) solid transparent;
-  border-right: var(--arrow-size) solid transparent;
-  border-bottom: var(--arrow-size) solid var(--brand-color);
-  content: '';
-  display: block;
-  position: absolute;
-  top: -5px;
-  left: 0.5em;
-  width: 0;
-  height: 0;
-}
-
-.suggestion button {
+.suggestion {
   -webkit-appearance: none;
   background: transparent;
   border: 0;
   color: white;
   cursor: pointer;
-  display: block;
   font-size: 1em;
   padding: 0.5em 0.75em;
+  margin: 0;
   text-align: left;
   text-decoration: none;
   width: 100%;
 }
 
-.suggestion:first-child button {
-  padding-top: 0.75em;
-}
-.suggestion:last-child button {
-  padding-bottom: 0.75em;
+.suggestion + .suggestion {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.suggestions button:hover,
-.suggestions button:focus {
+.suggestion:hover,
+.suggestion:focus {
   background: whitesmoke;
   color: var(--brand-color);
   outline: none;
