@@ -14,6 +14,13 @@ module.exports = {
       clientsClaim: true,
       runtimeCaching: [
         {
+          urlPattern: /img/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'local-images'
+          }
+        },
+        {
           urlPattern: new RegExp('^https://sheets.googleapis.com/v4/spreadsheets/'),
           handler: 'NetworkFirst',
           options: {
