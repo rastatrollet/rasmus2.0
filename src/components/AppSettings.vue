@@ -2,7 +2,7 @@
   <div :class="[$style.container, className]">
     <h2>Inställningar</h2>
 
-    <p>API</p>
+    <p :class="$style.label">API</p>
     <div :class="$style.apis">
       <button
         v-for="api in apis"
@@ -14,11 +14,31 @@
         <font-awesome v-if="api === apiName && initializing" icon="spinner" spin />
       </button>
     </div>
+
+    <p :class="$style.label">Other</p>
+    <div>
+      <label :class="$style.voice">
+        Uppläsning: {{ options.voice ? 'På' : 'Av' }}
+        <font-awesome :icon="['fas', options.voice ? 'volume-up' : 'volume-off']" />
+        <input
+          :class="$style.voiceCheckbox"
+          :checked="options.voice"
+          name="voice"
+          type="checkbox"
+          @input="updateOption"
+        />
+      </label>
+    </div>
+
+    <p :class="$style.label">Build info</p>
+    <div>
+      <p>{{ buildTime }}</p>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 import apis from '../api';
 
@@ -32,10 +52,12 @@ export default {
   },
   data() {
     return {
+      buildTime: process.env.BUILD_TIME,
       apis: Object.keys(apis)
     };
   },
   computed: {
+    ...mapState('trips', ['options']),
     ...mapState('api', {
       apiName: ({ name }) => name,
       initializing: ({ initializing }) => initializing
@@ -43,6 +65,12 @@ export default {
   },
   methods: {
     ...mapActions('api', ['toggleApi']),
+    ...mapMutations('trips', ['setOptions']),
+    updateOption({ target }) {
+      const { name, checked } = target;
+      if (!name) return;
+      this.setOptions({ [name]: checked });
+    },
     getLongName(api) {
       switch (api) {
         case 'TV':
@@ -63,6 +91,12 @@ export default {
   color: var(--brand-text-color);
   height: 100%;
   padding: 1em;
+}
+
+.label {
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 1.5em;
+  text-transform: uppercase;
 }
 
 .apis {
@@ -86,5 +120,9 @@ export default {
 }
 .apiBtn:focus {
   outline: none;
+}
+
+.voiceCheckbox {
+  display: none;
 }
 </style>

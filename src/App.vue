@@ -3,7 +3,6 @@
     <UpdateAvailable />
     <InstallToHomeScreenPrompt />
     <OfflineIndicator />
-    <div class="build-info">build: {{ buildTime }}</div>
     <Header />
     <div class="container">
       <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
@@ -71,7 +70,6 @@ export default {
   },
   data() {
     return {
-      buildTime: process.env.BUILD_TIME,
       timeoutId: null
     };
   },
@@ -166,20 +164,6 @@ body {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-}
-
-.build-info {
-  background-color: var(--brand-color);
-  color: var(--brand-text-color);
-  font-size: 10px;
-  padding: 4em 1em 1em;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
-  transform: translateY(-100%);
-  will-change: transform;
 }
 
 .container {
