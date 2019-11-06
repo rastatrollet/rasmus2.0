@@ -12,7 +12,6 @@
         :class="[$style.input]"
         type="search"
         :placeholder="label"
-        autofocus
         @input="onInput"
         @focus="showDropDown"
         @blur="possiblyHideDropDown"
