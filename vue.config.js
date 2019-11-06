@@ -9,7 +9,9 @@ module.exports = {
     appleMobileWebAppStatusBarStyle: 'black-translucent',
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: 'src/service-worker.js'
+      swSrc: 'src/service-worker.js',
+      skipWaiting: true,
+      clientsClaim: true
     }
   },
   configureWebpack: {
