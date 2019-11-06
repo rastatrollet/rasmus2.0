@@ -39,21 +39,21 @@ workbox.routing.registerRoute(
   })
 );
 
-workbox.addEventListener('waiting', (event) => {
-  console.log('event.wasWaitingBeforeRegister', event.wasWaitingBeforeRegister);
-  // `event.wasWaitingBeforeRegister` will be false if this is
-  // the first time the updated service worker is waiting.
-  // When `event.wasWaitingBeforeRegister` is true, a previously
-  // updated same service worker is still waiting.
-  // You may want to customize the UI prompt accordingly.
+// workbox.addEventListener('waiting', (event) => {
+//   console.log('event.wasWaitingBeforeRegister', event.wasWaitingBeforeRegister);
+//   // `event.wasWaitingBeforeRegister` will be false if this is
+//   // the first time the updated service worker is waiting.
+//   // When `event.wasWaitingBeforeRegister` is true, a previously
+//   // updated same service worker is still waiting.
+//   // You may want to customize the UI prompt accordingly.
 
-  if (window.confirm('Reload to update?')) {
-    workbox.addEventListener('controlling', () => {
-      window.location.reload();
-    });
-    workbox.messageSW({ type: 'SKIP_WAITING' });
-  }
-});
+//   if (window.confirm('Reload to update?')) {
+//     workbox.addEventListener('controlling', () => {
+//       window.location.reload();
+//     });
+//     workbox.messageSW({ type: 'SKIP_WAITING' });
+//   }
+// });
 
 addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
