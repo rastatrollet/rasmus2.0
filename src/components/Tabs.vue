@@ -100,7 +100,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 0.5em 1em 1.5em;
+  padding: 0.5em 1em 1em;
   text-decoration: none;
 }
 
@@ -116,10 +116,21 @@ export default {
   margin-bottom: 0.2em;
 }
 
+@supports (-webkit-overflow-scrolling: touch) {
+  .link {
+    padding-bottom: max(1em, env(safe-area-inset-bottom));
+  }
+  .link:first-child {
+    padding-left: max(1em, env(safe-area-inset-left));
+  }
+  .link:last-child {
+    padding-right: max(1em, env(safe-area-inset-right));
+  }
+}
+
 @media (min-width: 576px) {
   .link {
     flex-direction: row;
-    padding: 0.5em 1em;
   }
   .text {
     font-size: 1em;

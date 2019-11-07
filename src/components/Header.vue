@@ -48,4 +48,12 @@ export default {
   height: 1em;
   margin-right: 0.3em;
 }
+
+@supports (-webkit-overflow-scrolling: touch) {
+  .header {
+    padding-top: max(0.5em, env(safe-area-inset-top));
+    padding-left: max(0.5em, env(safe-area-inset-left));
+    padding-right: max(0.5em, env(safe-area-inset-right));
+  }
+}
 </style>

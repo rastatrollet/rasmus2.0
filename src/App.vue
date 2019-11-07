@@ -7,9 +7,9 @@
     <div class="container">
       <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
     </div>
-    <div class="top-nav">
+    <nav class="nav">
       <Tabs :tabs="tabs" :on-click="changeTab" :current-tab="currentTab" />
-    </div>
+    </nav>
   </div>
 </template>
 
@@ -186,6 +186,13 @@ body {
 }
 .SL {
   background-color: #039cd5;
+}
+
+@supports (-webkit-overflow-scrolling: touch) {
+  .container {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
 }
 
 @media (min-width: 450px) {
