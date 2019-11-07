@@ -18,7 +18,7 @@
           <th>Tid</th>
           <th :class="$style.tripNewTime">Ny tid</th>
           <th>{{ trackLabel }}</th>
-          <th>Anm</th>
+          <th v-if="hasNotes">Anm</th>
         </tr>
       </thead>
       <tbody :class="$style.tableBody">
@@ -52,7 +52,7 @@
             <span v-if="trip.isLate">{{ trip.rtTime }}</span>
           </td>
           <td :class="$style.tripTrack">{{ trip.rtTrack || trip.track }}</td>
-          <td :class="$style.tripNote">
+          <td v-if="hasNotes" :class="$style.tripNote">
             <span v-if="trip.cancelled">Inställd</span>
             <span v-if="trip.remark">{{ trip.remark }}</span>
           </td>
@@ -79,6 +79,9 @@ export default {
     }
   },
   computed: {
+    hasNotes() {
+      return this.trips.some(({ cancelled, remark }) => Boolean(cancelled || remark));
+    },
     ...mapState({
       showJourneyDetails: (state) => state.showJourneyDetails,
       apiName: ({ api }) => api.name
