@@ -46,7 +46,7 @@
             <span :class="['only-mobile', { [$style.isLate]: trip.isLate }]">
               {{ (trip.rtTime || trip.time) | humanTime }}
             </span>
-            <span class="from-tablet">{{ trip.time }}</span>
+            <span class="from-tablet">{{ trip.time | humanTime }}</span>
           </td>
           <td :class="[$style.tripNewTime, $style.isLate]">
             <span v-if="trip.isLate">{{ trip.rtTime | humanTime }}</span>
@@ -82,8 +82,13 @@ const minutesFromNow = (timeStr) => {
   const [hours, minutes] = String(timeStr).split(':');
   const now = Date.now();
   const then = new Date();
+
   then.setHours(hours);
   then.setMinutes(minutes);
+
+  // if it's tomorrow
+  if (then < now) then.setDate(then.getDate() + 1);
+
   return (then - now) / 1000 / 60;
 };
 
