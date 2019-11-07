@@ -13,12 +13,7 @@
         }
       ]"
     >
-      <a
-        :class="$style.link"
-        :title="tab.name"
-        href="#"
-        @click.prevent="tab.onClick(tab.name, tab.props.arrivals)"
-      >
+      <a :class="$style.link" :title="tab.name" href="#" @click.prevent="tab.onClick(tab)">
         <font-awesome v-if="tab.icon" :icon="tab.icon" :class="$style.icon" />
         <span v-if="!tab.onlyIcon" :class="[$style.text]">{{ tab.name }}</span>
       </a>
@@ -32,10 +27,6 @@ export default {
     tabs: {
       type: Array,
       default: () => []
-    },
-    onClick: {
-      type: Function,
-      default: () => {}
     },
     currentTab: {
       type: String,

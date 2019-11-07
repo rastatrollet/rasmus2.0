@@ -1,15 +1,16 @@
 <template>
-  <div id="app">
+  <div id="app" :class="$style.app">
+    <Header />
+    <div :class="$style.container">
+      <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
+      <AppSettings :class="[$style.appSettings, showSettings && $style.appSettingsVisible]" />
+    </div>
+    <nav :class="$style.nav">
+      <Tabs :tabs="tabs" :current-tab="currentTab" />
+    </nav>
     <UpdateAvailable />
     <InstallToHomeScreenPrompt />
     <OfflineIndicator />
-    <Header />
-    <div class="container">
-      <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
-    </div>
-    <nav class="nav">
-      <Tabs :tabs="tabs" :on-click="changeTab" :current-tab="currentTab" />
-    </nav>
   </div>
 </template>
 
@@ -27,8 +28,7 @@ import Tabs from './components/Tabs.vue';
 const baseTab = {
   icon: '',
   className: '',
-  props: { arrivals: false },
-  onClick() {}
+  props: { arrivals: false }
 };
 const components = [
   {
@@ -70,7 +70,8 @@ export default {
   },
   data() {
     return {
-      timeoutId: null
+      timeoutId: null,
+      showSettings: false
     };
   },
   computed: {
@@ -116,9 +117,17 @@ export default {
     ...mapMutations('trips', ['setArrivals']),
     ...mapMutations('tabs', ['setCurrentTab']),
     ...mapActions('trips', ['getTrips']),
-    changeTab(tab, arrivals) {
-      this.setArrivals(arrivals);
-      this.setCurrentTab(tab);
+    toggleSettings() {
+      this.showSettings = !this.showSettings;
+    },
+    changeTab({ name, props }) {
+      if (name === 'Inställningar') {
+        this.toggleSettings();
+      } else {
+        this.showSettings = false;
+        this.setArrivals(props.arrivals);
+        this.setCurrentTab(name);
+      }
     },
     getTripsAgainAndAgain() {
       window.requestAnimationFrame(() => {
@@ -129,6 +138,47 @@ export default {
   }
 };
 </script>
+
+<style module>
+.app {
+  background-color: var(--brand-text-color);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
+  flex: 1;
+  position: relative;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.appSettings {
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: transform;
+  transform: translateX(101%);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999; /* to overlay map */
+}
+.appSettingsVisible {
+  pointer-events: initial;
+  transform: translateX(0);
+}
+
+@supports (-webkit-overflow-scrolling: touch) {
+  .container {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+</style>
 
 <style>
 :root {
@@ -158,21 +208,6 @@ body {
   padding: 0;
 }
 
-#app {
-  background-color: var(--brand-text-color);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-}
-
-.container {
-  flex: 1;
-  position: relative;
-  width: 100vw;
-  overflow: hidden;
-}
-
 .from-tablet,
 .from-desktop {
   display: none;
@@ -186,13 +221,6 @@ body {
 }
 .SL {
   background-color: #039cd5;
-}
-
-@supports (-webkit-overflow-scrolling: touch) {
-  .container {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
 }
 
 @media (min-width: 450px) {
