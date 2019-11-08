@@ -51,12 +51,15 @@
       <button
         v-for="stop in filteredNearbyStops"
         :key="stop.name"
-        :class="$style.suggestion"
+        :class="[$style.suggestion, $style.suggestionNotFavorite]"
         @keyup="handleKeyInput"
         @click.prevent="onSelect(stop)"
         @keyup.space="onSelect(stop)"
       >
         {{ stop.name }}
+        <a href="#" @click.stop="favourize">
+          <font-awesome icon="heart" />
+        </a>
       </button>
       <button
         v-if="searchText && !stops.length && !isLoading"
@@ -68,12 +71,15 @@
       <button
         v-for="suggestion in stops"
         :key="suggestion.id"
-        :class="$style.suggestion"
+        :class="[$style.suggestion, $style.suggestionNotFavorite]"
         @keyup="handleKeyInput"
         @click.prevent="onSelect(suggestion)"
         @keyup.space="onSelect(suggestion)"
       >
         {{ suggestion.name }}
+        <a href="#" @click.stop="favourize">
+          <font-awesome icon="heart" />
+        </a>
       </button>
     </div>
   </div>
@@ -172,6 +178,9 @@ export default {
     selectFirstSuggestion() {
       if (this.stops.length === 0) return;
       this.onSelect(this.stops[0]);
+    },
+    favourize(evt) {
+      console.log('evt', evt);
     },
     handleKeyInput({ key }) {
       const btnElSelector = `.${this.$style.suggestions} button`;
@@ -272,6 +281,9 @@ export default {
 }
 
 .suggestion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   -webkit-appearance: none;
   background: transparent;
   border: 0;
@@ -283,6 +295,10 @@ export default {
   text-align: left;
   text-decoration: none;
   width: 100%;
+}
+
+.suggestionNotFavorite svg {
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .suggestion + .suggestion {
