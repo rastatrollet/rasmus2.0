@@ -1,6 +1,7 @@
 const state = {
   stops: [],
-  isLoading: false
+  isLoading: false,
+  favorites: []
 };
 
 const getters = {};
@@ -28,6 +29,16 @@ const actions = {
         console.error(reason);
         commit('setLoading', false);
       });
+  },
+  addFavorite({ commit, state }, favorite) {
+    commit('setFavorites', [...state.favorites, favorite]);
+  },
+  removeFavorite({ commit, state }, favorite) {
+    const remainingFavorites = state.favorites.filter((fav) => {
+      const toBeRemoved = fav.id === favorite.id && fav.name === favorite.name;
+      return !toBeRemoved;
+    });
+    commit('setFavorites', remainingFavorites);
   }
 };
 
@@ -37,6 +48,9 @@ const mutations = {
   },
   setLoading(state, value) {
     state.isLoading = value;
+  },
+  setFavorites(state, favorites) {
+    state.favorites = favorites;
   }
 };
 

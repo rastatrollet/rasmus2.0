@@ -40,7 +40,7 @@
     >
       <button
         v-if="showUseMyLocation"
-        :class="$style.suggestion"
+        :class="[$style.suggestion, $style.nearbySuggestion]"
         @keyup="handleKeyInput"
         @click.prevent="getNearbyStops"
       >
@@ -49,15 +49,15 @@
         <font-awesome v-if="isLoadingNearbyStops" icon="spinner" spin />
       </button>
       <button
-        v-for="stop in filteredNearbyStops"
-        :key="stop.name"
-        :class="[$style.suggestion, $style.suggestionNotFavorite]"
+        v-for="suggestion in allSuggestions"
+        :key="suggestion.id"
+        :class="[$style.suggestion, suggestion.isFavorite && $style.suggestionFavorite]"
         @keyup="handleKeyInput"
-        @click.prevent="onSelect(stop)"
-        @keyup.space="onSelect(stop)"
+        @click.prevent="onSelect(suggestion)"
+        @keyup.space="onSelect(suggestion)"
       >
-        {{ stop.name }}
-        <a href="#" @click.stop="favourize">
+        {{ suggestion.name }}
+        <a href="#" @click.stop="favourize(suggestion)">
           <font-awesome icon="heart" />
         </a>
       </button>
@@ -67,19 +67,6 @@
         @click.prevent
       >
         Inga resultat för söktermen
-      </button>
-      <button
-        v-for="suggestion in stops"
-        :key="suggestion.id"
-        :class="[$style.suggestion, $style.suggestionNotFavorite]"
-        @keyup="handleKeyInput"
-        @click.prevent="onSelect(suggestion)"
-        @keyup.space="onSelect(suggestion)"
-      >
-        {{ suggestion.name }}
-        <a href="#" @click.stop="favourize">
-          <font-awesome icon="heart" />
-        </a>
       </button>
     </div>
   </div>
@@ -120,10 +107,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('api', ['api']),
     ...mapGetters({ isLoadingNearbyStops: 'user/isLoading' }),
+    ...mapState({ apiName: ({ api }) => api.name }),
     ...mapState('user', ['nearbyStops', 'nearbyStopsError']),
-    ...mapState('stops', ['stops', 'isLoading']),
+    ...mapState('stops', ['stops', 'isLoading', 'favorites']),
     ...mapState({
       userLocation: ({ user }) => user.location,
       selectedLocation: ({ trips }) => trips.location
@@ -144,6 +131,12 @@ export default {
     filteredNearbyStops() {
       if (!this.showNearbyStops) return [];
       return this.nearbyStops;
+    },
+    allSuggestions() {
+      const favs = this.favorites.filter(({ region }) => region === this.apiName);
+      const favIds = favs.map(({ id }) => id);
+      const isFav = ({ id }) => !favIds.includes(id);
+      return [...favs, ...this.filteredNearbyStops.filter(isFav), ...this.stops.filter(isFav)];
     }
   },
   watch: {
@@ -164,7 +157,7 @@ export default {
   },
   methods: {
     ...mapActions('user', ['getUserLocation', 'getNearbyStops']),
-    ...mapActions('stops', ['findStops']),
+    ...mapActions('stops', ['findStops', 'addFavorite', 'removeFavorite']),
     ...mapActions('trips', ['updateLocation']),
     onInput({ target: { value } }) {
       this.debouncedFindStops(value);
@@ -179,8 +172,12 @@ export default {
       if (this.stops.length === 0) return;
       this.onSelect(this.stops[0]);
     },
-    favourize(evt) {
-      console.log('evt', evt);
+    favourize(favorite) {
+      if (favorite.isFavorite) {
+        this.removeFavorite(favorite);
+      } else {
+        this.addFavorite({ ...favorite, isFavorite: true });
+      }
     },
     handleKeyInput({ key }) {
       const btnElSelector = `.${this.$style.suggestions} button`;
@@ -297,8 +294,16 @@ export default {
   width: 100%;
 }
 
-.suggestionNotFavorite svg {
+.suggestion a {
   color: rgba(255, 255, 255, 0.25);
+}
+
+.suggestionFavorite a {
+  color: white;
+}
+
+.nearbySuggestion {
+  justify-content: flex-start;
 }
 
 .suggestion + .suggestion {

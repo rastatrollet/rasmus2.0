@@ -12,9 +12,10 @@ import api from './api';
 Vue.use(Vuex);
 const vuexLocal = new VuexPersist({
   storage: window.localStorage,
-  reducer: ({ trips, api }) => ({
+  reducer: ({ trips, api, stops }) => ({
     trips,
-    api
+    api,
+    stops
   })
 });
 
