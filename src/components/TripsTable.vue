@@ -86,10 +86,13 @@ const minutesFromNow = (timeStr) => {
   then.setHours(hours);
   then.setMinutes(minutes);
 
-  // if it's tomorrow
-  if (then < now) then.setDate(then.getDate() + 1);
+  const minDiff = (then - now) / 1000 / 60;
 
-  return (then - now) / 1000 / 60;
+  // if it's 20 minutes past, assume its tomorrow
+  if (minDiff < -20) {
+    return minDiff + 60 * 24;
+  }
+  return minDiff;
 };
 
 export default {
@@ -98,6 +101,7 @@ export default {
     humanTime(value) {
       const minutes = minutesFromNow(value);
       if (minutes > 20) return value;
+      if (minutes < 1) return 'Nu';
       return timeFormatter
         .format(minutes, 'minute')
         .slice(1) // get rid of leading +/-

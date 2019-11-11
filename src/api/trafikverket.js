@@ -1,4 +1,5 @@
-const auth = '<LOGIN authenticationkey="2dfa6ea579bd45e3ac3810eb1a97adb6" />';
+const key = process.env.TV_KEY;
+const auth = `<LOGIN authenticationkey="${key}" />`;
 const stationMap = {};
 
 const api = {

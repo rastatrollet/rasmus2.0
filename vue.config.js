@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+require('dotenv').config();
 
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/rasmus2.0/' : '/',
@@ -55,7 +56,13 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new webpack.EnvironmentPlugin({
-        BUILD_TIME: new Date().toUTCString()
+        BUILD_TIME: new Date().toUTCString(),
+        SL_NEARBY_STOPS_KEY: process.env.SL_NEARBY_STOPS_KEY,
+        SL_TYPE_AHEAD_KEY: process.env.SL_TYPE_AHEAD_KEY,
+        SL_REALTIME_DEPARTURES_KEY: process.env.SL_REALTIME_DEPARTURES_KEY,
+        SL_DEVIATIONS_KEY: process.env.SL_DEVIATIONS_KEY,
+        VT_BASIC_AUTH: process.env.VT_BASIC_AUTH,
+        TV_KEY: process.env.TV_KEY
       })
     ]
   }

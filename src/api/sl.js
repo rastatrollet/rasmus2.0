@@ -42,7 +42,7 @@ function transformStop(stop) {
 }
 
 function getClosestStops({ lat, lng }, limit = 5) {
-  const key = 'bf8e1f49392843a19e86ef1ccbaa15a0';
+  const key = process.env.SL_NEARBY_STOPS_KEY;
   const url = `nearbystops.json?key=${key}&originCoordLat=${lat}&originCoordLong=${lng}&maxresults=${limit}`;
   return makeRequest(url).then((json) => {
     const stops = Array.from(json.LocationList.StopLocation);
@@ -55,7 +55,7 @@ function getClosestStop(pos) {
 }
 
 function findStops(term) {
-  const key = '76ea4bd8c1014b6490418de04bfd0b32';
+  const key = process.env.SL_TYPE_AHEAD_KEY;
   const url = `typeahead.json?key=${key}&searchstring=${encodeURIComponent(term)}&maxresults=5`;
   return makeRequest(url)
     .then((json) => asArray(json.ResponseData))
@@ -87,7 +87,7 @@ function vehicule(key) {
 }
 
 function getDeparturesFrom(siteId) {
-  const key = 'a312919085a9447d839109b9a6880d20';
+  const key = process.env.SL_REALTIME_DEPARTURES_KEY;
   const url = `realtimedeparturesV4.json?key=${key}&siteid=${siteId}&timewindow=30`;
   return makeRequest(url).then((json) =>
     [
@@ -115,7 +115,7 @@ function getDeparturesFrom(siteId) {
 }
 
 function getTrafficSituations(siteId) {
-  const key = '367eaa6107874c6e86bd985872f9cd46';
+  const key = process.env.SL_DEVIATIONS_KEY;
   const url = `deviations.json?key=${key}&siteId=${siteId}`;
   return makeRequest(url)
     .then((json) => asArray(json.ResponseData))

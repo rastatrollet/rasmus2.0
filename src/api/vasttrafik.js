@@ -166,10 +166,10 @@ function getClosestStops({ lat, lng }, limit = 5, retry = true) {
 }
 
 function getAccessToken() {
+  const key = process.env.VT_BASIC_AUTH;
   return fetch('https://api.vasttrafik.se:443/token', {
     headers: {
-      Authorization:
-        'Basic b1pZclV2c1ZGTG8zZ2FSemNaS0NUbEdJX21ZYTo4bTlLNnFsaDVNQXBWRFdRYlVWSUhneWZja3dh',
+      Authorization: `Basic ${key}`,
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     method: 'POST',
