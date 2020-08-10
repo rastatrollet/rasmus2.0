@@ -8,7 +8,7 @@
         tab.className,
         {
           [$style.tabSmall]: tab.small,
-          [$style.tabActive]: currentTab === tab.name,
+          [$style.tabActive]: showSettings ? tab.name === 'Inställningar' : currentTab === tab.name,
           [$style.tabDisabled]: tab.disabled
         }
       ]"
@@ -31,6 +31,10 @@ export default {
     currentTab: {
       type: String,
       default: ''
+    },
+    showSettings: {
+      type: Boolean,
+      default: false
     }
   }
 };

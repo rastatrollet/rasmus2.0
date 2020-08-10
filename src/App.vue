@@ -6,7 +6,7 @@
       <AppSettings :class="[$style.appSettings, showSettings && $style.appSettingsVisible]" />
     </div>
     <nav :class="$style.nav">
-      <Tabs :tabs="tabs" :current-tab="currentTab" />
+      <Tabs :tabs="tabs" :current-tab="currentTab" :show-settings="showSettings" />
     </nav>
     <UpdateAvailable />
     <InstallToHomeScreenPrompt />
