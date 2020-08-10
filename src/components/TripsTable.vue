@@ -43,12 +43,19 @@
             </div>
           </td>
           <td :class="$style.tripTime">
-            <span :class="['only-mobile', { [$style.isLate]: trip.isLate }]">
+            <span
+              :class="[
+                'only-mobile',
+                { [$style.isLate]: trip.isLate, [$style.strikeOut]: trip.cancelled }
+              ]"
+            >
               {{ (trip.rtTime || trip.time) | humanTime }}
             </span>
-            <span class="from-tablet">{{ trip.time | humanTime }}</span>
+            <span :class="['from-tablet', { [$style.strikeOut]: trip.cancelled }]">{{
+              trip.time | humanTime
+            }}</span>
           </td>
-          <td :class="[$style.tripNewTime, $style.isLate]">
+          <td :class="[$style.tripNewTime, $style.isLate, { [$style.strikeOut]: trip.cancelled }]">
             <span v-if="trip.isLate">{{ trip.rtTime | humanTime }}</span>
           </td>
           <td :class="$style.tripTrack">{{ trip.rtTrack || trip.track }}</td>
@@ -214,6 +221,10 @@ export default {
 }
 .trip:nth-child(even) {
   background: #eee;
+}
+
+.strikeOut {
+  text-decoration: line-through;
 }
 
 .tripLine {

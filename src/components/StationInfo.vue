@@ -3,6 +3,20 @@
     <div :class="$style.form">
       <LocationInput :disabled="initializing" label="Hållplats" />
     </div>
+    <div v-if="showArrDepSelection" :class="$style.arrDep">
+      <button
+        :class="[$style.arrDepBtn, { [$style.arrDepBtnSelected]: !arrivals }]"
+        @click="setArrivals(false)"
+      >
+        Avgångar
+      </button>
+      <button
+        :class="[$style.arrDepBtn, , { [$style.arrDepBtnSelected]: arrivals }]"
+        @click="setArrivals(true)"
+      >
+        Ankomster
+      </button>
+    </div>
     <div :class="$style.content">
       <TripsTable :from-to-label="fromToLabel" />
       <JourneyDetails />
@@ -13,7 +27,7 @@
   </section>
 </template>
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 
 import MessageCarousel from './MessageCarousel.vue';
 import JourneyDetails from './JourneyDetails.vue';
@@ -22,10 +36,12 @@ import TripsTable from './TripsTable.vue';
 
 const dict = {
   arrival: {
+    name: 'Ankomst',
     arrEaves: 'Ankommer',
     origDest: 'Från'
   },
   departure: {
+    name: 'Avgång',
     arrEaves: 'Avgår',
     origDest: 'Till'
   }
@@ -39,18 +55,15 @@ export default {
     TripsTable,
     MessageCarousel
   },
-  props: {
-    arrivals: {
-      type: Boolean,
-      default: false
-    }
-  },
   computed: {
-    ...mapState('trips', ['location', 'situations', 'manualSituations']),
+    ...mapState('trips', ['arrivals', 'location', 'situations', 'manualSituations']),
     ...mapState('api', {
       apiName: ({ name }) => name,
       initializing: ({ initializing }) => initializing
     }),
+    showArrDepSelection() {
+      return typeof this.api.getArrivalsTo === 'function';
+    },
     mergedSituations() {
       const location = this.location && this.location.name;
       if (!location) return [];
@@ -97,7 +110,8 @@ export default {
     clearTimeout(this.lastTimeoutId);
   },
   methods: {
-    ...mapActions('trips', ['getTrips'])
+    ...mapActions('trips', ['getTrips']),
+    ...mapMutations('trips', ['setArrivals'])
   }
 };
 </script>
@@ -118,6 +132,40 @@ export default {
   height: 100%;
   overflow: scroll;
   position: relative;
+}
+
+.arrDep {
+  background: whitesmoke;
+  border-radius: 5px;
+  box-shadow: inset 0px 1px 2px rgba(30, 90, 150, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 0.5em;
+  padding: 2px 3px;
+  text-align: center;
+  width: 50%;
+}
+
+.arrDepBtn {
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  color: #444;
+  cursor: pointer;
+  margin: 0;
+  padding: 2px;
+}
+
+.arrDepBtn:focus {
+  outline: none;
+}
+
+.arrDepBtnSelected {
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.13);
+  color: #333;
 }
 
 .situations {

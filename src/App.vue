@@ -2,7 +2,7 @@
   <div id="app" :class="$style.app">
     <Header />
     <div :class="$style.container">
-      <component :is="currentTabComponent.componentName" v-bind="currentTabComponent.props" />
+      <component :is="currentTabComponent.componentName" />
       <AppSettings :class="[$style.appSettings, showSettings && $style.appSettingsVisible]" />
     </div>
     <nav :class="$style.nav">
@@ -24,37 +24,7 @@ import InstallToHomeScreenPrompt from './components/InstallToHomeScreenPrompt.vu
 import UpdateAvailable from './components/UpdateAvailable.vue';
 import OfflineIndicator from './components/OfflineIndicator.vue';
 import Tabs from './components/Tabs.vue';
-
-const baseTab = {
-  icon: '',
-  className: '',
-  props: { arrivals: false }
-};
-const components = [
-  {
-    name: 'Avgångar',
-    componentName: 'station-info',
-    icon: ['fas', 'plane-departure']
-  },
-  {
-    name: 'Ankomster',
-    componentName: 'station-info',
-    props: { arrivals: true },
-    icon: ['fas', 'plane-arrival']
-  },
-  {
-    name: 'Karta',
-    componentName: 'map-component',
-    icon: 'map'
-  },
-  {
-    name: 'Inställningar',
-    componentName: 'app-settings',
-    icon: 'cog',
-    small: true,
-    onlyIcon: true
-  }
-];
+import { tabs as components } from './store/tabs';
 
 export default {
   name: 'App',
@@ -64,6 +34,7 @@ export default {
     StationInfo,
     AppSettings,
     MapComponent: () => import('./components/Map.vue'),
+    DisturbanceComponent: () => import('./components/Disturbance.vue'),
     UpdateAvailable,
     OfflineIndicator,
     InstallToHomeScreenPrompt
@@ -83,9 +54,7 @@ export default {
     ...mapGetters('api', ['api']),
     tabs() {
       return components.map((comp) => ({
-        ...baseTab,
         ...comp,
-        disabled: comp.props && comp.props.arrivals && typeof this.api.getArrivalsTo !== 'function',
         onClick: this.changeTab
       }));
     },
@@ -103,8 +72,8 @@ export default {
       }
     },
     apiName() {
-      if (this.currentTab === 'Ankomster' && typeof this.api.getArrivalsTo !== 'function') {
-        this.setCurrentTab('Avgångar');
+      if (typeof this.api.getArrivalsTo !== 'function') {
+        this.setArrivals(false);
       }
     }
   },
@@ -114,18 +83,17 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('trips', ['setArrivals']),
     ...mapMutations('tabs', ['setCurrentTab']),
+    ...mapMutations('trips', ['setArrivals']),
     ...mapActions('trips', ['getTrips']),
     toggleSettings() {
       this.showSettings = !this.showSettings;
     },
-    changeTab({ name, props }) {
+    changeTab({ name }) {
       if (name === 'Inställningar') {
         this.toggleSettings();
       } else {
         this.showSettings = false;
-        this.setArrivals(props.arrivals);
         this.setCurrentTab(name);
       }
     },

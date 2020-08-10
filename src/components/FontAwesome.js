@@ -15,8 +15,8 @@ import {
   faVolumeOff,
   faInfoCircle,
   faCrosshairs,
-  faPlaneArrival,
-  faPlaneDeparture
+  faMapMarkerAlt,
+  faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -35,8 +35,8 @@ library.add(
   faVolumeOff,
   faInfoCircle,
   faCrosshairs,
-  faPlaneArrival,
-  faPlaneDeparture
+  faMapMarkerAlt,
+  faExclamationCircle
 );
 
 Vue.component('font-awesome', FontAwesomeIcon);

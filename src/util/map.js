@@ -26,6 +26,24 @@ const fromWGS84 = (lat, long) => ({
   lng: long / 1000000
 });
 
+const meMarkerEl = document.createElement('div');
+meMarkerEl.style.backgroundColor = '#ed1c24';
+meMarkerEl.style.borderRadius = '50%';
+meMarkerEl.style.boxShadow = '0 0 5px rgba(0,0,0,0.25)';
+meMarkerEl.style.width = '100%';
+meMarkerEl.style.height = '100%';
+meMarkerEl.style.display = 'grid';
+meMarkerEl.style.placeItems = 'center';
+
+const meMarkerDotEl = document.createElement('div');
+meMarkerDotEl.style.backgroundColor = 'white';
+meMarkerDotEl.style.borderRadius = '50%';
+meMarkerDotEl.style.boxShadow = '0 0 1px rgba(50,0,0,0.5)';
+meMarkerDotEl.style.width = '50%';
+meMarkerDotEl.style.height = '50%';
+
+meMarkerEl.appendChild(meMarkerDotEl);
+
 function initMap({ rootElement, position, zoom = 13 }) {
   const { lat, lng } = position;
   map = L.map(rootElement).setView([lat, lng], zoom);
@@ -35,7 +53,11 @@ function initMap({ rootElement, position, zoom = 13 }) {
     maxZoom: 18
   }).addTo(map);
 
-  meMarker = createMarker([lat, lng], {}, '<p>Din position</p>');
+  meMarker = createMarker(
+    [lat, lng],
+    { icon: L.divIcon({ html: meMarkerEl, className: 'leaflet-div-icon--me' }) },
+    '<p>Din position</p>'
+  );
 
   return map;
 }
