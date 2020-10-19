@@ -5,15 +5,15 @@ import getDestinationVia from '../util/getDestinationVia';
 const initialFilter = {
   track: '',
   dest: '',
-  timeSpan: ''
+  timeSpan: '',
 };
 const initialSituations = {
   messages: [],
-  affectedLines: []
+  affectedLines: [],
 };
 const initialOptions = {
   isLive: true,
-  voice: false
+  voice: false,
 };
 const filterKeys = Object.keys(initialFilter);
 const optionKeys = Object.keys(initialOptions);
@@ -27,7 +27,7 @@ const state = {
   situations: { ...initialSituations },
   manualSituations: [],
   isLoading: false,
-  location: null
+  location: null,
 };
 
 const getters = {
@@ -50,12 +50,12 @@ const getters = {
     return merged
       .map((trip) => ({
         ...trip,
-        isAffected: affectedLines.includes(trip.sname)
+        isAffected: affectedLines.includes(trip.sname),
       }))
       .filter((trip) => (track ? trip.track === track : true))
       .filter(({ direction, origin }) => (dest ? direction === dest || origin === dest : true))
       .sort((a, b) => a.timestamp - b.timestamp);
-  }
+  },
 };
 
 const actions = {
@@ -99,7 +99,7 @@ const actions = {
         console.log('situations', situations);
         commit('setSituations', {
           ...situations,
-          messages
+          messages,
         });
       })
       .catch((reason) => console.error('[getTrafficSituations]', reason));
@@ -115,7 +115,7 @@ const actions = {
     } else {
       commit('reset');
     }
-  }
+  },
 };
 
 const mutations = {
@@ -131,7 +131,7 @@ const mutations = {
     }
     state.filter = {
       ...state.filter,
-      ...filter
+      ...filter,
     };
   },
   setOptions(state, options) {
@@ -140,7 +140,7 @@ const mutations = {
     }
     state.options = {
       ...state.options,
-      ...options
+      ...options,
     };
   },
   setTrips(state, trips) {
@@ -163,7 +163,7 @@ const mutations = {
   },
   setArrivals(state, value) {
     state.arrivals = value;
-  }
+  },
 };
 
 export default {
@@ -171,5 +171,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

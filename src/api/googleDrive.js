@@ -1,6 +1,6 @@
 const sheetsApi = {
   baseUrl: 'https://sheets.googleapis.com/v4/spreadsheets',
-  API_KEY: 'AIzaSyBqEDcu-o3wuB8Fwn31yIF84qKwSIUIeEg'
+  API_KEY: 'AIzaSyBqEDcu-o3wuB8Fwn31yIF84qKwSIUIeEg',
 };
 
 const sweToVTLingo = {
@@ -14,24 +14,24 @@ const sweToVTLingo = {
   'Ny tid': 'rtTime',
   Datum: 'date',
   Bakgrundsfärg: 'fgColor',
-  Textfärg: 'bgColor'
+  Textfärg: 'bgColor',
 };
 
 const files = {
   manualDepartures: {
     fileId: '1XSzg87FgHsxUl6UqNfRJtYIkw8wyN0yB3RzIib3JsvM',
-    tabName: 'Manuella%20linjer'
+    tabName: 'Manuella%20linjer',
   },
   trafficInformation: {
     fileId: '1XSzg87FgHsxUl6UqNfRJtYIkw8wyN0yB3RzIib3JsvM',
-    tabName: 'Trafikinformation'
-  }
+    tabName: 'Trafikinformation',
+  },
 };
 
 function getSheet({ fileId, tabName }) {
-  return fetch(`${sheetsApi.baseUrl}/${fileId}/values/${tabName}?key=${sheetsApi.API_KEY}`).then(
-    (resp) => resp.json()
-  );
+  return fetch(
+    `${sheetsApi.baseUrl}/${fileId}/values/${tabName}?key=${sheetsApi.API_KEY}`
+  ).then((resp) => resp.json());
 }
 
 function zipObject(keys) {
@@ -39,7 +39,7 @@ function zipObject(keys) {
     keys.reduce(
       (res, key, i) => ({
         ...res,
-        [key]: row[i]
+        [key]: row[i],
       }),
       {}
     );

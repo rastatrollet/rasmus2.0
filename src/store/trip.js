@@ -3,7 +3,7 @@ import api from '../apis';
 const state = {
   trip: null,
   error: null,
-  isLoading: false
+  isLoading: false,
 };
 
 const getters = {};
@@ -25,7 +25,7 @@ const actions = {
         commit('setError', reason);
         commit('setLoading', false);
       });
-  }
+  },
 };
 
 const mutations = {
@@ -37,7 +37,7 @@ const mutations = {
   },
   setError(state, error) {
     state.error = error;
-  }
+  },
 };
 
 export default {
@@ -45,5 +45,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

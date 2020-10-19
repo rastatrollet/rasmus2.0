@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       now: Date.now(),
-      timeoutId: null
+      timeoutId: null,
     };
   },
   computed: {
@@ -50,7 +50,7 @@ export default {
       const journeyDir = [].concat(journey.Direction);
       return {
         name: names[0].name,
-        direction: journeyDir[journeyDir.length - 1].$
+        direction: journeyDir[journeyDir.length - 1].$,
       };
     },
     stops() {
@@ -60,10 +60,10 @@ export default {
         const departed = new Date(`${stop.depDate}T${stop.depTime}`).getTime();
         return {
           ...stop,
-          didPass: departed < this.now
+          didPass: departed < this.now,
         };
       });
-    }
+    },
   },
   mounted() {
     this.timeoutId = setInterval(() => {
@@ -75,8 +75,8 @@ export default {
   },
   methods: {
     ...mapMutations(['setShowJourneyDetails']),
-    ...mapMutations('tabs', ['setCurrentTab'])
-  }
+    ...mapMutations('tabs', ['setCurrentTab']),
+  },
 };
 </script>
 <style module>

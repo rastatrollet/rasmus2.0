@@ -15,12 +15,12 @@ import Button from './Button.vue';
 export default {
   name: 'UpdateAvailable',
   components: {
-    Button
+    Button,
   },
   computed: {
     ...mapState({
-      hasUpdate: (state) => state.updateAvailable
-    })
+      hasUpdate: (state) => state.updateAvailable,
+    }),
   },
   methods: {
     ...mapMutations(['setUpdateAvailable']),
@@ -29,8 +29,8 @@ export default {
     },
     reload() {
       window.location.reload();
-    }
-  }
+    },
+  },
 };
 </script>
 <style module>

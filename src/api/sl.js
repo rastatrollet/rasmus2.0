@@ -1,6 +1,6 @@
 const baseUrl = 'http://api.sl.se/api2';
 const fetchOptions = {
-  method: 'GET'
+  method: 'GET',
 };
 
 const lineNumberColors = {
@@ -26,7 +26,7 @@ const lineNumberColors = {
   '43': 'pink',
   '44': 'pink',
   '45': 'pink',
-  '48': 'pink'
+  '48': 'pink',
 };
 function getColorFromLineNo(lineNo) {
   return lineNumberColors[lineNo] || '#A4A5A7'; // gray
@@ -37,7 +37,7 @@ function transformStop(stop) {
     ...stop,
     HafasId: stop.id,
     id: stop.id.substr(-4),
-    region: 'SL'
+    region: 'SL',
   };
 }
 
@@ -70,7 +70,7 @@ function findStops(term) {
           ...stop,
           name: stop.Name,
           id: stop.SiteId,
-          region: 'SL'
+          region: 'SL',
         }))
     );
 }
@@ -80,7 +80,7 @@ const vehicules = {
   METRO: 'T-bana',
   SHIP: 'Båt',
   TRAIN: 'Tåg',
-  TRAM: 'Spårvagn'
+  TRAM: 'Spårvagn',
 };
 function vehicule(key) {
   return vehicules[key] || key;
@@ -95,7 +95,7 @@ function getDeparturesFrom(siteId) {
       ...json.ResponseData.Metros,
       ...json.ResponseData.Ships,
       ...json.ResponseData.Trains,
-      ...json.ResponseData.Trams
+      ...json.ResponseData.Trams,
     ].map((trip) => ({
       ...trip,
       fgColor: getColorFromLineNo(trip.LineNumber),
@@ -109,7 +109,7 @@ function getDeparturesFrom(siteId) {
       track: trip.StopPointDesignation || trip.JourneyDirection,
       region: 'SL',
       href: '#',
-      isLate: trip.TimeTabledDateTime !== trip.ExpectedDateTime
+      isLate: trip.TimeTabledDateTime !== trip.ExpectedDateTime,
     }))
   );
 }
@@ -121,7 +121,7 @@ function getTrafficSituations(siteId) {
     .then((json) => asArray(json.ResponseData))
     .then((json) => {
       return {
-        messages: json.map(({ Details }) => Details)
+        messages: json.map(({ Details }) => Details),
       };
     });
 }
@@ -159,5 +159,5 @@ export default {
   findStops,
   init() {
     return Promise.resolve();
-  }
+  },
 };

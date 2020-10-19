@@ -48,5 +48,5 @@ export function speak(text) {
 }
 
 export default {
-  speak
+  speak,
 };

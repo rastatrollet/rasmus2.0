@@ -18,40 +18,40 @@ module.exports = {
           urlPattern: /img/,
           handler: 'CacheFirst',
           options: {
-            cacheName: 'local-images'
-          }
+            cacheName: 'local-images',
+          },
         },
         {
           urlPattern: new RegExp('^https://sheets.googleapis.com/v4/spreadsheets/'),
           handler: 'NetworkFirst',
           options: {
             networkTimeoutSeconds: 10,
-            cacheName: 'google-sheets-api'
-          }
+            cacheName: 'google-sheets-api',
+          },
         },
         {
           urlPattern: new RegExp('^https://rrp.vasttrafik.se/img'),
           handler: 'CacheFirst',
           options: {
-            cacheName: 'vasttrafik-images'
-          }
+            cacheName: 'vasttrafik-images',
+          },
         },
         {
           urlPattern: new RegExp('^https://unpkg.com/leaflet'),
           handler: 'CacheFirst',
           options: {
-            cacheName: 'leaflet-assets'
-          }
+            cacheName: 'leaflet-assets',
+          },
         },
         {
           urlPattern: new RegExp('^https://\\w.tile.openstreetmap.org/'),
           handler: 'CacheFirst',
           options: {
-            cacheName: 'map-images'
-          }
-        }
-      ]
-    }
+            cacheName: 'map-images',
+          },
+        },
+      ],
+    },
   },
   configureWebpack: {
     plugins: [
@@ -62,8 +62,8 @@ module.exports = {
         SL_REALTIME_DEPARTURES_KEY: process.env.SL_REALTIME_DEPARTURES_KEY,
         SL_DEVIATIONS_KEY: process.env.SL_DEVIATIONS_KEY,
         VT_BASIC_AUTH: process.env.VT_BASIC_AUTH,
-        TV_KEY: process.env.TV_KEY
-      })
-    ]
-  }
+        TV_KEY: process.env.TV_KEY,
+      }),
+    ],
+  },
 };

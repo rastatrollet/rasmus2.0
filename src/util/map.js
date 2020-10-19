@@ -9,7 +9,7 @@ const icons = {
   TRAM: 'https://rrp.vasttrafik.se/img/build/products/haf_prod_tram.svg',
   LDT: 'https://rrp.vasttrafik.se/img/build/products/haf_prod_ic.svg', // long distance train
   REG: 'https://rrp.vasttrafik.se/img/build/products/haf_prod_ic.svg', // regionaltåg
-  VAS: 'https://rrp.vasttrafik.se/img/build/products/haf_prod_ice.svg' // västtågen
+  VAS: 'https://rrp.vasttrafik.se/img/build/products/haf_prod_ice.svg', // västtågen
 };
 
 const getIcon = (prodtype) => {
@@ -17,13 +17,13 @@ const getIcon = (prodtype) => {
     iconUrl: icons[prodtype],
     iconSize: [20, 20], // size of the icon
     iconAnchor: [10, 10], // point of the icon which will correspond to marker's location
-    popupAnchor: [0, -16] // point from which the popup should open relative to the iconAnchor
+    popupAnchor: [0, -16], // point from which the popup should open relative to the iconAnchor
   });
 };
 
 const fromWGS84 = (lat, long) => ({
   lat: lat / 1000000,
-  lng: long / 1000000
+  lng: long / 1000000,
 });
 
 const meMarkerEl = document.createElement('div');
@@ -50,7 +50,7 @@ function initMap({ rootElement, position, zoom = 13 }) {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    maxZoom: 18
+    maxZoom: 18,
   }).addTo(map);
 
   meMarker = createMarker(
@@ -103,7 +103,7 @@ const createVehicleMarker = (vehicle) => {
     [lat, lng],
     {
       icon: getIcon(prodclass),
-      title: vehicle.gid
+      title: vehicle.gid,
     },
     content
   );
@@ -123,5 +123,5 @@ export default {
   createVehicleMarker,
   updateVehicleMarkerPosition,
   centerOnMe,
-  drawPolyLine
+  drawPolyLine,
 };

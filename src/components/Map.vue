@@ -40,7 +40,7 @@ export default {
       getLiveMapError: '',
       initializing: true,
       isLoadingLiveMap: false,
-      updateInterval: getUpdateInterval(13)
+      updateInterval: getUpdateInterval(13),
     };
   },
   computed: {
@@ -50,7 +50,7 @@ export default {
       if (this.isLoadingLiveMap) return 'spinner';
       if (this.getLiveMapError) return 'warning';
       return 'check';
-    }
+    },
   },
   watch: {
     followMe(doFollow) {
@@ -66,7 +66,7 @@ export default {
           },
           {
             enableHighAccuracy: true,
-            timeout: 15000
+            timeout: 15000,
           }
         );
       } else {
@@ -82,7 +82,7 @@ export default {
         this.removeMarkers();
         clearTimeout(this.timeoutId);
       }
-    }
+    },
   },
   mounted() {
     console.log('mounted Map.vue');
@@ -90,14 +90,17 @@ export default {
       this.initializing = false;
       this.map = map.initMap({
         rootElement: document.getElementById('map'),
-        position
+        position,
       });
 
       this.setupEventListeners();
       this.updateMap();
 
       if (this.selectedJourney) {
-        map.drawPolyLine(this.selectedJourney.Stop.map(({ lat, lon }) => [lat, lon]), '#009ddb');
+        map.drawPolyLine(
+          this.selectedJourney.Stop.map(({ lat, lon }) => [lat, lon]),
+          '#009ddb'
+        );
         this.selectedJourney.Stop.forEach((hpl) => {
           const message = hpl.depDate
             ? `Avgår <time datetime="${hpl.depDate}">${hpl.depTime}</time> från läge ${hpl.track}`
@@ -196,8 +199,8 @@ export default {
         this.map.removeLayer(marker);
       });
       this.markers = [];
-    }
-  }
+    },
+  },
 };
 </script>
 

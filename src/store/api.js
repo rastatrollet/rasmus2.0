@@ -10,7 +10,7 @@ const initializedAPIs = [];
 
 const state = {
   name: defaultApi,
-  initializing: true
+  initializing: true,
 };
 
 const getters = {
@@ -19,7 +19,7 @@ const getters = {
   },
   dict({ name }) {
     return apiDict[name];
-  }
+  },
 };
 
 const mutations = {
@@ -28,7 +28,7 @@ const mutations = {
   },
   setInitializing(state, value) {
     state.initializing = value;
-  }
+  },
 };
 
 const actions = {
@@ -56,7 +56,7 @@ const actions = {
     commit('trips/reset', null, { root: true });
     commit('stops/setStops', [], { root: true });
     if (!isInitialized) dispatch('initApi');
-  }
+  },
 };
 
 export default {
@@ -64,5 +64,5 @@ export default {
   state,
   getters,
   mutations,
-  actions
+  actions,
 };

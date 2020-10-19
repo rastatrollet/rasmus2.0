@@ -17,11 +17,11 @@ export default {
   data() {
     return {
       prompted: false,
-      url: ''
+      url: '',
     };
   },
   computed: {
-    ...mapState(['beforeInstallPrompt'])
+    ...mapState(['beforeInstallPrompt']),
   },
   mounted() {
     this.url = window.location.href.replace(/\/$/, '');
@@ -43,8 +43,8 @@ export default {
         }
         this.closeToaster();
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style module>

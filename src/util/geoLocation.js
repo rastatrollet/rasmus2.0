@@ -3,7 +3,7 @@ let positionPromise;
 export function transformPosition({ coords }) {
   return {
     lat: coords.latitude,
-    lng: coords.longitude
+    lng: coords.longitude,
   };
 }
 

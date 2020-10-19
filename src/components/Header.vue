@@ -14,19 +14,19 @@ import { mapState } from 'vuex';
 
 const apiNameMap = {
   VT: 'Västtrafik',
-  TV: 'Trafikverket'
+  TV: 'Trafikverket',
 };
 
 export default {
   name: 'Header',
   computed: {
     ...mapState({
-      apiName: ({ api }) => apiNameMap[api.name]
+      apiName: ({ api }) => apiNameMap[api.name],
     }),
     ...mapState('trips', {
-      isLoadingTrips: ({ isLoading }) => isLoading
-    })
-  }
+      isLoadingTrips: ({ isLoading }) => isLoading,
+    }),
+  },
 };
 </script>
 

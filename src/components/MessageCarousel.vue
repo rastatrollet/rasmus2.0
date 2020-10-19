@@ -30,20 +30,20 @@ export default {
   props: {
     messages: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
       active: 0,
       intervalId: null,
-      wait: 5000
+      wait: 5000,
     };
   },
   computed: {
     translateX() {
       return this.active * -100 + '%';
-    }
+    },
   },
   mounted() {
     this.play();
@@ -90,8 +90,8 @@ export default {
         }
       };
       target.addEventListener('touchend', onTouchEnd);
-    }
-  }
+    },
+  },
 };
 </script>
 <style module>

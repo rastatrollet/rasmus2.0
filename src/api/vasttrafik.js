@@ -10,8 +10,11 @@ function getTrafficSituations(gid, method) {
       (res, { title, description, affectedLines }) => ({
         messages: res.messages.concat(`${title} ${description}`),
         affectedLines: []
-          .concat(res.affectedLines, affectedLines.map(({ designation }) => designation))
-          .filter((x) => x)
+          .concat(
+            res.affectedLines,
+            affectedLines.map(({ designation }) => designation)
+          )
+          .filter((x) => x),
       }),
       { messages: [] }
     )
@@ -35,7 +38,7 @@ function findStops(text) {
     .then((stops) =>
       stops.map((stop) =>
         Object.assign({}, stop, {
-          region: 'VT'
+          region: 'VT',
         })
       )
     );
@@ -54,7 +57,7 @@ function transformTrips(trips) {
       cancelled: Boolean(trip.cancelled),
       isLate,
       bgColor,
-      timestamp
+      timestamp,
     });
   });
 }
@@ -120,7 +123,7 @@ function anropaVasttrafik(url, userHeaders) {
   const accessTokenPromise = Promise.resolve();
   const headers = {
     ...userHeaders,
-    Authorization: `Bearer ${authToken}`
+    Authorization: `Bearer ${authToken}`,
   };
 
   if (!expDate || expDate.getTime() < Date.now()) {
@@ -150,7 +153,7 @@ function getClosestStops({ lat, lng }, limit = 5, retry = true) {
       })
         .map((stop) => ({
           ...stop,
-          region: 'VT'
+          region: 'VT',
         }))
         .slice(0, limit);
     })
@@ -170,10 +173,10 @@ function getAccessToken() {
   return fetch('https://api.vasttrafik.se:443/token', {
     headers: {
       Authorization: `Basic ${key}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     method: 'POST',
-    body: 'grant_type=client_credentials'
+    body: 'grant_type=client_credentials',
   })
     .then(fetchMiddleware)
     .then((resp) => {
@@ -209,5 +212,5 @@ export default {
   getArrivalsTo,
   getTrafficSituations,
   getLiveMap,
-  transformTrips
+  transformTrips,
 };

@@ -50,7 +50,7 @@ const api = {
         </AND>
       </FILTER>
     `;
-  }
+  },
 };
 
 function tvApiRequest(objectType, ...args) {
@@ -68,8 +68,8 @@ function tvApiRequest(objectType, ...args) {
     method: 'POST',
     mode: 'cors',
     headers: {
-      'Content-Type': 'text/xml'
-    }
+      'Content-Type': 'text/xml',
+    },
   })
     .then((resp) => {
       const jsonPromise = resp.json().then((json) => json.RESPONSE.RESULT);
@@ -89,7 +89,7 @@ function transformStation(station) {
   return Object.assign({}, station, {
     name: station.AdvertisedLocationName,
     id: station.LocationSignature,
-    region: 'TV'
+    region: 'TV',
   });
 }
 
@@ -125,7 +125,7 @@ export default {
     return tvApiRequest('TrainMessage', location)
       .then(logMiddleware)
       .then((situations) => ({
-        messages: situations.map(({ ExternalDescription }) => ExternalDescription)
+        messages: situations.map(({ ExternalDescription }) => ExternalDescription),
       }));
   },
   async getDeparturesFrom(station) {
@@ -147,7 +147,7 @@ export default {
           timestamp: new Date(dep.AdvertisedTimeAtLocation).getTime(),
           isLate: false,
           track: dep.TrackAtLocation,
-          sname: dep.ProductInformation[0]
+          sname: dep.ProductInformation[0],
         }))
       );
   },
@@ -156,5 +156,5 @@ export default {
       stations.slice(0, 15).map(transformStation)
     );
   },
-  stationMap
+  stationMap,
 };

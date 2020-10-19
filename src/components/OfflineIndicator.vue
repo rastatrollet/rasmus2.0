@@ -10,9 +10,9 @@ export default {
   name: 'OfflineIndicator',
   computed: {
     ...mapState({
-      isOnline: (state) => state.online
-    })
-  }
+      isOnline: (state) => state.online,
+    }),
+  },
 };
 </script>
 <style module>

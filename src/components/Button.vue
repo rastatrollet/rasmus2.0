@@ -10,29 +10,29 @@ export default {
   props: {
     className: {
       type: String,
-      default: ''
+      default: '',
     },
     type: {
       type: String,
-      default: 'button'
+      default: 'button',
     },
     title: {
       type: String,
-      default: ''
+      default: '',
     },
     onClick: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     text: {
       type: String,
-      default: ''
+      default: '',
     },
     icon: {
       type: String,
-      default: null
-    }
-  }
+      default: null,
+    },
+  },
 };
 </script>
 <style module>

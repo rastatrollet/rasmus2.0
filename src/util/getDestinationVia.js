@@ -5,7 +5,7 @@ export default function getDestinationVia(departure) {
     const [direction, via] = departure.direction.split(viaRegExp);
     return Object.assign({}, departure, {
       direction,
-      via
+      via,
     });
   }
   return departure;

@@ -1,7 +1,7 @@
 const state = {
   stops: [],
   isLoading: false,
-  favorites: []
+  favorites: [],
 };
 
 const getters = {};
@@ -39,7 +39,7 @@ const actions = {
       return !toBeRemoved;
     });
     commit('setFavorites', remainingFavorites);
-  }
+  },
 };
 
 const mutations = {
@@ -51,7 +51,7 @@ const mutations = {
   },
   setFavorites(state, favorites) {
     state.favorites = favorites;
-  }
+  },
 };
 
 export default {
@@ -59,5 +59,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

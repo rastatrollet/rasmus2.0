@@ -15,8 +15,8 @@ const vuexLocal = new VuexPersist({
   reducer: ({ trips, api, stops }) => ({
     trips,
     api,
-    stops
-  })
+    stops,
+  }),
 });
 
 export default new Vuex.Store({
@@ -27,7 +27,7 @@ export default new Vuex.Store({
     selectedJourney: null,
     updateAvailable: false,
     showJourneyDetails: false,
-    loadingJourneyDetails: false
+    loadingJourneyDetails: false,
   },
   getters: {},
   mutations: {
@@ -48,7 +48,7 @@ export default new Vuex.Store({
     },
     setLoadingJourneyDetails(state, value) {
       state.loadingJourneyDetails = value;
-    }
+    },
   },
   actions: {
     getJourneyDetails({ commit, state }, trip) {
@@ -67,14 +67,14 @@ export default new Vuex.Store({
           console.error('[getJourneyDetails]', reason);
           commit('setLoadingJourneyDetails', false);
         });
-    }
+    },
   },
   modules: {
     api,
     user,
     trips,
     stops,
-    tabs
+    tabs,
   },
-  plugins: [vuexLocal.plugin]
+  plugins: [vuexLocal.plugin],
 });

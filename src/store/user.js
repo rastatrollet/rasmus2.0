@@ -2,18 +2,18 @@ const state = {
   isSupported: 'geolocation' in navigator,
   isLoading: {
     location: false,
-    nearbyStops: false
+    nearbyStops: false,
   },
   location: null,
   consented: null,
   nearbyStops: [],
-  nearbyStopsError: ''
+  nearbyStopsError: '',
 };
 
 const getters = {
   isLoading({ isLoading }) {
     return isLoading.location || isLoading.nearbyStops;
-  }
+  },
 };
 
 const actions = {
@@ -60,14 +60,14 @@ const actions = {
         commit('setLoading', { location: false });
         commit('setConsented', false);
       });
-  }
+  },
 };
 
 const mutations = {
   setLoading(state, loading) {
     state.isLoading = {
       ...state.loading,
-      ...loading
+      ...loading,
     };
   },
   setConsented(state, value) {
@@ -76,7 +76,7 @@ const mutations = {
   setLocation(state, coords) {
     state.location = {
       lat: coords.latitude,
-      lng: coords.longitude
+      lng: coords.longitude,
     };
   },
   setNearbyStops(state, stops) {
@@ -85,7 +85,7 @@ const mutations = {
   },
   setNearbyStopsError(state, error) {
     state.nearbyStopsError = error;
-  }
+  },
 };
 
 export default {
@@ -93,5 +93,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

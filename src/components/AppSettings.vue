@@ -62,8 +62,8 @@ export default {
   props: {
     className: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -77,16 +77,16 @@ export default {
         { value: '180', name: '3 timmar' },
         { value: '360', name: '6 timmar' },
         { value: '720', name: '12 timmar' },
-        { value: '1440', name: '24 timmar' }
-      ]
+        { value: '1440', name: '24 timmar' },
+      ],
     };
   },
   computed: {
     ...mapState('trips', ['filter', 'options']),
     ...mapState('api', {
       apiName: ({ name }) => name,
-      initializing: ({ initializing }) => initializing
-    })
+      initializing: ({ initializing }) => initializing,
+    }),
   },
   methods: {
     ...mapActions('api', ['toggleApi']),
@@ -110,8 +110,8 @@ export default {
         default:
           return api;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
