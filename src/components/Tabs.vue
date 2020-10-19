@@ -9,8 +9,8 @@
         {
           [$style.tabSmall]: tab.small,
           [$style.tabActive]: showSettings ? tab.name === 'Inställningar' : currentTab === tab.name,
-          [$style.tabDisabled]: tab.disabled
-        }
+          [$style.tabDisabled]: tab.disabled,
+        },
       ]"
     >
       <a :class="$style.link" :title="tab.name" href="#" @click.prevent="tab.onClick(tab)">
@@ -26,22 +26,22 @@ export default {
   props: {
     tabs: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     currentTab: {
       type: String,
-      default: ''
+      default: '',
     },
     showSettings: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 };
 </script>
 <style module>
 .tabs {
-  border-top: 1px solid var(--brand-text-color);
+  border-top: 1px solid var(--background-color);
   flex-grow: 1;
   display: flex;
   align-items: center;
@@ -70,8 +70,8 @@ export default {
   flex-grow: 0;
 }
 .tabActive {
-  background-color: white;
-  color: var(--brand-color);
+  background-color: var(--background-color-active);
+  color: var(--text-color-active);
 }
 .tabApi {
   flex-grow: 0;

@@ -80,30 +80,30 @@ import debounce from '../util/debounce';
 
 const keyToNextElementDict = {
   ArrowUp: 'previousElementSibling',
-  ArrowDown: 'nextElementSibling'
+  ArrowDown: 'nextElementSibling',
 };
 
 export default {
   name: 'LocationInput',
   components: {
-    Button
+    Button,
   },
   props: {
     label: {
       type: String,
-      default: ''
+      default: '',
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       show: false,
       searchText: '',
       leftOffset: 0,
-      sugestionsWidth: 'auto'
+      sugestionsWidth: 'auto',
     };
   },
   computed: {
@@ -113,7 +113,7 @@ export default {
     ...mapState('stops', ['stops', 'isLoading', 'favorites']),
     ...mapState({
       userLocation: ({ user }) => user.location,
-      selectedLocation: ({ trips }) => trips.location
+      selectedLocation: ({ trips }) => trips.location,
     }),
     nearbyStopsMessage() {
       if (this.isLoadingNearbyStops) return 'Hämtar närliggande hållplatser';
@@ -137,12 +137,12 @@ export default {
       const favIds = favs.map(({ id }) => id);
       const isFav = ({ id }) => !favIds.includes(id);
       return [...favs, ...this.filteredNearbyStops.filter(isFav), ...this.stops.filter(isFav)];
-    }
+    },
   },
   watch: {
     selectedLocation(newVal) {
       if (!newVal) this.searchText = '';
-    }
+    },
   },
   mounted() {
     this.debouncedFindStops = debounce(this.findStops, 350, this);
@@ -205,8 +205,8 @@ export default {
     },
     resetLocation() {
       this.updateLocation(null);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -227,6 +227,8 @@ export default {
 }
 
 .input {
+  background-color: var(--background-color);
+  color: var(--text-color);
   -webkit-appearance: none;
   border: 1px solid var(--brand-color);
   border-radius: 2px;
@@ -245,7 +247,7 @@ export default {
 }
 
 .resetLocationBtn {
-  background: white;
+  background: var(--background-color);
   line-height: 1em;
   padding: 5px 10px;
   position: absolute;

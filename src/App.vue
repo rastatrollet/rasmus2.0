@@ -37,17 +37,17 @@ export default {
     DisturbanceComponent: () => import('./components/Disturbance.vue'),
     UpdateAvailable,
     OfflineIndicator,
-    InstallToHomeScreenPrompt
+    InstallToHomeScreenPrompt,
   },
   data() {
     return {
       timeoutId: null,
-      showSettings: false
+      showSettings: false,
     };
   },
   computed: {
     ...mapState({
-      apiName: ({ api }) => api.name
+      apiName: ({ api }) => api.name,
     }),
     ...mapState('tabs', ['currentTab']),
     ...mapState('trips', ['location']),
@@ -55,12 +55,12 @@ export default {
     tabs() {
       return components.map((comp) => ({
         ...comp,
-        onClick: this.changeTab
+        onClick: this.changeTab,
       }));
     },
     currentTabComponent() {
       return this.tabs.find(({ name }) => name === this.currentTab);
-    }
+    },
   },
   watch: {
     location(newLoc, oldLoc) {
@@ -75,7 +75,7 @@ export default {
       if (typeof this.api.getArrivalsTo !== 'function') {
         this.setArrivals(false);
       }
-    }
+    },
   },
   mounted() {
     if (this.location) {
@@ -102,14 +102,14 @@ export default {
         this.getTrips();
         this.timeoutId = setTimeout(() => this.getTripsAgainAndAgain(), 1000 * 30);
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style module>
 .app {
-  background-color: var(--brand-text-color);
+  background-color: var(--background-color);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -155,6 +155,28 @@ export default {
   --brand-text-color-dim: rgba(255, 255, 255, 0.75);
   --dark-text-color: dimgray;
   --darker-text-color: rgb(0, 57, 77);
+
+  --background-color: white;
+  --background-color-active: white;
+  --background-color-dim: #eee;
+  --text-color: rgb(0, 57, 77);
+  --text-color-active: var(--brand-color);
+  --text-color-dim: #444;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-color: #0080ac;
+    --brand-text-color-dim: rgba(255, 255, 255, 0.5);
+
+    --background-color: rgb(24, 31, 35);
+    --background-color-active: black;
+    --background-color-dim: rgb(40, 47, 51);
+
+    --text-color: rgb(232, 238, 240);
+    --text-color-active: var(--text-color);
+    --text-color-dim: #bbb;
+  }
 }
 
 html {

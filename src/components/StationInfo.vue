@@ -38,13 +38,13 @@ const dict = {
   arrival: {
     name: 'Ankomst',
     arrEaves: 'Ankommer',
-    origDest: 'Från'
+    origDest: 'Från',
   },
   departure: {
     name: 'Avgång',
     arrEaves: 'Avgår',
-    origDest: 'Till'
-  }
+    origDest: 'Till',
+  },
 };
 
 export default {
@@ -53,13 +53,13 @@ export default {
     LocationInput,
     JourneyDetails,
     TripsTable,
-    MessageCarousel
+    MessageCarousel,
   },
   computed: {
     ...mapState('trips', ['arrivals', 'location', 'situations', 'manualSituations']),
     ...mapState('api', {
       apiName: ({ name }) => name,
-      initializing: ({ initializing }) => initializing
+      initializing: ({ initializing }) => initializing,
     }),
     showArrDepSelection() {
       return typeof this.api.getArrivalsTo === 'function';
@@ -90,7 +90,7 @@ export default {
     },
     arriveDepartLabel() {
       return this.arrivals ? 'Ankommer' : 'Avgår';
-    }
+    },
   },
   watch: {
     arrivals(newVal, oldVal) {
@@ -104,15 +104,15 @@ export default {
       if (newVal !== oldVal) {
         clearTimeout(this.lastTimeoutId);
       }
-    }
+    },
   },
   beforeDestroy() {
     clearTimeout(this.lastTimeoutId);
   },
   methods: {
     ...mapActions('trips', ['getTrips']),
-    ...mapMutations('trips', ['setArrivals'])
-  }
+    ...mapMutations('trips', ['setArrivals']),
+  },
 };
 </script>
 <style module>
@@ -135,7 +135,7 @@ export default {
 }
 
 .arrDep {
-  background: whitesmoke;
+  background: var(--background-color-dim);
   border-radius: 5px;
   box-shadow: inset 0px 1px 2px rgba(30, 90, 150, 0.1);
   display: grid;
@@ -152,7 +152,7 @@ export default {
   border: none;
   background: transparent;
   border-radius: 4px;
-  color: #444;
+  color: var(--text-color-dim);
   cursor: pointer;
   margin: 0;
   padding: 2px;
@@ -163,9 +163,9 @@ export default {
 }
 
 .arrDepBtnSelected {
-  background: white;
+  background: var(--background-color-active);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.13);
-  color: #333;
+  color: var(--text-color);
 }
 
 .situations {

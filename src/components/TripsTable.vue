@@ -6,8 +6,8 @@
         [$style.VT]: apiName === 'VT',
         [$style.TV]: apiName === 'TV',
         [$style.SL]: apiName === 'SL',
-        [$style.showingJourneyDetails]: showJourneyDetails
-      }
+        [$style.showingJourneyDetails]: showJourneyDetails,
+      },
     ]"
   >
     <table :class="$style.table">
@@ -46,7 +46,7 @@
             <span
               :class="[
                 'only-mobile',
-                { [$style.isLate]: trip.isLate, [$style.strikeOut]: trip.cancelled }
+                { [$style.isLate]: trip.isLate, [$style.strikeOut]: trip.cancelled },
               ]"
             >
               {{ (trip.rtTime || trip.time) | humanTime }}
@@ -117,13 +117,13 @@ export default {
     unbreakMySpace(value) {
       if (!value.includes(' ')) return value;
       return value.replace(' ', nbsp);
-    }
+    },
   },
   props: {
     fromToLabel: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   computed: {
     hasNotes() {
@@ -131,12 +131,12 @@ export default {
     },
     ...mapState({
       showJourneyDetails: (state) => state.showJourneyDetails,
-      apiName: ({ api }) => api.name
+      apiName: ({ api }) => api.name,
     }),
     ...mapState('trips', {
       isLoading: ({ isLoading }) => isLoading,
       location: ({ location }) => location,
-      doSpeak: ({ options }) => options.voice
+      doSpeak: ({ options }) => options.voice,
     }),
     ...mapGetters({ trips: 'trips/filteredTrips' }),
     ...mapGetters('api', ['dict']),
@@ -145,13 +145,13 @@ export default {
     },
     trackLabel() {
       return this.dict.track;
-    }
+    },
   },
   watch: {
     trips(trips) {
       if (!trips || trips.length === 0) return;
       this.speak(trips);
-    }
+    },
   },
   mounted() {
     this.speak = debounce(this.speak, 250, this);
@@ -174,8 +174,8 @@ export default {
       } else {
         speak(`${name} mot ${direction}, ${via} avgår om mer än en timma`);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -195,10 +195,10 @@ export default {
 }
 
 .table {
-  background-color: white;
+  background-color: var(--background-color);
   border: 0;
   border-collapse: collapse;
-  color: var(--darker-text-color);
+  color: var(--text-color);
   width: 100%;
 }
 
@@ -220,7 +220,7 @@ export default {
   cursor: pointer;
 }
 .trip:nth-child(even) {
-  background: #eee;
+  background: var(--background-color-dim);
 }
 
 .strikeOut {
@@ -228,6 +228,7 @@ export default {
 }
 
 .tripLine {
+  opacity: 0.9;
   padding: 0.5em;
   text-align: center;
   width: 50px;
