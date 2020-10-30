@@ -18,6 +18,21 @@
     <p :class="$style.label">Other</p>
     <p>
       <label>
+        Dark/Light mode:
+        <select name="darkMode" :class="$style.timeSpan" @change="updateDarkMode">
+          <option
+            v-for="mode in viewModes"
+            :key="mode.value"
+            :selected="mode.value === viewMode"
+            :value="mode.value"
+          >
+            {{ mode.name }}
+          </option>
+        </select>
+      </label>
+    </p>
+    <p>
+      <label>
         Hämta resor inom:
         <select name="timeSpan" :class="$style.timeSpan" @change="updateFilter">
           <option
@@ -57,6 +72,8 @@ import { mapState, mapActions, mapMutations } from 'vuex';
 
 import apis from '../api';
 
+const DARK_MODE_NAME = 'darkMode';
+
 export default {
   name: 'AppSettings',
   props: {
@@ -69,6 +86,12 @@ export default {
     return {
       buildTime: process.env.BUILD_TIME,
       apis: Object.keys(apis),
+      viewModes: [
+        { value: '', name: 'OS default' },
+        { value: 'dark-mode', name: 'Dark mode' },
+        { value: 'light-mode', name: 'Light mode' },
+      ],
+      viewMode: '',
       timeSpans: [
         { value: '', name: 'API default' },
         { value: '30', name: '30 min' },
@@ -88,6 +111,13 @@ export default {
       initializing: ({ initializing }) => initializing,
     }),
   },
+  mounted() {
+    const prevVal = localStorage.getItem(DARK_MODE_NAME);
+    if (prevVal) {
+      this.viewMode = prevVal;
+      document.documentElement.classList.add(prevVal);
+    }
+  },
   methods: {
     ...mapActions('api', ['toggleApi']),
     ...mapMutations('trips', ['setOptions', 'setFilter']),
@@ -100,6 +130,17 @@ export default {
       const { name, checked } = target;
       if (!name) return;
       this.setOptions({ [name]: checked });
+    },
+    updateDarkMode({ target }) {
+      const { name, value } = target;
+      if (!name) return;
+
+      const prevVal = localStorage.getItem(DARK_MODE_NAME);
+      prevVal && document.documentElement.classList.remove(prevVal);
+
+      localStorage.setItem(DARK_MODE_NAME, value);
+      this.viewMode = value;
+      value && document.documentElement.classList.add(value);
     },
     getLongName(api) {
       switch (api) {

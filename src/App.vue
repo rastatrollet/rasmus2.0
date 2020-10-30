@@ -164,8 +164,21 @@ export default {
   --text-color-dim: #444;
 }
 
+:root.dark-mode {
+  --brand-color: #0080ac;
+  --brand-text-color-dim: rgba(255, 255, 255, 0.5);
+
+  --background-color: rgb(24, 31, 35);
+  --background-color-active: black;
+  --background-color-dim: rgb(40, 47, 51);
+
+  --text-color: rgb(232, 238, 240);
+  --text-color-active: var(--text-color);
+  --text-color-dim: #bbb;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light-mode) {
     --brand-color: #0080ac;
     --brand-text-color-dim: rgba(255, 255, 255, 0.5);
 
