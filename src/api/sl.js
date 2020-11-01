@@ -109,7 +109,7 @@ function getDeparturesFrom(siteId) {
       track: trip.StopPointDesignation || trip.JourneyDirection,
       region: 'SL',
       href: '#',
-      isLate: trip.TimeTabledDateTime !== trip.ExpectedDateTime,
+      isLate: Boolean(trip.ExpectedDateTime && trip.TimeTabledDateTime !== trip.ExpectedDateTime),
     }))
   );
 }

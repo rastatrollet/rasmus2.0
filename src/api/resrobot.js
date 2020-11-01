@@ -55,10 +55,10 @@ async function getDeparturesFrom(id) {
         .trim(),
       name: trip.name.replace('Länstrafik - ', ''),
       sname: trip.transportNumber,
-      track: trip.rtTrack,
+      track: trip.rtDepTrack || trip.rtTrack,
       region: 'RR',
       href: '#',
-      isLate: trip.time !== trip.rtTime,
+      isLate: Boolean(trip.rtTime && trip.time !== trip.rtTime),
     }));
   });
 }
