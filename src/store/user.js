@@ -28,7 +28,7 @@ const actions = {
       .getClosestStops(state.location)
       .then((nearbyStops) => {
         // only update nearbyStations promise resolves with correct data
-        console.log('nearbySyops', nearbyStops);
+        console.log('nearbyStops', nearbyStops);
         if (nearbyStops && nearbyStops.length && nearbyStops[0].region === rootState.api.name) {
           commit('setNearbyStops', nearbyStops);
         } else {
@@ -56,6 +56,7 @@ const actions = {
         commit('setLocation', pos.coords);
       })
       .catch((reason) => {
+        console.log('Could not get position');
         console.error(reason);
         commit('setLoading', { location: false });
         commit('setConsented', false);

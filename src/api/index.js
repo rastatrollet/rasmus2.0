@@ -1,6 +1,7 @@
 import TV from './trafikverket';
 import VT from './vasttrafik';
 import SL from './sl';
+import RR from './resrobot';
 
 export const apiDict = {
   TV: {
@@ -15,10 +16,15 @@ export const apiDict = {
     track: 'Läge',
     sname: 'Linje',
   },
+  RR: {
+    track: 'Läge',
+    sname: 'Linje',
+  },
 };
 
 export default {
   VT,
   TV,
   SL,
+  RR,
 };

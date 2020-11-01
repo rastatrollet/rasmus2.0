@@ -63,6 +63,8 @@ module.exports = {
         SL_DEVIATIONS_KEY: process.env.SL_DEVIATIONS_KEY,
         VT_BASIC_AUTH: process.env.VT_BASIC_AUTH,
         TV_KEY: process.env.TV_KEY,
+        RESROBOT_RESEPLANERARE_KEY: process.env.RESROBOT_RESEPLANERARE_KEY,
+        RESROBOT_STOLPTIDTABELLER_KEY: process.env.RESROBOT_STOLPTIDTABELLER_KEY,
       }),
     ],
   },
