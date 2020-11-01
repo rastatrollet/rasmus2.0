@@ -49,14 +49,14 @@
                 { [$style.isLate]: trip.isLate, [$style.strikeOut]: trip.cancelled },
               ]"
             >
-              {{ (trip.rtTime || trip.time) | humanTime }}
+              {{ trip.rtTime || trip.time }}
             </span>
             <span :class="['from-tablet', { [$style.strikeOut]: trip.cancelled }]">{{
-              trip.time | humanTime
+              trip.time
             }}</span>
           </td>
           <td :class="[$style.tripNewTime, $style.isLate, { [$style.strikeOut]: trip.cancelled }]">
-            <span v-if="trip.isLate">{{ trip.rtTime | humanTime }}</span>
+            <span v-if="trip.isLate">{{ trip.rtTime }}</span>
           </td>
           <td :class="$style.tripTrack">{{ trip.rtTrack || trip.track }}</td>
           <td v-if="hasNotes" :class="$style.tripNote">
