@@ -6,6 +6,7 @@
         [$style.VT]: apiName === 'VT',
         [$style.TV]: apiName === 'TV',
         [$style.SL]: apiName === 'SL',
+        [$style.SL]: apiName === 'RR',
         [$style.showingJourneyDetails]: showJourneyDetails,
       },
     ]"
@@ -51,9 +52,11 @@
             >
               {{ trip.rtTime || trip.time }}
             </span>
-            <span :class="['from-tablet', { [$style.strikeOut]: trip.cancelled }]">{{
-              trip.time
-            }}</span>
+            <span
+              v-if="!trip.isLate"
+              :class="['from-tablet', { [$style.strikeOut]: trip.cancelled }]"
+              >{{ trip.time }}</span
+            >
           </td>
           <td :class="[$style.tripNewTime, $style.isLate, { [$style.strikeOut]: trip.cancelled }]">
             <span v-if="trip.isLate">{{ trip.rtTime }}</span>
