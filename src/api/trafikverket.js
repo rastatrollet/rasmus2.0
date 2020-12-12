@@ -1,6 +1,14 @@
+import codes from './trafikverketCodes';
+
 const key = process.env.TV_KEY;
 const auth = `<LOGIN authenticationkey="${key}" />`;
 const stationMap = {};
+
+const objectTypes = {
+  TRAIN_STATION: 'TrainStation',
+  TRAIN_MESSAGE: 'TrainMessage',
+  TRAIN_ANNOUNCEMENT: 'TrainAnnouncement',
+};
 
 const api = {
   TrainStation({ lat, long, name } = {}, radius = 500) {
@@ -33,7 +41,7 @@ const api = {
     // message at station
     return `
       <FILTER>
-        <EQ name="AffectedLocation" value="${station}" />
+        <EQ name="TrafficImpact.AffectedLocation" value="${station}" />
       </FILTER>
     `;
   },
@@ -53,16 +61,24 @@ const api = {
   },
 };
 
-function tvApiRequest(objectType, ...args) {
-  return fetch('https://api.trafikinfo.trafikverket.se/v1.3/data.json', {
+function tvApiRequest(objectType, { apiVersion = 1.3, schemaVersion } = {}, ...args) {
+  if (apiVersion >= 2 && !schemaVersion) {
+    throw Error('schemaVersion must be defined when apiVersion >= 2');
+  }
+  const query = `
+  <QUERY
+    objecttype="${objectType}"
+    ${schemaVersion ? `schemaversion="${schemaVersion}"` : ''}
+    ${objectType === objectTypes.TRAIN_ANNOUNCEMENT ? 'orderby="AdvertisedTimeAtLocation"' : ''}
+  >
+    ${api[objectType](...args)}
+  </QUERY>`;
+
+  return fetch(`https://api.trafikinfo.trafikverket.se/v${apiVersion}/data.json`, {
     body: `
       <REQUEST>
         ${auth}
-        <QUERY objecttype="${objectType}" ${
-      objectType === 'TrainAnnouncement' ? 'orderby="AdvertisedTimeAtLocation"' : ''
-    }>
-          ${api[objectType](...args)}
-        </QUERY>
+        ${query}
       </REQUEST>
     `,
     method: 'POST',
@@ -94,7 +110,7 @@ function transformStation(station) {
 }
 
 function getClosestStops({ lat, lng }) {
-  return tvApiRequest('TrainStation', { lat, long: lng }, 5000).then((response) =>
+  return tvApiRequest(objectTypes.TRAIN_STATION, {}, { lat, long: lng }, 5000).then((response) =>
     response.slice(0, 5).map(transformStation)
   );
 }
@@ -108,7 +124,7 @@ const stationMapPromise = new Promise((resolve, reject) => {
 
 export default {
   init() {
-    return tvApiRequest('TrainStation')
+    return tvApiRequest(objectTypes.TRAIN_STATION)
       .then((stations) => {
         stations.forEach((station) => {
           stationMap[station.LocationSignature] = station.AdvertisedLocationName;
@@ -122,14 +138,27 @@ export default {
     return getClosestStops(pos).then((stops) => stops[0]);
   },
   getTrafficSituations(location) {
-    return tvApiRequest('TrainMessage', location)
+    return tvApiRequest(
+      objectTypes.TRAIN_MESSAGE,
+      { apiVersion: 2, schemaVersion: '1.6' },
+      location
+    )
       .then(logMiddleware)
-      .then((situations) => ({
-        messages: situations.map(({ ExternalDescription }) => ExternalDescription),
-      }));
+      .then((situations) => {
+        return {
+          messages: situations.map(({ ExternalDescription, ReasonCode }) => {
+            return (
+              ExternalDescription +
+              ` (${ReasonCode.map(
+                ({ Code, Description }) => Description + ' - ' + atob(codes[Code])
+              ).join(', ')})`
+            );
+          }),
+        };
+      });
   },
   async getDeparturesFrom(station) {
-    return tvApiRequest('TrainAnnouncement', station)
+    return tvApiRequest(objectTypes.TRAIN_ANNOUNCEMENT, {}, station)
       .then((resp) => (resp || []).slice(0, 30))
       .then(logMiddleware)
       .then(async (deps) => {
@@ -152,7 +181,7 @@ export default {
       );
   },
   findStops(name) {
-    return tvApiRequest('TrainStation', { name }).then((stations) =>
+    return tvApiRequest(objectTypes.TRAIN_STATION, {}, { name }).then((stations) =>
       stations.slice(0, 15).map(transformStation)
     );
   },
