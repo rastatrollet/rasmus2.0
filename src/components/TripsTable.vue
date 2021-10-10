@@ -30,7 +30,7 @@
           @click="getJourneyDetails(trip)"
         >
           <td
-            :style="{ backgroundColor: trip.fgColor, color: trip.bgColor }"
+            :style="{ '--trip-bg-color': trip.fgColor, '--trip-text-color': trip.bgColor }"
             :class="$style.tripLine"
           >
             {{ trip.sname }}
@@ -235,6 +235,20 @@ export default {
   padding: 0.5em;
   text-align: center;
   width: 50px;
+  background: var(--trip-bg-color, transparent);
+  color: var(--trip-text-color, transparent);
+}
+
+.dark-mode .tripLine {
+  background: var(--trip-text-color, transparent);
+  color: var(--trip-bg-color, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.light-mode)) .tripLine {
+    background: var(--trip-text-color, transparent);
+    color: var(--trip-bg-color, transparent);
+  }
 }
 
 .tripName {
